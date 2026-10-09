@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "accent": "node scripts/accent.mjs"
+    "accent": "node scripts/accent.mjs",
+    "og": "node scripts/og.mjs"
   },
   "dependencies": {
     "@starwind-ui/astro": "^1.3.0",
