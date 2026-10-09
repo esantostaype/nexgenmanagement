@@ -1,0 +1,65 @@
+---
+import Img from '@/components/Img.astro';
+import CreditCard from '@tabler/icons/outline/credit-card.svg';
+import Tool from '@tabler/icons/outline/tool.svg';
+import Key from '@tabler/icons/outline/key.svg';
+import Home from '@tabler/icons/outline/home-dollar.svg';
+import ArrowUpRight from '@tabler/icons/outline/arrow-up-right.svg';
+import { photos } from '@/data/site';
+
+const residentActions = [
+  { icon: CreditCard, label: 'Pay rent online', href: '/residents#pay-rent' },
+  { icon: Tool, label: 'Request maintenance', href: '/residents#maintenance' },
+  { icon: Key, label: 'Apply for an apartment', href: '/our-properties' },
+];
+---
+
+<section id="residents" class="scroll-mt-28 pt-24 md:pt-32" aria-label="Residents and home sales">
+  <div class="container-site grid gap-4 lg:grid-cols-12">
+    <div class="relative overflow-hidden rounded-2xl bg-brand-400 text-brand-950 lg:col-span-7">
+      <div class="grid h-full sm:grid-cols-2">
+        <div class="flex flex-col justify-between gap-10 p-7 sm:p-10">
+          <div>
+            <h2 class="font-display text-[clamp(1.9rem,3.2vw,2.8rem)] leading-[1.04] font-semibold tracking-[-0.03em] text-balance" data-scene="split-lines">
+              Living in a Nex&#8209;Gen property?
+            </h2>
+            <p class="mt-4 text-brand-950/80" data-reveal data-delay="0.15">Everything you need from us is online, day or night.</p>
+          </div>
+          <ul class="flex flex-col border-t border-brand-950/15" data-reveal-stagger="from-left">
+            {
+              residentActions.map((a) => (
+                <li class="border-b border-brand-950/15">
+                  <a href={a.href} class="group flex items-center gap-3 py-3.5 font-medium transition-opacity hover:opacity-75">
+                    <a.icon class="size-5" stroke-width="1.75" />
+                    <span class="flex-1">{a.label}</span>
+                    <ArrowUpRight class="size-5 rotate-45 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-0" stroke-width="1.75" />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="relative min-h-[260px]" data-reveal="scale">
+          <Img sizes="(min-width: 1024px) 30vw, 100vw" src={photos.pool.src} alt={photos.pool.alt} width="1536" height="1024" loading="lazy" class="absolute inset-0 size-full object-cover" />
+        </div>
+      </div>
+    </div>
+
+    <a href="/home-sales" data-reveal class="group relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-2xl bg-brand-950 p-7 text-white sm:p-10 lg:col-span-5">
+      <Img sizes="(min-width: 1024px) 42vw, 100vw" src={photos.living.src} alt="" width="1536" height="1024" loading="lazy" class="absolute inset-0 size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]" />
+      <div class="absolute inset-0 bg-linear-to-t from-brand-950 via-brand-950/55 to-brand-950/10" aria-hidden="true"></div>
+      <span class="relative flex items-center justify-between">
+        <span class="grid size-14 place-items-center rounded-2xl bg-white/12 ring-1 ring-white/20 backdrop-blur-md">
+          <Home class="size-7" stroke-width="1.5" />
+        </span>
+        <span class="grid size-12 place-items-center rounded-full bg-white text-brand-950 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] rotate-45 group-hover:rotate-0">
+          <ArrowUpRight class="size-5" stroke-width="1.75" />
+        </span>
+      </span>
+      <span class="relative">
+        <span class="font-display block text-[clamp(1.9rem,3.2vw,2.8rem)] leading-[1.04] font-semibold tracking-[-0.03em] text-balance" data-scene="split-lines">Buying or selling a home in Clarksville?</span>
+        <span class="mt-4 block max-w-[40ch] text-white/80">Nex&#8209;Gen Home Sales pairs local market knowledge with a property manager’s eye.</span>
+      </span>
+    </a>
+  </div>
+</section>

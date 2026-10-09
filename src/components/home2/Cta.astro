@@ -1,0 +1,33 @@
+---
+import Img from '@/components/Img.astro';
+import ArrowUpRight from '@tabler/icons/outline/arrow-up-right.svg';
+import Phone from '@tabler/icons/outline/phone.svg';
+import { contact } from '@/data/site';
+---
+
+<section id="contact" class="scroll-mt-28 px-4 pt-24 pb-4 md:pt-32" aria-labelledby="cta-title">
+  <div class="relative overflow-hidden rounded-2xl bg-brand-950 text-white">
+    <Img sizes="100vw" src="/images/hero/hero-2.webp" alt="" width="2000" height="1333" loading="lazy" class="absolute inset-0 size-full object-cover opacity-90" data-parallax />
+    <div class="absolute inset-0 bg-linear-to-r from-brand-950 via-brand-950/80 to-brand-950/30" aria-hidden="true"></div>
+    <div class="container-site relative flex min-h-[520px] flex-col justify-center py-20">
+      <h2 id="cta-title" class="font-display max-w-[16ch] text-[clamp(2.4rem,5vw,4.6rem)] leading-none font-semibold tracking-[-0.035em] text-balance" data-scene="split-lines">
+        Let’s talk about your property.
+      </h2>
+      <p class="mt-6 max-w-[46ch] text-lg text-brand-100/85" data-reveal data-delay="0.15">
+        Tell us what you own and what you need. A manager, not a call center, gets back to you within one business day.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center gap-3" data-reveal-stagger="from-left">
+        <a href="/contact" class="group inline-flex h-14 items-center gap-4 rounded-full bg-brand-400 pr-2 pl-6 font-medium text-brand-950 transition-colors hover:bg-brand-300">
+          Request a proposal
+          <span class="grid size-10 place-items-center rounded-full bg-brand-950 text-brand-300 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] rotate-45 group-hover:rotate-0">
+            <ArrowUpRight class="size-[18px]" stroke-width="1.75" />
+          </span>
+        </a>
+        <a href={contact.phoneHref} class="inline-flex h-14 items-center gap-3 rounded-full px-6 font-medium ring-1 ring-white/30 transition-colors hover:bg-white/10">
+          <Phone class="size-5" stroke-width="1.75" />
+          {contact.phone}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

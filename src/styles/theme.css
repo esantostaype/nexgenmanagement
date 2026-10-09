@@ -1,0 +1,111 @@
+/* ==================================================================
+   THEME
+   Paleta de marca: genérala en https://uicolors.app, copia la lista
+   (formato Tailwind v4) y ejecuta:  npm run accent
+   El script reescribe el bloque accent:start/accent:end como brand-50…950.
+   Los tokens semánticos de abajo ya apuntan a esa escala.
+================================================================== */
+
+/* accent:start — pegado desde uicolors.app con `npm run accent`. No editar a mano. */
+@theme static {
+  --color-brand-50: #ecffff;
+  --color-brand-100: #cefcff;
+  --color-brand-200: #a3f8fe;
+  --color-brand-300: #63f0fd;
+  --color-brand-400: #1ddef3;
+  --color-brand-500: #01c5de;
+  --color-brand-600: #0499b6;
+  --color-brand-700: #0b7a93;
+  --color-brand-800: #136277;
+  --color-brand-900: #145265;
+  --color-brand-950: #073545;
+
+  --color-brand: var(--color-brand-500);
+  --color-brand-foreground: var(--color-brand-950);
+}
+/* accent:end */
+
+/* ------------------------------------------------------------------
+   Tokens semánticos (los usan los componentes de Starwind).
+   Ojo: en Starwind/shadcn "accent" es el fondo sutil de hover, no el
+   color de marca. La marca es "primary", que apunta a brand.
+------------------------------------------------------------------- */
+:root {
+  /* Fondo: neutral de Tailwind (gris puro) */
+  --background: var(--color-neutral-100);
+  --foreground: var(--color-neutral-950);
+  --card: var(--color-white);
+  --card-foreground: var(--color-neutral-950);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-neutral-950);
+  --primary: var(--color-brand);
+  --primary-foreground: var(--color-brand-foreground);
+  --primary-accent: var(--color-brand-700);
+  --secondary: var(--color-neutral-200);
+  --secondary-foreground: var(--color-neutral-950);
+  --secondary-accent: var(--color-neutral-950);
+  --muted: var(--color-neutral-100);
+  --muted-foreground: var(--color-neutral-600);
+  --accent: var(--color-neutral-100);
+  --accent-foreground: var(--color-neutral-900);
+  --info: var(--color-sky-300);
+  --info-foreground: var(--color-sky-950);
+  --success: var(--color-green-300);
+  --success-foreground: var(--color-green-950);
+  --warning: var(--color-amber-300);
+  --warning-foreground: var(--color-amber-950);
+  --error: var(--color-red-700);
+  --error-foreground: var(--color-neutral-50);
+  --border: var(--color-neutral-200);
+  --input: var(--color-neutral-200);
+  --outline: var(--color-brand-400);
+  --radius: 0.625rem;
+
+  --sidebar-background: var(--color-neutral-50);
+  --sidebar-foreground: var(--color-neutral-950);
+  --sidebar-primary: var(--color-brand);
+  --sidebar-primary-foreground: var(--color-brand-foreground);
+  --sidebar-accent: var(--color-neutral-100);
+  --sidebar-accent-foreground: var(--color-neutral-900);
+  --sidebar-border: var(--color-neutral-200);
+  --sidebar-outline: var(--color-brand-400);
+}
+
+.dark {
+  --background: var(--color-neutral-950);
+  --foreground: var(--color-neutral-50);
+  --card: var(--color-neutral-900);
+  --card-foreground: var(--color-neutral-50);
+  --popover: var(--color-neutral-900);
+  --popover-foreground: var(--color-neutral-50);
+  --primary: var(--color-brand);
+  --primary-foreground: var(--color-brand-foreground);
+  --primary-accent: var(--color-brand-400);
+  --secondary: var(--color-neutral-800);
+  --secondary-foreground: var(--color-neutral-50);
+  --secondary-accent: var(--color-neutral-50);
+  --muted: var(--color-neutral-800);
+  --muted-foreground: var(--color-neutral-400);
+  --accent: var(--color-neutral-700);
+  --accent-foreground: var(--color-neutral-50);
+  --info: var(--color-sky-300);
+  --info-foreground: var(--color-sky-950);
+  --success: var(--color-green-300);
+  --success-foreground: var(--color-green-950);
+  --warning: var(--color-amber-300);
+  --warning-foreground: var(--color-amber-950);
+  --error: var(--color-red-800);
+  --error-foreground: var(--color-neutral-50);
+  --border: --alpha(var(--color-neutral-50) / 10%);
+  --input: --alpha(var(--color-neutral-50) / 15%);
+  --outline: var(--color-brand-500);
+
+  --sidebar-background: var(--color-neutral-900);
+  --sidebar-foreground: var(--color-neutral-50);
+  --sidebar-primary: var(--color-brand);
+  --sidebar-primary-foreground: var(--color-brand-foreground);
+  --sidebar-accent: var(--color-neutral-800);
+  --sidebar-accent-foreground: var(--color-neutral-100);
+  --sidebar-border: var(--color-neutral-800);
+  --sidebar-outline: var(--color-brand-600);
+}

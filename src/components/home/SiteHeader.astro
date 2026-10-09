@@ -1,0 +1,96 @@
+---
+import HeaderLogo from '@/components/HeaderLogo.astro';
+import Phone from '@tabler/icons/outline/phone.svg';
+import Menu from '@tabler/icons/outline/menu-2.svg';
+import X from '@tabler/icons/outline/x.svg';
+import PillLink from '@/components/ui/PillLink.astro';
+import { contact, nav, residentLinks } from '@/data/site';
+---
+
+<div class="bg-brand-950 text-brand-100">
+  <div class="mx-auto flex h-10 max-w-[1440px] items-center justify-between gap-6 px-4 text-[0.8rem] sm:px-6 lg:px-8">
+    <p class="hidden text-brand-200/80 sm:block">For residents</p>
+    <nav aria-label="Resident links" class="flex items-center gap-5 overflow-x-auto">
+      {
+        residentLinks.map((link) => (
+          <a href={link.href} class="whitespace-nowrap transition-colors hover:text-brand-300">
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+    <a href={contact.phoneHref} class="hidden items-center gap-2 whitespace-nowrap transition-colors hover:text-brand-300 md:flex">
+      <Phone class="size-4" stroke-width="1.75" />
+      {contact.phone}
+    </a>
+  </div>
+</div>
+
+<header data-site-header class="group/header sticky top-0 z-40 px-3 pt-3 sm:px-4">
+  <div
+    class="mx-auto flex h-16 max-w-[1440px] items-center justify-between rounded-full bg-white py-2 pr-2 pl-5 ring-1 ring-brand-950/6 transition-shadow duration-500 group-data-[scrolled]/header:shadow-[0_12px_32px_-16px_rgb(7_53_69/0.35)]"
+  >
+    <a href="/" class="flex items-center text-brand-950" aria-label="Nex-Gen Management home">
+      <HeaderLogo fullHeight={40} markHeight={36} alignCircle={false} />
+    </a>
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="rounded-full px-4 py-2 text-[0.92rem] text-neutral-700 transition-colors hover:bg-brand-950/5 hover:text-brand-950"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <div class="hidden sm:block">
+        <PillLink href="#proposal" variant="dark">Get a proposal</PillLink>
+      </div>
+      <button
+        type="button"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        class="grid size-12 place-items-center rounded-full bg-brand-950 text-white lg:hidden"
+      >
+        <span class="sr-only">Open menu</span>
+        <Menu class="size-5 [[aria-expanded=true]>&]:hidden" stroke-width="1.75" />
+        <X class="hidden size-5 [[aria-expanded=true]>&]:block" stroke-width="1.75" />
+      </button>
+    </div>
+  </div>
+
+  <div
+    id="mobile-menu"
+    data-open="false"
+    class="pointer-events-none fixed inset-x-3 top-[5.25rem] origin-top scale-[0.97] rounded-2xl bg-brand-950 p-6 text-white opacity-0 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] data-[open=true]:pointer-events-auto data-[open=true]:scale-100 data-[open=true]:opacity-100 lg:hidden"
+  >
+    <ul class="flex flex-col">
+      {
+        nav.map((item) => (
+          <li class="border-b border-white/10">
+            <a href={item.href} class="font-display block py-4 text-2xl font-semibold tracking-tight">
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="mt-6 flex flex-col gap-3">
+      <PillLink href="#proposal" variant="brand" size="lg" class="justify-between">Get a proposal</PillLink>
+      <a href={contact.phoneHref} class="flex items-center gap-2 py-2 text-brand-200">
+        <Phone class="size-4" stroke-width="1.75" />
+        {contact.phone}
+      </a>
+    </div>
+  </div>
+</header>

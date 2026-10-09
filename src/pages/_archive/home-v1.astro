@@ -1,0 +1,43 @@
+---
+// ARCHIVADO: primera versión de la home (antes src/pages/index.astro). La carpeta _archive no genera
+// rutas. Para recuperarla, muévela de nuevo a src/pages/ con otro nombre (p. ej. home-v1.astro).
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SiteHeader from '@/components/home/SiteHeader.astro';
+import Hero from '@/components/home/Hero.astro';
+import Footprint from '@/components/home/Footprint.astro';
+import Owners from '@/components/home/Owners.astro';
+import OwnerReport from '@/components/home/OwnerReport.astro';
+import WordPills from '@/components/home/WordPills.astro';
+import Communities from '@/components/home/Communities.astro';
+import Residents from '@/components/home/Residents.astro';
+import HomeSales from '@/components/home/HomeSales.astro';
+import Team from '@/components/home/Team.astro';
+import Proposal from '@/components/home/Proposal.astro';
+import SiteFooter from '@/components/home/SiteFooter.astro';
+---
+
+<BaseLayout
+  title="Nex-Gen Management | Multifamily Property Management in TN, KY & AL"
+  description="Nex-Gen manages 38 multifamily properties across Tennessee, Kentucky and Alabama. Weekly owner reports, hands-on teams, and a path for residents and home buyers."
+  lang="en"
+>
+  <SiteHeader />
+  <main>
+    <Hero />
+    <Footprint />
+    <Owners />
+    <OwnerReport />
+    <WordPills />
+    <Communities />
+    <Residents />
+    <HomeSales />
+    <Team />
+    <Proposal />
+  </main>
+  <SiteFooter />
+
+  <script>
+    import { initHome } from '@/scripts/home';
+    initHome();
+  </script>
+</BaseLayout>

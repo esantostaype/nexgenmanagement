@@ -1,0 +1,65 @@
+---
+import Quote from '@tabler/icons/filled/quote.svg';
+import { team, testimonials, values } from '@/data/site';
+
+const initials = (name: string) =>
+  name
+    .split(' ')
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join('');
+---
+
+<section id="team" class="scroll-mt-24 px-3 pt-24 sm:px-4 md:pt-32" aria-labelledby="team-title">
+  <div class="mx-auto grid max-w-360 gap-3 lg:grid-cols-12">
+    <figure class="relative flex flex-col justify-between overflow-hidden rounded-2xl bg-brand-950 p-7 text-white sm:p-10 lg:col-span-7 lg:p-14">
+      <Quote class="size-12 text-brand-400" />
+      <blockquote class="mt-10">
+        <p id="team-title" class="font-display text-[clamp(1.8rem,3.6vw,3.2rem)] leading-[1.08] font-semibold tracking-[-0.03em] text-balance" data-reveal>
+          Great things in business are never done by one person. They’re done by a team of people.
+        </p>
+      </blockquote>
+      <figcaption class="mt-10 flex items-center gap-4" data-reveal data-delay="0.2">
+        <span class="font-display grid size-14 place-items-center rounded-full bg-brand-400 text-lg font-semibold text-brand-950">BS</span>
+        <span>
+          <span class="font-display block font-semibold">Billi Jo Suiter</span>
+          <span class="text-sm text-brand-100/75">CEO & Owner, Nex-Gen Management</span>
+        </span>
+      </figcaption>
+    </figure>
+
+    <div class="flex flex-col rounded-2xl bg-white p-7 ring-1 ring-brand-950/6 sm:p-10 lg:col-span-5">
+      <h2 class="font-display text-2xl font-semibold tracking-tight text-brand-950">The team behind your property</h2>
+      <ul class="mt-6 grid grid-cols-1 gap-x-6 sm:grid-cols-2" data-reveal-stagger>
+        {
+          team.map((m) => (
+            <li class="flex items-center gap-3 border-b border-brand-950/6 py-3">
+              <span class="grid size-9 shrink-0 place-items-center rounded-full bg-brand-50 text-xs font-semibold text-brand-800">{initials(m.name)}</span>
+              <span class="min-w-0 leading-tight">
+                <span class="block truncate text-sm font-medium text-brand-950">{m.name}</span>
+                <span class="block truncate text-xs text-neutral-500">{m.role}</span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      <ul class="mt-auto flex flex-wrap gap-2 pt-8" aria-label="Our values">
+        {values.map((v) => <li class="rounded-full bg-brand-50 px-3.5 py-1.5 text-sm text-brand-900">{v}</li>)}
+      </ul>
+    </div>
+
+    <ul class="grid gap-3 md:grid-cols-3 lg:col-span-12" aria-label="Client testimonials (placeholders)" data-reveal-stagger>
+      {
+        testimonials.map((t) => (
+          <li class="flex flex-col justify-between rounded-2xl bg-white p-7 ring-1 ring-brand-950/6 ring-dashed">
+            <p class="text-lg leading-relaxed text-neutral-500 italic">“{t.quote}”</p>
+            <p class="mt-8 flex items-center justify-between text-sm">
+              <span class="text-neutral-400">{t.name}</span>
+              <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-900">{t.role} · placeholder</span>
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

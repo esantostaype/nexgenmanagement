@@ -1,0 +1,131 @@
+---
+import Img from '@/components/Img.astro';
+import ArrowUpRight from '@tabler/icons/outline/arrow-up-right.svg';
+import SearchIcon from '@tabler/icons/outline/search.svg';
+import Award from '@tabler/icons/outline/award.svg';
+import MapPin from '@tabler/icons/outline/map-pin.svg';
+import { communities, cities, states } from '@/data/communities';
+import { award } from '@/data/site';
+
+// Proyección simple de lat/lng al recuadro del mapa (TN, KY, AL)
+const bounds = { minLat: 33.2, maxLat: 38.4, minLng: -89.4, maxLng: -83.6 };
+const project = (lat: number, lng: number) => ({
+  x: ((lng - bounds.minLng) / (bounds.maxLng - bounds.minLng)) * 100,
+  y: (1 - (lat - bounds.minLat) / (bounds.maxLat - bounds.minLat)) * 100,
+});
+const pins = communities.map((c) => ({ ...project(c.lat, c.lng), name: c.name }));
+
+// Todas las propiedades con foto; empieza por tres exteriores con buena luz
+const lead = ['The Park at Carson', 'Blue Grass Meadows', 'The Flats at Lancaster'];
+const polaroids = [
+  ...lead.map((n) => communities.find((c) => c.name === n)!),
+  ...communities.filter((c) => !lead.includes(c.name)),
+].filter((c) => c?.photo);
+
+// Posición en reposo de cada polaroid (0 = delante). Debe coincidir con polaroidPos() de home.ts
+const restTransform = (k: number) =>
+  k === 0
+    ? 'translate(0px, 0px) rotate(3deg)'
+    : k === 1
+      ? 'translate(-18px, -12px) rotate(-1deg) scale(0.97)'
+      : 'translate(-36px, -24px) rotate(-5deg) scale(0.94)';
+---
+
+<!-- Layout inspirado en "Discover the value behind smart property investments" -->
+<section id="communities" class="scroll-mt-28 pt-24 md:pt-32" aria-labelledby="communities-title">
+  <div class="container-site grid gap-12 lg:grid-cols-12">
+    <div class="flex flex-col justify-between gap-10 lg:col-span-5">
+      <div>
+        <span class="inline-block rounded-md bg-white px-3 py-1.5 text-sm font-semibold tracking-[0.12em] text-brand-700 uppercase" data-reveal="fade">
+          Our properties
+        </span>
+        <h2 id="communities-title" class="font-display mt-6 text-[clamp(2.2rem,4.4vw,3.8rem)] leading-[1.02] font-semibold tracking-[-0.035em] text-balance text-brand-950" data-scene="split-lines">
+          {communities.length} properties, one standard of care.
+        </h2>
+      </div>
+      <div>
+        <p data-reveal data-delay="0.2" class="max-w-[46ch] text-lg leading-relaxed text-neutral-600">
+          Apartments and townhomes in {cities.length} cities across Tennessee, Kentucky and Alabama. Find your next
+          home or see the portfolio we manage for our owners.
+        </p>
+        <a href="/our-properties" data-reveal="from-left" data-delay="0.3" class="group mt-8 inline-flex h-14 items-center gap-4 rounded-full bg-brand-950 pr-2 pl-6 font-medium text-white transition-colors hover:bg-brand-900">
+          Explore our properties
+          <span class="grid size-10 place-items-center rounded-full bg-brand-400 text-brand-950 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]">
+            <ArrowUpRight class="size-5 rotate-45 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-0" stroke-width="1.75" />
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:col-span-7" data-reveal-stagger>
+      <a href="/our-properties" class="flex flex-col justify-between gap-10 rounded-2xl bg-white p-6">
+        <span class="flex h-12 items-center gap-3 rounded-full bg-brand-50 px-4 text-sm text-brand-900/70">
+          <SearchIcon class="size-[18px]" stroke-width="1.75" />
+          Clarksville, Nashville, Birmingham…
+        </span>
+        <span>
+          <span class="font-display block text-xl font-semibold tracking-tight text-brand-950">Find a home near you</span>
+          <span class="mt-1 block text-neutral-600">Search the properties by city or state and visit each one’s site.</span>
+        </span>
+      </a>
+
+      <a href={award.href} target="_blank" rel="noopener" class="flex flex-col justify-between gap-10 rounded-2xl bg-white p-6">
+        <span class="grid size-14 place-items-center rounded-2xl bg-brand-950 text-brand-300">
+          <Award class="size-7" stroke-width="1.5" />
+        </span>
+        <span>
+          <span class="font-display block text-xl font-semibold tracking-tight text-brand-950">{award.title}</span>
+          <span class="mt-1 block text-neutral-600">{award.by}, {award.year}.</span>
+        </span>
+      </a>
+
+      <a href="/our-properties" class="relative flex min-h-[300px] rounded-2xl bg-white sm:col-span-2">
+        <!-- Mapa de puntos: cada pin es una comunidad en su latitud/longitud -->
+        <div class="dot-field absolute inset-y-0 left-0 w-full overflow-hidden rounded-2xl sm:w-[62%] sm:rounded-r-none" aria-hidden="true">
+          {
+            pins.map((p) => (
+              <span class="absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-500 ring-4 ring-brand-500/15" style={`left:${p.x}%;top:${p.y}%`} />
+            ))
+          }
+        </div>
+        <span class="relative z-10 mt-auto max-w-[24ch] p-6">
+          <span class="mb-3 inline-flex items-center gap-1.5 rounded-full bg-brand-950 px-3 py-1 text-xs font-medium text-white">
+            <MapPin class="size-3.5" stroke-width="2" />
+            {states.join(' · ')}
+          </span>
+          <span class="font-display block text-xl font-semibold tracking-tight text-brand-950">Where we manage</span>
+          <span class="mt-1 block text-neutral-600">Every dot is a property our team runs today.</span>
+        </span>
+        <!-- Polaroids: carrusel con todas las propiedades con foto; se ven 3 y sobresalen de la tarjeta.
+             Motion las va pasando una a una (home.ts, [data-polaroids]). Sin JS se ven las 3 primeras. -->
+        <span class="absolute -right-5 -bottom-8 hidden h-[250px] w-[42%] sm:block" data-polaroids data-float="10" aria-hidden="true">
+          {
+            polaroids.map((c, i) => (
+              <span
+                class="absolute right-0 bottom-0 block w-full rounded-2xl bg-white p-2 shadow-[0_24px_40px_-24px_rgb(0_0_0/0.45)] will-change-transform"
+                style={`z-index:${30 - i};transform:${restTransform(i)}`}
+                hidden={i > 2}
+                data-polaroid
+              >
+                <Img sizes="260px" src={c.photo!} alt="" loading="lazy" class="aspect-[16/10] w-full rounded-[12px] object-cover" />
+                <span class="block px-1 pt-2 pb-1">
+                  <span class="font-display block truncate text-sm font-semibold text-brand-950">{c.name}</span>
+                  <span class="block text-xs text-neutral-500">{c.city}, {c.state}</span>
+                </span>
+              </span>
+            ))
+          }
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Fondo de puntos del mapa: es la retícula sobre la que se proyectan las coordenadas reales */
+  .dot-field {
+    background-image: radial-gradient(circle, rgb(7 53 69 / 0.13) 1.2px, transparent 1.6px);
+    background-size: 12px 12px;
+    mask-image: linear-gradient(90deg, #000 70%, transparent);
+  }
+</style>

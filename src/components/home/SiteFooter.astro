@@ -1,0 +1,64 @@
+---
+import Logo from '@/assets/brand/logo-full.svg';
+import { contact, nav, residentLinks } from '@/data/site';
+import { cities } from '@/data/communities';
+
+const year = new Date().getFullYear();
+
+const columns = [
+  { title: 'Company', links: [...nav, { label: 'Careers', href: 'https://nexgenmultifamily.com/careers.html' }, { label: 'Blog', href: 'https://nexgenmultifamily.com/blog.html' }] },
+  { title: 'Residents', links: residentLinks },
+];
+---
+
+<footer class="px-3 pb-3 sm:px-4">
+  <div class="mx-auto max-w-360 overflow-hidden rounded-2xl bg-brand-950 text-brand-100">
+    <div class="grid gap-12 p-7 sm:p-10 lg:grid-cols-12 lg:p-14">
+      <div class="lg:col-span-5">
+        <Logo class="h-16 w-auto text-white" role="img" aria-label="Nex-Gen Management" />
+        <p class="mt-6 max-w-[38ch] text-brand-100/75">
+          Multifamily property management across Tennessee, Kentucky and Alabama, run from Clarksville.
+        </p>
+        <address class="mt-8 flex flex-col gap-1 text-sm not-italic">
+          <a href={contact.phoneHref} class="w-fit hover:text-brand-300">{contact.phone}</a>
+          <a href={`mailto:${contact.email}`} class="w-fit hover:text-brand-300">{contact.email}</a>
+          <span class="text-brand-100/70">{contact.address.join(', ')} · {contact.hours}</span>
+        </address>
+      </div>
+
+      {
+        columns.map((col) => (
+          <nav aria-label={col.title} class="lg:col-span-2">
+            <p class="font-display font-semibold text-white">{col.title}</p>
+            <ul class="mt-4 flex flex-col gap-2.5 text-sm">
+              {col.links.map((l) => (
+                <li>
+                  <a href={l.href} class="hover:text-brand-300">
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+
+      <div class="lg:col-span-3">
+        <p class="font-display font-semibold text-white">Where we manage</p>
+        <p class="mt-4 text-sm leading-relaxed text-brand-100/70">{cities.join(' · ')}</p>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 px-7 py-6 text-xs text-brand-100/60 sm:px-10 lg:px-14">
+      <p>© {year} Nex-Gen Management, LLC. All rights reserved.</p>
+      <p>Equal Housing Opportunity</p>
+    </div>
+
+    <p
+      class="font-display -mb-[0.2em] px-4 text-center text-[clamp(4rem,17vw,16rem)] leading-none font-bold tracking-[-0.04em] text-white/6 select-none"
+      aria-hidden="true"
+    >
+      Nex-Gen
+    </p>
+  </div>
+</footer>

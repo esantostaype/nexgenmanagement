@@ -1,0 +1,118 @@
+---
+import Img from '@/components/Img.astro';
+import ArrowUpRight from "@tabler/icons/outline/arrow-up-right.svg";
+import Plus from "@tabler/icons/outline/plus.svg";
+import { communities, cities } from "@/data/communities";
+
+// Tres comunidades reales para el grupo de avatares
+const faces = ["Blue Grass Meadows", "Heritage Pointe Apartments", "The Rowe At Gate 1"]
+  .map((name) => communities.find((c) => c.name === name))
+  .filter((c) => c?.photo) as { photo: string }[];
+
+// Video aéreo de Clarksville, TN (sede de Nex-Gen): fusión de public/videos/clarksville-tennessee.mp4 y
+// clarksville-tennessee2.mp4 con fundidos de 1,5 s (1 → 2 → 1, bucle continuo), LUT
+// assets-src/grades/golden-warm.cube (HyperFrames media-use) y viñeta. 1080p escritorio, 720p móvil.
+---
+
+<section class="h-svh min-h-160 p-4" aria-labelledby="hero-title">
+  <div
+    class="relative isolate flex h-full flex-col overflow-hidden rounded-2xl bg-brand-950 text-white"
+  >
+    <video
+      class="absolute inset-0 -z-10 size-full object-cover opacity-0 transition-opacity duration-[1400ms] ease-out data-[ready]:opacity-100 motion-reduce:transition-none"
+      poster="/videos/hero-poster.webp"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+      data-hero-video
+    >
+      <source
+        src="/videos/hero-720.mp4"
+        type="video/mp4"
+        media="(max-width: 767px)"
+      />
+      <source src="/videos/hero-1080.mp4" type="video/mp4" />
+    </video>
+    <div
+      class="absolute inset-0 -z-10 bg-linear-to-r from-brand-950/85 via-brand-950/65 to-brand-950/5"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute inset-x-0 bottom-0 -z-10 h-2/5 bg-linear-to-t from-brand-950/80 to-transparent"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute inset-x-0 top-0 -z-10 h-40 bg-linear-to-b from-brand-950/55 to-transparent"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="container-site flex flex-1 flex-col justify-end pt-32 pb-20">
+      <div class="max-w-4xl">
+        <a
+          href="/our-properties"
+          class="group mb-8 inline-flex items-center gap-3 text-sm transition-opacity hover:opacity-85"
+          data-reveal="fade"
+        >
+          <span class="flex -space-x-2.5" aria-hidden="true">
+            {
+              faces.map((c) => (
+                <Img sizes="36px"
+                  src={c.photo}
+                  alt=""
+                  width="36"
+                  height="36"
+                  class="size-9 rounded-full object-cover ring-2 ring-white"
+                />
+              ))
+            }
+            <span class="grid size-9 place-items-center rounded-full bg-brand-950 text-white ring-2 ring-white">
+              <Plus class="size-4" stroke-width="2" />
+            </span>
+          </span>
+          <span>
+            <span class="font-semibold">{communities.length} properties</span>
+            <span class="text-white/75"> · {cities.length} cities · TN, KY, AL</span>
+          </span>
+        </a>
+        <h1
+          id="hero-title"
+          class="font-display text-[clamp(2rem,6vw,4rem)] leading-[0.98] font-semibold text-balance"
+          data-scene="split-lines"
+        >
+          Multifamily management that protects your asset and the people who
+          live in it.
+        </h1>
+        <div class="mt-9" data-reveal="from-left" data-delay="0.4">
+          <a
+            href="/contact"
+            data-hero-cta
+            class="group inline-flex h-14 items-center gap-4 rounded-full bg-brand-400 pr-2 pl-7 font-medium text-brand-950 transition-colors duration-300 hover:bg-brand-300"
+          >
+            Request a proposal
+            <span
+              class="grid size-10 place-items-center rounded-full bg-brand-950 text-brand-300 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] rotate-45 group-hover:rotate-0"
+            >
+              <ArrowUpRight class="size-[18px]" stroke-width="1.75" />
+            </span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="absolute right-6 bottom-6 hidden text-xs text-white/60 sm:block">
+      Clarksville, Tennessee · home of Nex&#8209;Gen
+    </p>
+  </div>
+</section>
+
+<script>
+  import { initHeroVideo } from '@/scripts/hero-video';
+  initHeroVideo();
+</script>

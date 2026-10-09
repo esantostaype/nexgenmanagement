@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-09T05:30:00Z",
+  "title": "Design System: Nex-Gen Management",
+  "extensions": {
+    "colorMeta": {
+      "ink-teal": { "role": "secondary", "displayName": "Ink Teal", "canonical": "var(--color-brand-950)", "tonalRamp": ["#073545", "#145265", "#136277", "#0b7a93", "#0499b6", "#01c5de", "#63f0fd", "#ecffff"] },
+      "ink-teal-raised": { "role": "secondary", "displayName": "Raised Ink", "canonical": "var(--color-brand-900)", "tonalRamp": ["#073545", "#145265", "#136277", "#0b7a93", "#0499b6", "#01c5de", "#63f0fd", "#ecffff"] },
+      "harbor-teal": { "role": "secondary", "displayName": "Harbor Teal", "canonical": "var(--color-brand-800)", "tonalRamp": ["#073545", "#145265", "#136277", "#0b7a93", "#0499b6", "#01c5de", "#63f0fd", "#ecffff"] },
+      "deep-teal": { "role": "secondary", "displayName": "Deep Teal", "canonical": "var(--color-brand-700)", "tonalRamp": ["#073545", "#145265", "#136277", "#0b7a93", "#0499b6", "#01c5de", "#63f0fd", "#ecffff"] },
+      "scooter-cyan": { "role": "primary", "displayName": "Scooter Cyan", "canonical": "var(--color-brand-400)", "tonalRamp": ["#073545", "#145265", "#0b7a93", "#0499b6", "#01c5de", "#1ddef3", "#a3f8fe", "#ecffff"] },
+      "scooter-cyan-base": { "role": "primary", "displayName": "Scooter Cyan Base", "canonical": "var(--color-brand-500)", "tonalRamp": ["#073545", "#145265", "#0b7a93", "#0499b6", "#01c5de", "#1ddef3", "#a3f8fe", "#ecffff"] },
+      "scooter-cyan-soft": { "role": "primary", "displayName": "Soft Cyan", "canonical": "var(--color-brand-300)", "tonalRamp": ["#073545", "#145265", "#0b7a93", "#0499b6", "#01c5de", "#63f0fd", "#a3f8fe", "#ecffff"] },
+      "cyan-mist": { "role": "tertiary", "displayName": "Cyan Mist", "canonical": "var(--color-brand-100)", "tonalRamp": ["#073545", "#136277", "#0499b6", "#1ddef3", "#63f0fd", "#a3f8fe", "#cefcff", "#ecffff"] },
+      "cyan-wash": { "role": "tertiary", "displayName": "Cyan Wash", "canonical": "var(--color-brand-200)", "tonalRamp": ["#073545", "#136277", "#0499b6", "#1ddef3", "#63f0fd", "#a3f8fe", "#cefcff", "#ecffff"] },
+      "cyan-frost": { "role": "tertiary", "displayName": "Cyan Frost", "canonical": "var(--color-brand-50)", "tonalRamp": ["#073545", "#136277", "#0499b6", "#1ddef3", "#63f0fd", "#a3f8fe", "#cefcff", "#ecffff"] },
+      "mineral-ground": { "role": "neutral", "displayName": "Mineral Ground", "canonical": "oklch(0.972 0.005 200)", "tonalRamp": ["oklch(0.15 0.005 200)", "oklch(0.27 0.005 200)", "oklch(0.39 0.005 200)", "oklch(0.51 0.005 200)", "oklch(0.63 0.005 200)", "oklch(0.75 0.005 200)", "oklch(0.87 0.005 200)", "oklch(0.972 0.005 200)"] },
+      "paper-white": { "role": "neutral", "displayName": "Paper White", "canonical": "#ffffff", "tonalRamp": ["#0a0a0a", "#262626", "#404040", "#525252", "#737373", "#a3a3a3", "#e5e5e5", "#ffffff"] },
+      "ash-50": { "role": "neutral", "displayName": "Ash 50", "canonical": "var(--color-neutral-50)", "tonalRamp": ["#0a0a0a", "#262626", "#404040", "#525252", "#737373", "#a3a3a3", "#e5e5e5", "#fafafa"] },
+      "ash-100": { "role": "neutral", "displayName": "Ash 100", "canonical": "var(--color-neutral-100)", "tonalRamp": ["#0a0a0a", "#262626", "#404040", "#525252", "#737373", "#a3a3a3", "#e5e5e5", "#f5f5f5"] },
+      "ash-200": { "role": "neutral", "displayName": "Ash 200", "canonical": "var(--color-neutral-200)", "tonalRamp": ["#0a0a0a", "#262626", "#404040", "#525252", "#737373", "#a3a3a3", "#e5e5e5", "#fafafa"] },
+      "ash-500": { "role": "neutral", "displayName": "Ash 500", "canonical": "var(--color-neutral-500)", "tonalRamp": ["#0a0a0a", "#262626", "#404040", "#525252", "#737373", "#a3a3a3", "#e5e5e5", "#fafafa"] },
+      "ash-600": { "role": "neutral", "displayName": "Ash 600", "canonical": "var(--color-neutral-600)", "tonalRamp": ["#0a0a0a", "#262626", "#404040", "#525252", "#737373", "#a3a3a3", "#e5e5e5", "#fafafa"] },
+      "ash-700": { "role": "neutral", "displayName": "Ash 700", "canonical": "var(--color-neutral-700)", "tonalRamp": ["#0a0a0a", "#262626", "#404040", "#525252", "#737373", "#a3a3a3", "#e5e5e5", "#fafafa"] },
+      "ash-950": { "role": "neutral", "displayName": "Ash 950", "canonical": "var(--color-neutral-950)", "tonalRamp": ["#0a0a0a", "#262626", "#404040", "#525252", "#737373", "#a3a3a3", "#e5e5e5", "#fafafa"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headline only; max 16ch, second clause in Soft Cyan, lines rise from masks on load." },
+      "figure": { "displayName": "Figure", "purpose": "Counted stats in the footprint band; tabular, counts up once on view." },
+      "headline": { "displayName": "Headline", "purpose": "Section headlines on the ground, about 7/12 columns wide." },
+      "headline-sm": { "displayName": "Headline Small", "purpose": "Headlines set inside a card." },
+      "title": { "displayName": "Title", "purpose": "Lifecycle stage names." },
+      "title-sm": { "displayName": "Title Small", "purpose": "Path-rail labels, list heads, community and row names." },
+      "lead": { "displayName": "Lead", "purpose": "Paragraph beside a headline, 40 to 46ch." },
+      "body": { "displayName": "Body", "purpose": "Running text." },
+      "label": { "displayName": "Label", "purpose": "Buttons, filter tabs, chips, photo captions." },
+      "caption": { "displayName": "Caption", "purpose": "Table heads, KPI labels, metadata." }
+    },
+    "shadows": [
+      { "name": "nav-lift", "value": "0 12px 32px -16px rgb(7 53 69 / 0.35)", "purpose": "Floating pill nav once the page scrolls past 24px." },
+      { "name": "sheet", "value": "0 40px 80px -40px rgb(7 53 69 / 0.45)", "purpose": "Sample report sheet resting on its cyan-mist stage." },
+      { "name": "tag-drop", "value": "drop-shadow(0 6px 10px rgb(7 53 69 / 0.12))", "purpose": "Community key tags; a filter so it follows the die-cut silhouette." },
+      { "name": "hairline-ring", "value": "0 0 0 1px rgb(7 53 69 / 0.06)", "purpose": "Not a shadow: the ring that separates paper cards from the ground." }
+    ],
+    "motion": [
+      { "name": "ease-drawer", "value": "cubic-bezier(0.32, 0.72, 0, 1)", "purpose": "Pill backgrounds (300ms), arrow-disc rotate and nudge (500ms), filter indicator slide (500ms), mobile menu open (500ms)." },
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Reveals, count-up (1.4s), row stagger (0.45s, 30ms step), scroll thumb fade." },
+      { "name": "split-lines", "value": "yPercent 110 to 0, 1.1s, stagger 0.08s, expo.out", "purpose": "Hero headline lines rising from masks." },
+      { "name": "bar-grow", "value": "scaleY 0 to 1, 1s, stagger 0.06s, expo.out", "purpose": "Report chart bars on scroll into view." },
+      { "name": "parallax", "value": "yPercent -8 to 8 at scale 1.15, scrubbed", "purpose": "Background photo inside the footprint band; hero photo scales to 1.08 on scroll." },
+      { "name": "marquee", "value": "70s and 80s linear, opposing directions", "purpose": "Community key-tag rows; pause on hover, off under reduced motion." },
+      { "name": "press", "value": "scale(0.98)", "purpose": "Active state of pills and submit." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "container", "value": "1440px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Brand Pill",
+      "kind": "button",
+      "refersTo": "pill-brand",
+      "description": "Primary action: cyan pill with an ink arrow disc that turns 45 degrees on hover.",
+      "html": "<a class=\"ds-pill ds-pill-brand\" href=\"#\">Request a proposal<span class=\"ds-pill-disc\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17 7l-10 10\"/><path d=\"M8 7l9 0l0 9\"/></svg></span></a>",
+      "css": ".ds-pill { display: inline-flex; align-items: center; gap: 12px; height: 48px; padding: 0 6px 0 20px; border-radius: 9999px; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.95rem; font-weight: 500; letter-spacing: -0.025em; text-decoration: none; white-space: nowrap; transition: background-color 300ms cubic-bezier(0.32,0.72,0,1), transform 300ms cubic-bezier(0.32,0.72,0,1); } .ds-pill:active { transform: scale(0.98); } .ds-pill:focus-visible { outline: 2px solid #1ddef3; outline-offset: 3px; } .ds-pill-disc { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 9999px; transition: transform 500ms cubic-bezier(0.32,0.72,0,1); } .ds-pill:hover .ds-pill-disc { transform: translate(2px,-1px) rotate(45deg); } .ds-pill-brand { background: #1ddef3; color: #073545; } .ds-pill-brand:hover { background: #63f0fd; } .ds-pill-brand .ds-pill-disc { background: #073545; color: #63f0fd; }"
+    },
+    {
+      "name": "Dark Pill",
+      "kind": "button",
+      "refersTo": "pill-dark",
+      "description": "Ink pill with a cyan disc; nav action and the action on paper cards.",
+      "html": "<a class=\"ds-pill-d\" href=\"#\">Get a proposal<span class=\"ds-pill-d-disc\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17 7l-10 10\"/><path d=\"M8 7l9 0l0 9\"/></svg></span></a>",
+      "css": ".ds-pill-d { display: inline-flex; align-items: center; gap: 12px; height: 48px; padding: 0 6px 0 20px; border-radius: 9999px; background: #073545; color: #fff; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.95rem; font-weight: 500; letter-spacing: -0.025em; text-decoration: none; transition: background-color 300ms cubic-bezier(0.32,0.72,0,1), transform 300ms cubic-bezier(0.32,0.72,0,1); } .ds-pill-d:hover { background: #145265; } .ds-pill-d:active { transform: scale(0.98); } .ds-pill-d:focus-visible { outline: 2px solid #1ddef3; outline-offset: 3px; } .ds-pill-d-disc { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 9999px; background: #1ddef3; color: #073545; transition: transform 500ms cubic-bezier(0.32,0.72,0,1); } .ds-pill-d:hover .ds-pill-d-disc { transform: translate(2px,-1px) rotate(45deg); }"
+    },
+    {
+      "name": "Ghost Pill on Ink",
+      "kind": "button",
+      "refersTo": "pill-ghost-light",
+      "description": "Secondary action on an ink card: transparent with a 25% white ring and a white disc.",
+      "html": "<div class=\"ds-ink-stage\"><a class=\"ds-pill-g\" href=\"#\">Find an apartment<span class=\"ds-pill-g-disc\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17 7l-10 10\"/><path d=\"M8 7l9 0l0 9\"/></svg></span></a></div>",
+      "css": ".ds-ink-stage { background: #073545; padding: 24px; border-radius: 28px; } .ds-pill-g { display: inline-flex; align-items: center; gap: 16px; height: 56px; padding: 0 8px 0 24px; border-radius: 9999px; color: #fff; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 1rem; font-weight: 500; letter-spacing: -0.025em; text-decoration: none; transition: background-color 300ms cubic-bezier(0.32,0.72,0,1); } .ds-pill-g:hover { background: rgb(255 255 255 / 0.1); } .ds-pill-g:focus-visible { outline: 2px solid #1ddef3; outline-offset: 3px; } .ds-pill-g-disc { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 9999px; background: #fff; color: #073545; transition: transform 500ms cubic-bezier(0.32,0.72,0,1); } .ds-pill-g:hover .ds-pill-g-disc { transform: translate(2px,-1px) rotate(45deg); }"
+    },
+    {
+      "name": "Ink Card",
+      "kind": "card",
+      "refersTo": "card-ink",
+      "description": "Structural mass: hero, footprint, proposal, quote and footer.",
+      "html": "<div class=\"ds-card-ink\"><h3 class=\"ds-card-ink-h\">A regional operator, <span>close to every property.</span></h3><p class=\"ds-card-ink-p\">Our managers drive these roads every week.</p></div>",
+      "css": ".ds-card-ink { background: #073545; color: #fff; border-radius: 28px; padding: 40px; max-width: 520px; } .ds-card-ink-h { margin: 0; font-family: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif; font-size: 2.4rem; line-height: 1.02; font-weight: 600; letter-spacing: -0.03em; } .ds-card-ink-h span { color: #63f0fd; } .ds-card-ink-p { margin: 20px 0 0; color: rgb(206 252 255 / 0.8); font-family: Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.6; }"
+    },
+    {
+      "name": "Paper Card",
+      "kind": "card",
+      "refersTo": "card-paper",
+      "description": "Working-detail card: white, 28px radius, hairline ink ring, no shadow.",
+      "html": "<div class=\"ds-card-paper\"><h3 class=\"ds-card-paper-h\">Your asset, on one page, every Monday.</h3><p class=\"ds-card-paper-p\">The report arrives before you think to ask.</p></div>",
+      "css": ".ds-card-paper { background: #fff; color: #073545; border-radius: 28px; padding: 40px; max-width: 520px; box-shadow: 0 0 0 1px rgb(7 53 69 / 0.06); } .ds-card-paper-h { margin: 0; font-family: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif; font-size: 2.2rem; line-height: 1.02; font-weight: 600; letter-spacing: -0.03em; } .ds-card-paper-p { margin: 20px 0 0; color: #525252; font-family: Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.6; }"
+    },
+    {
+      "name": "Path Rail Item",
+      "kind": "custom",
+      "refersTo": "path-rail-item",
+      "description": "Audience tile under the hero with a sliding arrow disc; the lead tile is cyan.",
+      "html": "<div class=\"ds-rail\"><a class=\"ds-rail-item ds-rail-lead\" href=\"#\"><span><span class=\"ds-rail-l\">Owners & investors</span><span class=\"ds-rail-s\">Management and reporting</span></span><span class=\"ds-rail-disc\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12l14 0\"/><path d=\"M13 18l6 -6\"/><path d=\"M13 6l6 6\"/></svg></span></a><a class=\"ds-rail-item\" href=\"#\"><span><span class=\"ds-rail-l\">Residents</span><span class=\"ds-rail-s\">Pay rent, maintenance</span></span><span class=\"ds-rail-disc\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12l14 0\"/><path d=\"M13 18l6 -6\"/><path d=\"M13 6l6 6\"/></svg></span></a></div>",
+      "css": ".ds-rail { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .ds-rail-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; border-radius: 22px; background: #fff; color: #073545; box-shadow: 0 0 0 1px rgb(7 53 69 / 0.06); text-decoration: none; transition: background-color 300ms; } .ds-rail-item:hover { background: #ecffff; } .ds-rail-item:focus-visible { outline: 2px solid #1ddef3; outline-offset: 3px; } .ds-rail-lead { background: #1ddef3; box-shadow: none; } .ds-rail-lead:hover { background: #63f0fd; } .ds-rail-l { display: block; font-family: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif; font-size: 1.125rem; font-weight: 600; letter-spacing: -0.025em; } .ds-rail-s { font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; color: #737373; } .ds-rail-lead .ds-rail-s { color: rgb(7 53 69 / 0.75); } .ds-rail-disc { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 9999px; background: rgb(7 53 69 / 0.05); transition: transform 500ms cubic-bezier(0.32,0.72,0,1); } .ds-rail-lead .ds-rail-disc { background: #073545; color: #63f0fd; } .ds-rail-item:hover .ds-rail-disc { transform: translateX(4px); }"
+    },
+    {
+      "name": "Community Key Tag",
+      "kind": "custom",
+      "refersTo": "community-tag",
+      "description": "Signature die-cut tag: pointed end, chamfered corners, punched hole, logo plate, name and city.",
+      "html": "<span class=\"ds-tag-wrap\"><span class=\"ds-tag\"><span class=\"ds-tag-plate\">LOGO</span><span class=\"ds-tag-text\"><span class=\"ds-tag-name\">Riverside Commons</span><span class=\"ds-tag-city\">Clarksville, TN</span></span></span></span>",
+      "css": ".ds-tag-wrap { display: inline-flex; filter: drop-shadow(0 6px 10px rgb(7 53 69 / 0.12)); } .ds-tag { display: inline-flex; align-items: center; gap: 16px; padding: 10px 24px 10px 44px; background: #fff; clip-path: polygon(22px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 22px 100%, 0 calc(50% + 12px), 0 calc(50% - 12px)); -webkit-mask: radial-gradient(circle at 20px 50%, transparent 6px, #000 6.5px); mask: radial-gradient(circle at 20px 50%, transparent 6px, #000 6.5px); } .ds-tag-plate { display: grid; place-items: center; width: 84px; height: 56px; border-radius: 14px; box-shadow: 0 0 0 1px #e5e5e5; font: 600 0.7rem Inter, sans-serif; color: #a3a3a3; } .ds-tag-text { display: flex; flex-direction: column; line-height: 1.25; } .ds-tag-name { font-family: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif; font-size: 0.95rem; font-weight: 600; letter-spacing: -0.025em; color: #073545; } .ds-tag-city { margin-top: 2px; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; color: #737373; }"
+    },
+    {
+      "name": "State Filter Tabs",
+      "kind": "nav",
+      "refersTo": "filter-tabs",
+      "description": "Segmented filter with an ink indicator that slides to the selected tab.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><span class=\"ds-tabs-ind\"></span><button class=\"ds-tab\" role=\"tab\" aria-selected=\"true\">All states <span>38</span></button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">TN <span>24</span></button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">KY <span>9</span></button></div>",
+      "css": ".ds-tabs { position: relative; display: inline-flex; padding: 4px; border-radius: 9999px; background: #f5f5f5; } .ds-tabs-ind { position: absolute; top: 4px; bottom: 4px; left: 4px; width: 112px; border-radius: 9999px; background: #073545; transition: transform 500ms cubic-bezier(0.32,0.72,0,1), width 500ms cubic-bezier(0.32,0.72,0,1); } .ds-tab { position: relative; z-index: 1; padding: 8px 16px; border: 0; border-radius: 9999px; background: transparent; color: #525252; font: 500 0.875rem Inter, ui-sans-serif, system-ui, sans-serif; white-space: nowrap; cursor: pointer; transition: color 300ms; } .ds-tab span { opacity: 0.6; font-variant-numeric: tabular-nums; } .ds-tab[aria-selected=true] { color: #fff; } .ds-tab:hover { color: #073545; } .ds-tab[aria-selected=true]:hover { color: #fff; } .ds-tab:focus-visible { outline: 2px solid #1ddef3; outline-offset: 2px; }"
+    },
+    {
+      "name": "Floating Pill Nav",
+      "kind": "nav",
+      "refersTo": "pill-dark",
+      "description": "Sticky white-glass pill nav with ink logo disc, pill links and a dark action pill.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-nav-logo\"><span class=\"ds-nav-disc\"></span><span class=\"ds-nav-word\">Nex-Gen</span></span><span class=\"ds-nav-links\"><a href=\"#\">Owners</a><a href=\"#\">Communities</a><a href=\"#\">Residents</a></span><a class=\"ds-nav-cta\" href=\"#\">Get a proposal</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 8px 8px 8px 20px; border-radius: 9999px; background: rgb(255 255 255 / 0.85); box-shadow: 0 0 0 1px rgb(7 53 69 / 0.06), 0 12px 32px -16px rgb(7 53 69 / 0.35); backdrop-filter: blur(24px); } .ds-nav-logo { display: flex; align-items: center; gap: 12px; } .ds-nav-disc { width: 40px; height: 40px; border-radius: 9999px; background: #073545; } .ds-nav-word { font-family: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif; font-size: 1.125rem; font-weight: 700; letter-spacing: -0.025em; color: #073545; } .ds-nav-links { display: flex; gap: 4px; } .ds-nav-links a { padding: 8px 16px; border-radius: 9999px; color: #404040; font: 400 0.92rem Inter, ui-sans-serif, system-ui, sans-serif; text-decoration: none; transition: background-color 150ms, color 150ms; } .ds-nav-links a:hover { background: rgb(7 53 69 / 0.05); color: #073545; } .ds-nav-links a:focus-visible, .ds-nav-cta:focus-visible { outline: 2px solid #1ddef3; outline-offset: 3px; } .ds-nav-cta { display: inline-flex; align-items: center; height: 48px; padding: 0 20px; border-radius: 9999px; background: #073545; color: #fff; font: 500 0.95rem Inter, ui-sans-serif, system-ui, sans-serif; text-decoration: none; transition: background-color 300ms cubic-bezier(0.32,0.72,0,1); } .ds-nav-cta:hover { background: #145265; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Starwind field: quiet 8px radius, ash border, cyan focus ring.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-l\">Email</span><input class=\"ds-input\" type=\"email\" placeholder=\"you@company.com\"></label>",
+      "css": ".ds-field { display: grid; gap: 8px; max-width: 360px; } .ds-field-l { font: 500 0.875rem Inter, ui-sans-serif, system-ui, sans-serif; color: #0a0a0a; } .ds-input { height: 44px; padding: 0 12px; border: 1px solid #e5e5e5; border-radius: 8px; background: transparent; color: #0a0a0a; font: 400 1rem Inter, ui-sans-serif, system-ui, sans-serif; box-shadow: 0 1px 2px rgb(0 0 0 / 0.05); transition: color 150ms, box-shadow 150ms; } .ds-input::placeholder { color: #525252; } .ds-input:focus-visible { outline: none; border-color: #1ddef3; box-shadow: 0 0 0 3px rgb(29 222 243 / 0.5); } .ds-input[aria-invalid=true] { border-color: #b91c1c; box-shadow: 0 0 0 3px rgb(185 28 28 / 0.4); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Key Ring",
+    "overview": "The site is a set of heavy, well-made objects laid on a pale mineral table: deep teal-ink slabs carry the weight, white paper cards hold the working detail, and one bright cyan picks out whatever you can act on or count. Every block is a large soft-cornered card sitting 12px from its neighbours, so a page reads as a tray of tiles rather than a scroll of bands. The community logos are cut as key tags, with a punched hole and a pointed end, because the portfolio of named properties is the proof the whole system exists to show.\n\nDensity is generous but not airy. Cards are big (up to 780px tall in the hero), headlines are large and tightly tracked, and the space between sections (96px, 128px from md up) is the only open air. Inside cards, information is set tight: figures, ticked service lists, tabular rows. Photography is real-estate interiors and exteriors, always clipped into a rounded card or pill, never full-bleed.\n\nMotion is calm and physical: lines of the hero headline rise out of masks, figures count up once, bars grow from the baseline, photos drift slightly with scroll, and every arrow nudges toward its destination on hover. Nothing loops except the community-tag marquee, which pauses on hover and stops under reduced motion.",
+    "keyCharacteristics": [
+      "Mineral off-white ground, teal-ink mass, cyan as the single live accent.",
+      "28px-radius cards on a 12px gutter grid, inside a 1440px container.",
+      "Pill buttons with a nested circular arrow that rotates 45 degrees on hover.",
+      "Hanken Grotesk display at weight 600 with negative tracking; Inter for everything read.",
+      "Flat surfaces separated by hairline rings; shadow only where something floats.",
+      "Community logos as die-cut key tags."
+    ],
+    "rules": [
+      { "name": "The One Live Color Rule", "body": "Cyan is the only saturated hue on the page. It marks the primary action, the lead choice and the headline figure; a second accent is never introduced. The one exception is the amber \"Sample · illustrative figures\" flag, which is a status warning, not decoration.", "section": "colors" },
+      { "name": "The Ink-Not-Black Rule", "body": "Text on light and cyan surfaces is Ink Teal, not neutral black. Hairlines are Ink Teal at 6 to 15% opacity, not grey borders.", "section": "colors" },
+      { "name": "The Display Voice Rule", "body": "Every heading, figure, stat and named item (community, team member, list head) is set in Hanken Grotesk at 600 or above with negative tracking (-0.025em to -0.04em). Inter never carries a heading.", "section": "typography" },
+      { "name": "The Tabular Figures Rule", "body": "Any number that can change or be compared (counts, percentages, state totals) uses tabular figures.", "section": "typography" },
+      { "name": "The Floating-Only Shadow Rule", "body": "A shadow means the object is not part of the tray: the sticky nav, a document laid on a stage, a tag hanging in the marquee. Cards in the grid never carry one.", "section": "elevation" },
+      { "name": "The Nested Radius Rule", "body": "A shape inside a card is always smaller-cornered than the card holding it (28, then 22, 20, 18, 14), so nesting reads at a glance.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do build every section as one or more 28px cards on the 12px gutter, inside the 1440px container.",
+      "Do choose each card's material from ink, paper or cyan, and use at most one cyan card per viewport.",
+      "Do set every heading, figure and named item in Hanken Grotesk at 600 with negative tracking, and use tabular figures for numbers.",
+      "Do end every primary link in a circular arrow disc that turns 45 degrees on hover, eased on cubic-bezier(0.32, 0.72, 0, 1).",
+      "Do tint shadows and hairlines with Ink Teal (rgb(7 53 69)) and reserve shadows for floating objects.",
+      "Do step radii down when nesting: 28, 22, 20, 18, 14.",
+      "Do respect reduced motion: no marquee, no count-up, no parallax, content visible without JS."
+    ],
+    "donts": [
+      "Don't introduce a second saturated accent; the amber sample flag is the only non-teal hue, and only for status.",
+      "Don't use neutral black or grey borders for text and dividers on light surfaces; use Ink Teal and its alphas.",
+      "Don't run photography full-bleed or square-cornered; photos live inside a rounded card or pill.",
+      "Don't put a drop shadow on grid cards.",
+      "Don't set headings in Inter or in a light weight."
+    ]
+  }
+}

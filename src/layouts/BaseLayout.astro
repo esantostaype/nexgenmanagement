@@ -1,0 +1,60 @@
+---
+import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
+import '@/styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  lang?: string;
+}
+
+const {
+  title,
+  description = 'Nex-Gen Management: multifamily property management for owners and investors across Tennessee, Kentucky and Alabama.',
+  image = '/og.png',
+  lang = 'en',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
+    <!-- Precarga Inter y define --font-inter con un fallback de métricas ajustadas (sin salto al cargar) -->
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-hanken" preload />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- View transitions: navegación en el cliente con transición entre páginas (src/scripts/lifecycle.ts) -->
+    <ClientRouter />
+
+    <slot name="head" />
+  </head>
+  <body class="min-h-dvh">
+    <slot />
+
+    <script>
+      import '../scripts/app';
+    </script>
+  </body>
+</html>

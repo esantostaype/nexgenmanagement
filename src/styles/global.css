@@ -1,0 +1,236 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "lenis/dist/lenis.css";
+@import "./theme.css";
+
+@plugin "@tailwindcss/forms";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--starwind-accordion-content-height); }
+  }
+
+  @keyframes accordion-up {
+    from { height: var(--starwind-accordion-content-height); }
+    to { height: 0; }
+  }
+}
+
+/* Mapea los tokens de theme.css a utilidades de Tailwind (bg-primary, text-muted-foreground…) */
+@theme inline {
+  /* --font-inter lo define <Font /> (Astro Fonts API) e incluye un fallback con métricas ajustadas */
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-hanken);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-accent: var(--primary-accent);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-accent: var(--secondary-accent);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-outline: var(--outline);
+
+  --radius-xs: calc(var(--radius) - 0.375rem);
+  --radius-sm: calc(var(--radius) - 0.25rem);
+  --radius-md: calc(var(--radius) - 0.125rem);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.25rem);
+  --radius-2xl: calc(var(--radius) + 0.5rem);
+  --radius-3xl: calc(var(--radius) + 1rem);
+
+  --color-sidebar: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-outline: var(--sidebar-outline);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-outline/50;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans scheme-light dark:scheme-dark;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+
+  ::selection {
+    @apply bg-primary text-primary-foreground;
+  }
+}
+
+/* Contenedor de la home y our-properties: 1320px + 16px de gutter */
+@utility container-site {
+  width: 100%;
+  max-width: calc(1320px + 2rem);
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+/* ------------------------------------------------------------------
+   Scroll
+   - Barras nativas ocultas en todo el sitio; scripts/animations/scrollbars.ts
+     dibuja un thumb fino superpuesto que aparece al hacer scroll o mover el
+     puntero, se desvanece a los 1,5 s y se puede arrastrar.
+   - .scroll-locked (lockScroll) congela la página bajo menús y modales.
+------------------------------------------------------------------- */
+* {
+  scrollbar-width: none !important;
+}
+
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+html {
+  scroll-padding-top: 72px;
+}
+
+html.scroll-locked {
+  overflow: hidden;
+}
+
+.scroll-thumb {
+  position: fixed;
+  z-index: 70;
+  width: 5px;
+  border-radius: 9999px;
+  background-color: color-mix(in oklab, var(--foreground) 24%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  cursor: grab;
+  transition:
+    opacity 240ms var(--ease-out-expo),
+    background-color 150ms var(--ease-out-expo);
+}
+
+.scroll-thumb-x {
+  width: auto;
+  height: 5px;
+}
+
+.scroll-thumb.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scroll-thumb:hover,
+.scroll-thumb.is-dragging {
+  background-color: color-mix(in oklab, var(--foreground) 40%, transparent);
+}
+
+.scroll-thumb.is-dragging {
+  cursor: grabbing;
+}
+
+/* ------------------------------------------------------------------
+   Reveal: los elementos con [data-reveal] arrancan ocultos solo si hay JS
+   y el usuario no pidió reducir movimiento. Sin JS se ven normalmente.
+------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal],
+  html.js [data-reveal-stagger] > * {
+    opacity: 0;
+  }
+
+  /* El titular dividido en líneas se oculta hasta que SplitText lo prepara (scenes.ts) */
+  html.js [data-scene="split-lines"] {
+    visibility: hidden;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Mapa de propiedades (Leaflet, /our-properties)
+------------------------------------------------------------------- */
+.leaflet-container {
+  font-family: var(--font-inter);
+  background: var(--color-neutral-200);
+}
+
+.nx-pin-inner {
+  display: block;
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  border-radius: 9999px;
+  border: 3px solid #fff;
+  box-shadow: 0 10px 22px -8px rgb(7 53 69 / 0.55);
+  transition: transform 300ms var(--ease-out-expo), border-color 300ms;
+}
+
+.nx-pin:hover .nx-pin-inner,
+.nx-pin.is-active .nx-pin-inner {
+  transform: scale(1.25);
+  border-color: var(--color-brand-400);
+}
+
+.nx-popup .leaflet-popup-content-wrapper {
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 0 30px 60px -30px rgb(7 53 69 / 0.6);
+}
+
+.nx-popup .leaflet-popup-content {
+  margin: 0;
+  width: auto !important;
+}
+
+.nx-popup .leaflet-popup-tip {
+  box-shadow: none;
+}
+
+.leaflet-control-zoom.leaflet-bar {
+  border: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 24px -16px rgb(7 53 69 / 0.5);
+}
+
+.leaflet-control-zoom a {
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  color: var(--color-brand-950) !important;
+}

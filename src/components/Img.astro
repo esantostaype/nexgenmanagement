@@ -1,0 +1,44 @@
+---
+/**
+ * Imagen responsive: WebP en varias anchuras con srcset + sizes, para que cada pantalla (incluidas
+ * las retina) descargue solo el tamaño que necesita. Acepta:
+ * - rutas locales "/images/…" (src/assets/images, ver src/lib/images.ts);
+ * - URLs remotas de dominios autorizados en astro.config.mjs (image.domains), p. ej. Unsplash.
+ *
+ * `sizes` es obligatorio en la práctica: describe el ancho con el que se muestra la imagen.
+ */
+import { Image } from 'astro:assets';
+import type { HTMLAttributes } from 'astro/types';
+import { isRemote, localImage } from '@/lib/images';
+
+interface Props extends Omit<HTMLAttributes<'img'>, 'src' | 'width' | 'height'> {
+  src: string;
+  alt: string;
+  sizes: string;
+  /** Anchuras candidatas; se descartan las mayores que el original */
+  widths?: number[];
+  quality?: number;
+  width?: number | string;
+  height?: number | string;
+}
+
+const DEFAULT_WIDTHS = [96, 160, 320, 480, 640, 800, 1080, 1440, 1920];
+
+const { src, alt, sizes, widths = DEFAULT_WIDTHS, quality = 72, width: _w, height: _h, ...rest } = Astro.props;
+
+const local = isRemote(src) ? undefined : localImage(src);
+if (!local && !isRemote(src)) {
+  throw new Error(`Img: no encuentro "${src}" en src/assets (¿moviste la imagen de public/?)`);
+}
+
+// Anchuras útiles: las que no superan el original (+ el propio original para el máximo)
+const usable = local ? [...widths.filter((w) => w < local.width), local.width] : widths;
+---
+
+{
+  local ? (
+    <Image src={local} alt={alt} widths={usable} sizes={sizes} format="webp" quality={quality} {...rest} />
+  ) : (
+    <Image src={src} alt={alt} inferSize widths={usable} sizes={sizes} format="webp" quality={quality} {...rest} />
+  )
+}

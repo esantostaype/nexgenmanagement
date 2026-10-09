@@ -1,0 +1,65 @@
+---
+// Logo del header. Hereda el color del header (currentColor): blanco sobre el video, teal oscuro sobre fondo blanco.
+// collapse (por defecto): completo arriba y solo el isotipo al hacer scroll (el header recibe data-scrolled).
+// collapse={false}: el logo completo se mantiene siempre; al hacer scroll solo se reduce un poco.
+//
+// El logo se alinea por el círculo del isotipo, no por la línea decorativa de la izquierda: la línea
+// sobresale hacia el margen (margen negativo) y el escalado toma el borde del círculo como origen.
+import LogoFull from '@/assets/brand/logo-full.svg';
+import LogoMark from '@/assets/brand/logo-mark.svg';
+
+interface Props {
+  /** Altura en px del logo completo y del isotipo */
+  fullHeight?: number;
+  markHeight?: number;
+  collapse?: boolean;
+  /** Alinea por el círculo (la línea sobresale) mientras el header no tiene fondo; con scroll vuelve al borde */
+  alignCircle?: boolean;
+}
+
+const { fullHeight = 44, markHeight = 36, collapse = true, alignCircle = true } = Astro.props;
+
+// Medidas del SVG (viewBox): el círculo empieza en x=216.8; alto 465.22; ancho completo 1580.88, isotipo 813.
+const CIRCLE_X = 216.8;
+const VIEW_H = 465.22;
+const overhang = (h: number) => -((CIRCLE_X / VIEW_H) * h).toFixed(2);
+const fullOrigin = `${((CIRCLE_X / 1580.88) * 100).toFixed(2)}% 50%`;
+const markOrigin = `${((CIRCLE_X / 813) * 100).toFixed(2)}% 50%`;
+
+const ease = 'transition-[opacity,scale,margin] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]';
+// Con scroll: sin margen negativo y escalado desde el borde izquierdo (como antes)
+const scrolledReset = alignCircle ? 'group-data-[scrolled]/header:ml-0! group-data-[scrolled]/header:origin-left!' : '';
+const style = (h: number, origin: string) =>
+  alignCircle ? `height:${h}px;margin-left:${overhang(h)}px;transform-origin:${origin}` : `height:${h}px;transform-origin:left center`;
+---
+
+{
+  collapse ? (
+    <span class="inline-grid items-center">
+      <LogoFull
+        class:list={[
+          'col-start-1 row-start-1 w-auto', scrolledReset,
+          ease,
+          'group-data-[scrolled]/header:pointer-events-none group-data-[scrolled]/header:scale-95 group-data-[scrolled]/header:opacity-0',
+        ]}
+        style={style(fullHeight, fullOrigin)}
+        aria-hidden="true"
+      />
+      <LogoMark
+        class:list={[
+          'col-start-1 row-start-1 w-auto scale-90 opacity-0', scrolledReset,
+          ease,
+          'group-data-[scrolled]/header:scale-100 group-data-[scrolled]/header:opacity-100',
+        ]}
+        style={style(markHeight, markOrigin)}
+        aria-hidden="true"
+      />
+    </span>
+  ) : (
+    <LogoFull
+      class:list={['w-auto', ease, 'group-data-[scrolled]/header:scale-[0.8]', scrolledReset]}
+      style={style(fullHeight, fullOrigin)}
+      aria-hidden="true"
+    />
+  )
+}
