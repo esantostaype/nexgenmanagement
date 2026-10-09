@@ -2,10 +2,18 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
+// URL pública del sitio: la usan el canonical y las imágenes para compartir (og:image necesita URL absoluta).
+// Orden: SITE_URL (defínela en el hosting) → URL del despliegue en Vercel o Netlify → dominio final.
+const vercel = process.env.VERCEL_ENV === 'production' ? process.env.VERCEL_PROJECT_PRODUCTION_URL : process.env.VERCEL_URL;
+const site =
+  process.env.SITE_URL ??
+  (vercel ? `https://${vercel}` : undefined) ??
+  (process.env.CONTEXT === 'production' ? process.env.URL : process.env.DEPLOY_PRIME_URL) ??
+  'https://nexgenmultifamily.com';
+
 // https://astro.build/config
 export default defineConfig({
-  // Cambia esto por el dominio real (lo usan el canonical y el sitemap)
-  site: 'https://nexgenmultifamily.com',
+  site,
 
   // Astro descarga la fuente, la sirve desde el propio sitio y genera un fallback
   // con métricas ajustadas para evitar el salto de fuente al cargar (FOUT/CLS).

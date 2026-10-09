@@ -34,6 +34,8 @@ const squareImage = new URL('/og/og-square.jpg', Astro.site);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <!-- Sitio en desarrollo: que los buscadores no lo indexen. Quitar al publicar en producción -->
+    <meta name="robots" content="noindex, nofollow" />
     <script is:inline>document.documentElement.classList.add('js');</script>
 
     <!-- Precarga Inter y define --font-inter con un fallback de métricas ajustadas (sin salto al cargar) -->
