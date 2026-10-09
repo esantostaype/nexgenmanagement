@@ -4,11 +4,14 @@ import tailwindcss from '@tailwindcss/vite';
 
 // URL pública del sitio: la usan el canonical y las imágenes para compartir (og:image necesita URL absoluta).
 // Orden: SITE_URL (defínela en el hosting) → URL del despliegue en Vercel o Netlify → dominio final.
-const vercel = process.env.VERCEL_ENV === 'production' ? process.env.VERCEL_PROJECT_PRODUCTION_URL : process.env.VERCEL_URL;
+// (process vía globalThis: el proyecto no instala @types/node y este archivo usa @ts-check)
+/** @type {Record<string, string | undefined>} */
+const env = /** @type {any} */ (globalThis).process?.env ?? {};
+const vercel = env.VERCEL_ENV === 'production' ? env.VERCEL_PROJECT_PRODUCTION_URL : env.VERCEL_URL;
 const site =
-  process.env.SITE_URL ??
+  env.SITE_URL ??
   (vercel ? `https://${vercel}` : undefined) ??
-  (process.env.CONTEXT === 'production' ? process.env.URL : process.env.DEPLOY_PRIME_URL) ??
+  (env.CONTEXT === 'production' ? env.URL : env.DEPLOY_PRIME_URL) ??
   'https://nexgenmultifamily.com';
 
 // https://astro.build/config
