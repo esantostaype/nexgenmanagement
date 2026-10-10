@@ -1,0 +1,18 @@
+---
+// Logo enlazado a la home.
+import Logo from '@/components/atoms/Logo.astro';
+
+interface Props {
+  /** Alto del logo completo en px */
+  height?: number;
+  /** Alinea el círculo del isotipo con el contenido (sobre el hero) */
+  alignCircle?: boolean;
+  class?: string;
+}
+
+const { height = 48, alignCircle = false, class: className } = Astro.props;
+---
+
+<a href="/" class:list={['flex items-center', className]} aria-label="Nex-Gen Management home">
+  <Logo fullHeight={height} collapse={false} alignCircle={alignCircle} />
+</a>

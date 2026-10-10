@@ -1,0 +1,32 @@
+---
+// Esquina con radio invertido: un cuadrado del color del fondo con un círculo transparente en la esquina opuesta.
+// Une una pestaña (Notch, la pestaña del autor de QuoteCard) con la tarjeta de la que sale.
+// position: top → encima de la pestaña, pegada a su lado izquierdo · right → a su derecha, pegada abajo.
+interface Props {
+  position: 'top' | 'right';
+  /** Radio (debe coincidir con el border-radius de la pestaña) */
+  radius?: string;
+}
+
+const { position, radius = '1rem' } = Astro.props;
+---
+
+<span class:list={['inverse-corner', `inverse-corner--${position}`]} style={`--corner-r:${radius}`} aria-hidden="true"></span>
+
+<style>
+  .inverse-corner {
+    position: absolute;
+    width: var(--corner-r);
+    height: var(--corner-r);
+    background: radial-gradient(circle at 100% 0, transparent calc(var(--corner-r) - 0.5px), var(--background) var(--corner-r));
+    pointer-events: none;
+  }
+  .inverse-corner--top {
+    bottom: 100%;
+    left: 0;
+  }
+  .inverse-corner--right {
+    bottom: 0;
+    left: 100%;
+  }
+</style>

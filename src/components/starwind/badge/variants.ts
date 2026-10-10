@@ -18,6 +18,11 @@ export const badge = tv({
       success: "bg-success text-success-foreground focus-visible:ring-success/50",
       warning: "bg-warning text-warning-foreground focus-visible:ring-warning/50",
       error: "bg-error text-error-foreground focus-visible:ring-error/50",
+      // Marca Nex-Gen
+      brand: "bg-brand-500 text-brand-950",
+      "brand-soft": "bg-brand-50 text-brand-800",
+      light: "bg-white text-brand-950",
+      dark: "bg-brand-950 text-white",
     },
     tone: {
       neutral: "",

@@ -1,0 +1,48 @@
+---
+// Elemento del menú móvil: enlace, texto (sin página aún) o acordeón con su submenú ([data-submenu-toggle], home.ts).
+import ChevronDown from '@tabler/icons/outline/chevron-down.svg';
+import type { NavEntry } from '@/data/navigation';
+
+interface Props {
+  item: NavEntry;
+  /** Identificador único (para aria-controls del submenú) */
+  id: string;
+}
+
+const { item, id } = Astro.props;
+const base = 'font-display block py-2 text-[1.375rem] font-medium tracking-tight';
+---
+
+<li class="w-full">
+  {
+    item.children ? (
+      <>
+        <button type="button" class:list={[base, 'flex items-center gap-2']} aria-expanded="false" aria-controls={id} data-submenu-toggle>
+          {item.label}
+          <ChevronDown class="size-5 transition-transform duration-300 [[aria-expanded=true]>&]:rotate-180" stroke-width="2" />
+        </button>
+        <div id={id} class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-400 ease-[cubic-bezier(0.32,0.72,0,1)] data-[open=true]:grid-rows-[1fr]" data-open="false">
+          <ul class="flex flex-col gap-1 overflow-hidden pl-4">
+            {item.children.map((child, j) => (
+              <li class:list={[j === 0 && 'pt-1', j === item.children!.length - 1 && 'pb-3']}>
+                {child.href ? (
+                  <a href={child.href} class="block py-1 text-base text-white/70 hover:text-white">
+                    {child.label}
+                  </a>
+                ) : (
+                  <span class="block py-1 text-base text-white/40">{child.label}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </>
+    ) : item.href ? (
+      <a href={item.href} class={base}>
+        {item.label}
+      </a>
+    ) : (
+      <span class:list={[base, 'text-white/40']}>{item.label}</span>
+    )
+  }
+</li>

@@ -1,0 +1,110 @@
+---
+// Hero de /our-properties: mapa de Leaflet (gris neutral) en una tarjeta con la misma forma que el hero de la home,
+// filtros encima, tarjeta flotante por propiedad y el corte con el título. La lógica está en properties-map.ts.
+// isolate: los z-index del buscador y de Leaflet quedan dentro de la tarjeta, por debajo del header.
+import { getImage } from 'astro:assets';
+import Notch from '@/components/molecules/Notch.astro';
+import MediaCard from '@/components/molecules/MediaCard.astro';
+import Popover from '@/components/molecules/Popover.astro';
+import PropertyFilter from '@/components/organisms/PropertyFilter.astro';
+import { Button } from '@/components/starwind/button';
+import { communities, states } from '@/data/communities';
+import { localImage } from '@/lib/images';
+
+interface Props {
+  title: string;
+  text: string;
+}
+
+const { title, text } = Astro.props;
+
+// El mapa pinta los pines en el navegador: le pasamos el WebP ya optimizado (pin de 48px → 112px para retina)
+const mapData = await Promise.all(
+  communities.map(async ({ name, city, state, photo, logo, url, lat, lng, precise }) => {
+    const meta = localImage(photo ?? logo)!;
+    const pin = await getImage({ src: meta, width: Math.min(112, meta.width), format: 'webp', quality: 72 });
+    return { name, city, state, url, lat, lng, precise, hasPhoto: Boolean(photo), pin: pin.src };
+  }),
+);
+---
+
+<section class="h-[min(70svh,640px)] min-h-140 p-3 sm:p-4" aria-labelledby="properties-title">
+  <div class="relative isolate h-full transform-gpu overflow-hidden rounded-2xl rounded-bl-none bg-neutral-200">
+    <!-- Tinte del mapa: pasa las teselas a gris puro y las oscurece un poco a la escala neutral de Tailwind
+         (tierra = neutral-200 #e5e5e5; agua, ríos y fronteras más oscuros para que contrasten) -->
+    <svg class="absolute size-0" aria-hidden="true" focusable="false">
+      <filter id="map-tint" color-interpolation-filters="sRGB">
+        <feColorMatrix type="saturate" values="0" />
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues="0 0.06 0.13 0.2 0.28 0.36 0.45 0.56 0.77 0.84 1" />
+          <feFuncG type="table" tableValues="0 0.06 0.13 0.2 0.28 0.36 0.45 0.56 0.77 0.84 1" />
+          <feFuncB type="table" tableValues="0 0.06 0.13 0.2 0.28 0.36 0.45 0.56 0.77 0.84 1" />
+        </feComponentTransfer>
+      </filter>
+    </svg>
+    <div id="properties-map" data-reveal="fade" class="absolute inset-0" aria-label="Map of Nex-Gen properties"></div>
+
+    <!-- Filtros: por encima de los pines (z 600) y por debajo de las tarjetas flotantes (z 700) -->
+    <PropertyFilter states={states} class="absolute inset-x-3 top-28 z-650 mx-auto max-w-170 sm:inset-x-6" />
+
+    <!-- Aviso al usar la rueda sin Ctrl -->
+    <p
+      class="pointer-events-none absolute inset-x-0 top-1/2 z-650 mx-auto w-fit -translate-y-1/2 rounded-full bg-brand-950/85 px-5 py-2.5 text-sm font-medium text-white opacity-0 backdrop-blur transition-opacity duration-300 data-show:opacity-100"
+      aria-hidden="true"
+      data-map-hint
+    >
+      Use Ctrl + scroll to zoom the map
+    </p>
+
+    <!-- Contenedor de la tarjeta de la propiedad elegida: sigue al pin (z 700) -->
+    <div class="pointer-events-none absolute top-0 left-0 z-700" data-map-card hidden></div>
+
+    <Notch class="z-650">
+      <h1 id="properties-title" class="font-display text-[clamp(1.5rem,4vw,2.5rem)] leading-[1.02] font-semibold text-brand-950" data-scene="split-lines">{title}</h1>
+      <p class="mt-2 max-w-[48ch] text-neutral-600" data-reveal data-delay="0.15">{text}</p>
+    </Notch>
+  </div>
+</section>
+
+<!-- Tarjeta de cada propiedad: se renderiza aquí y properties-map.ts la clona al pulsar su pin -->
+{
+  communities.map((c) => (
+    <template data-map-card={c.name}>
+      <Popover>
+        <MediaCard pad="sm" image={c.photo ?? c.logo} ratio="aspect-16/10" sizes="260px" title={c.name} truncate text={`${c.city}, ${c.state}${c.precise ? '' : ' · approx.'}`}>
+          {c.url ? (
+            <Button slot="end" href={c.url} target="_blank" rel="noopener" variant="dark" shape="pill" size="sm" class="h-8 px-3.5 text-xs">
+              Visit site
+            </Button>
+          ) : (
+            <span slot="end" class="shrink-0 text-xs text-neutral-400">
+              Site soon
+            </span>
+          )}
+        </MediaCard>
+      </Popover>
+    </template>
+  ))
+}
+
+<script type="application/json" id="properties-data" set:html={JSON.stringify(mapData)} />
+
+<style>
+  /* Mapa gris neutral: tinte en las teselas (base y etiquetas) */
+  #properties-map :global(.leaflet-tile-pane) {
+    filter: url(#map-tint);
+  }
+  #properties-map:global(.leaflet-container) {
+    background: var(--color-neutral-200);
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  }
+  /* En móvil el zoom es con dos dedos: los botones + / − pisarían el corte */
+  @media (max-width: 639px) {
+    #properties-map :global(.leaflet-control-zoom) {
+      display: none;
+    }
+  }
+  #properties-map :global(.leaflet-control-attribution) {
+    font-family: inherit;
+  }
+</style>

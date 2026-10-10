@@ -1,0 +1,34 @@
+---
+// Tarjeta base del sitio: esquinas de 16px y relleno común (card-pad: 24/28/32 px).
+// tone: white (sobre el fondo gris) · neutral (sobre paneles blancos) · brand (degradado de marca) · dark.
+// pad: md (card-pad) · sm (12px, tarjetas con foto a sangre) · none.
+// Con `href` se renderiza como enlace; si no, con la etiqueta de `as`.
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: 'div' | 'article' | 'li' | 'figure' | 'a';
+  href?: string;
+  target?: string;
+  rel?: string;
+  tone?: 'white' | 'neutral' | 'brand' | 'dark' | 'none';
+  pad?: 'md' | 'sm' | 'none';
+  class?: string;
+}
+
+const { as = 'div', href, tone = 'white', pad = 'md', class: className, ...rest } = Astro.props;
+const Tag = href ? 'a' : as;
+
+const tones = {
+  white: 'bg-white',
+  neutral: 'bg-neutral-100',
+  brand: 'bg-linear-45 from-brand-600 to-brand-500 text-white',
+  dark: 'bg-brand-950 text-white',
+  none: '',
+}[tone];
+
+const pads = { md: 'card-pad', sm: 'p-3', none: '' }[pad];
+---
+
+<Tag href={href} class:list={['rounded-2xl', tones, pads, className]} {...rest}>
+  <slot />
+</Tag>

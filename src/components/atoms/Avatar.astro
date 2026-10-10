@@ -1,0 +1,53 @@
+---
+// Avatar redondo: foto (optimizada con <Img>) o iniciales si no hay foto.
+// Tamaño responsive con la utilidad `avatar` (global.css): 24px en móvil, 32px en md y 40px en lg.
+import Img from '@/components/atoms/Img.astro';
+
+interface Props {
+  /** Foto: ruta local "/images/…" o URL remota permitida en astro.config */
+  src?: string;
+  /** Nombre de la persona o lugar: alt de la foto e iniciales si no hay foto */
+  name?: string;
+  /** Oculta el nombre a lectores de pantalla (cuando el texto de al lado ya lo dice) */
+  decorative?: boolean;
+  /** Colores de las iniciales */
+  tone?: 'light' | 'dark';
+  /** Anillo para separarlo del fondo (en grupos solapados): color del fondo donde se apoya */
+  ring?: 'white' | 'background' | 'none';
+  class?: string;
+}
+
+const { src, name = '', decorative = false, tone = 'light', ring = 'none', class: className } = Astro.props;
+
+const initials = name
+  .split(' ')
+  .map((w) => w[0])
+  .filter(Boolean)
+  .slice(0, 2)
+  .join('')
+  .toUpperCase();
+
+const ringClass = { white: 'ring-2 ring-white', background: 'ring-2 ring-background', none: '' }[ring];
+const SIZES = '(min-width: 1024px) 40px, (min-width: 768px) 32px, 24px';
+---
+
+{
+  src ? (
+    <Img src={src} alt={decorative ? '' : name} sizes={SIZES} width="40" height="40" loading="lazy" class:list={['avatar shrink-0 rounded-full object-cover object-top', ringClass, className]} />
+  ) : (
+    <span
+      class:list={[
+        'avatar font-display grid shrink-0 place-items-center rounded-full text-[9px] font-semibold md:text-[11px] lg:text-xs',
+        tone === 'dark' ? 'bg-brand-950 text-brand-300' : 'bg-brand-50 text-brand-900',
+        ringClass,
+        className,
+      ]}
+      title={decorative ? undefined : name}
+      aria-hidden={decorative ? 'true' : undefined}
+      aria-label={decorative ? undefined : name}
+      role={decorative ? undefined : 'img'}
+    >
+      {initials}
+    </span>
+  )
+}

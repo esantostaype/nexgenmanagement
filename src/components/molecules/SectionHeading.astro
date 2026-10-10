@@ -1,0 +1,65 @@
+---
+// Cabecera de sección: eyebrow + título (entra por líneas) + descripción opcional + acción opcional.
+// Medidas únicas del sitio: heading-gap (eyebrow → título) y action-gap (título/descripción → acción).
+//
+// <SectionHeading id="about-title" eyebrow="Get to know us" title="…">
+//   <p>Descripción opcional</p>
+//   <ArrowLink slot="actions" href="/about">Learn more</ArrowLink>
+// </SectionHeading>
+//
+// layout="split": título a la izquierda y acciones a la derecha, alineadas abajo (p. ej. "All articles").
+import Eyebrow from '@/components/atoms/Eyebrow.astro';
+
+interface Props {
+  id: string;
+  title: string;
+  eyebrow?: string;
+  eyebrowTone?: 'white' | 'brand' | 'dark';
+  as?: 'h1' | 'h2';
+  tone?: 'dark' | 'light';
+  layout?: 'stack' | 'split';
+  class?: string;
+}
+
+const { id, title, eyebrow, eyebrowTone = 'white', as: Tag = 'h2', tone = 'dark', layout = 'stack', class: className } = Astro.props;
+const hasDescription = Astro.slots.has('default');
+const hasActions = Astro.slots.has('actions');
+---
+
+<div class:list={[layout === 'split' && 'flex flex-wrap items-end justify-between gap-x-10 gap-y-6', className]}>
+  <div class="max-w-155">
+    {eyebrow && <Eyebrow tone={eyebrowTone}>{eyebrow}</Eyebrow>}
+    <Tag
+      id={id}
+      class:list={[
+        'font-display text-[clamp(1.8rem,3.8vw,3.4rem)] leading-[1.08] font-medium  text-balance',
+        tone === 'light' ? 'text-white' : 'text-brand-950',
+        eyebrow && 'heading-gap',
+      ]}
+      data-scene="split-lines"
+    >
+      {title}
+    </Tag>
+    {
+      hasDescription && (
+        <div class:list={['action-gap max-w-[46ch] text-lg leading-relaxed', tone === 'light' ? 'text-brand-100/75' : 'text-neutral-600']} data-reveal data-delay="0.15">
+          <slot />
+        </div>
+      )
+    }
+    {
+      hasActions && layout === 'stack' && (
+        <div class="action-gap flex flex-wrap items-center gap-4" data-reveal="from-left" data-delay="0.2">
+          <slot name="actions" />
+        </div>
+      )
+    }
+  </div>
+  {
+    hasActions && layout === 'split' && (
+      <div class="flex flex-wrap items-center gap-4" data-reveal="from-left" data-delay="0.2">
+        <slot name="actions" />
+      </div>
+    )
+  }
+</div>

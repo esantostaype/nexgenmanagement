@@ -1,0 +1,19 @@
+---
+// Línea de metadatos de un post: fecha con icono — categoría.
+import IconText from '@/components/atoms/IconText.astro';
+import Calendar from '@tabler/icons/outline/calendar.svg';
+
+interface Props {
+  date: string;
+  category: string;
+  class?: string;
+}
+
+const { date, category, class: className } = Astro.props;
+---
+
+<span class:list={['flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-neutral-600', className]}>
+  <IconText icon={Calendar} iconClass="text-brand-500">{date}</IconText>
+  <span class="h-px w-3 bg-neutral-400" aria-hidden="true"></span>
+  <span>{category}</span>
+</span>

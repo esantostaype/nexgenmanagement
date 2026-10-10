@@ -1,0 +1,19 @@
+---
+// Botón de llamada con borde del color actual: número completo desde xl, "Call us" por debajo (oculto en móvil).
+import { Button } from '@/components/starwind/button';
+import Phone from '@tabler/icons/outline/phone.svg';
+
+interface Props {
+  phone: string;
+  href: string;
+  class?: string;
+}
+
+const { phone, href, class: className } = Astro.props;
+---
+
+<Button href={href} variant="contrast" shape="pill" class:list={['hidden h-12 gap-2.5 px-5 text-[0.95rem] md:inline-flex', className]} aria-label={`Call ${phone}`}>
+  <Phone class="size-4.5" stroke-width="1.75" />
+  <span class="hidden tabular-nums xl:inline">{phone}</span>
+  <span class="xl:hidden">Call us</span>
+</Button>

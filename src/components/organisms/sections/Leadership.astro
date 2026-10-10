@@ -1,0 +1,19 @@
+---
+import Section from '@/components/atoms/Section.astro';
+import QuoteCard from '@/components/molecules/QuoteCard.astro';
+---
+
+<!-- Cita de la dirección: quote a la izquierda, Billi Jo a la derecha con la cabeza sobresaliendo
+     de la tarjeta y el torso pegado al borde inferior -->
+<Section labelledby="leadership-quote" width="inset">
+  <QuoteCard
+    variant="person"
+    id="leadership-quote"
+    name="Billi Jo Suiter"
+    role="CEO & Owner, Nex-Gen Management"
+    photo="/images/brand/billi-jo-suiter.png"
+    photoAlt="Billi Jo Suiter, CEO and owner of Nex-Gen Management"
+  >
+    Great things in business are never done by one <span class="text-brand-500">person<span class="text-brand-950">.</span></span> They’re done by a <span class="text-brand-500">team</span> of people.
+  </QuoteCard>
+</Section>

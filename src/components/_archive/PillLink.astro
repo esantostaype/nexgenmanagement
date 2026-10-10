@@ -1,0 +1,60 @@
+---
+import ArrowUpRight from '@tabler/icons/outline/arrow-up-right.svg';
+
+interface Props {
+  href: string;
+  variant?: 'brand' | 'light' | 'dark' | 'ghost-light' | 'ghost-dark';
+  size?: 'md' | 'lg';
+  class?: string;
+  external?: boolean;
+}
+
+const { href, variant = 'brand', size = 'md', class: className, external = false } = Astro.props;
+
+const variants = {
+  brand: 'bg-brand-400 text-brand-950 hover:bg-brand-300',
+  light: 'bg-white text-brand-950 hover:bg-brand-50',
+  dark: 'bg-brand-950 text-white hover:bg-brand-900',
+  'ghost-light': 'text-white ring-1 ring-white/25 hover:bg-white/10',
+  'ghost-dark': 'text-brand-950 ring-1 ring-brand-950/15 hover:bg-brand-950/5',
+};
+
+const dots = {
+  brand: 'bg-brand-950 text-brand-300',
+  light: 'bg-brand-950 text-white',
+  dark: 'bg-brand-400 text-brand-950',
+  'ghost-light': 'bg-white text-brand-950',
+  'ghost-dark': 'bg-brand-950 text-white',
+};
+
+const sizes = {
+  md: 'h-12 pl-5 pr-1.5 text-[0.95rem] gap-3',
+  lg: 'h-14 pl-6 pr-2 text-base gap-4',
+};
+---
+
+<a
+  href={href}
+  class:list={[
+    'group inline-flex items-center rounded-full font-medium tracking-tight whitespace-nowrap',
+    'transition-[background-color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]',
+    'focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-400',
+    variants[variant],
+    sizes[size],
+    className,
+  ]}
+  {...(external ? { target: '_blank', rel: 'noopener' } : {})}
+>
+  <slot />
+  <span
+    class:list={[
+      'grid shrink-0 place-items-center rounded-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
+      'rotate-45 group-hover:translate-x-0.5 group-hover:-translate-y-px group-hover:rotate-0',
+      size === 'lg' ? 'size-10' : 'size-9',
+      dots[variant],
+    ]}
+    aria-hidden="true"
+  >
+    <ArrowUpRight class="size-4.5" stroke-width="1.75" />
+  </span>
+</a>

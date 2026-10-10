@@ -20,6 +20,16 @@ export const button = tv({
       success: "bg-success text-success-foreground hover:bg-success/90 focus-visible:ring-success/50",
       warning: "bg-warning text-warning-foreground hover:bg-warning/90 focus-visible:ring-warning/50",
       error: "bg-error text-error-foreground hover:bg-error/90 focus-visible:ring-error/50",
+      // Marca Nex-Gen (botones con flecha: ui/ArrowButton.astro)
+      brand: "bg-brand-400 text-brand-950 hover:bg-brand-300 focus-visible:ring-brand-400/50",
+      dark: "bg-brand-950 text-white hover:bg-brand-900 focus-visible:ring-brand-400/50",
+      light: "bg-white text-brand-950 hover:bg-brand-50 focus-visible:ring-brand-400/50",
+      // Borde y texto del color actual: sirve sobre fondos claros u oscuros (teléfono del header)
+      contrast: "text-current ring-1 ring-current/30 hover:bg-current/10 focus-visible:ring-brand-400/50",
+    },
+    shape: {
+      default: "rounded-md",
+      pill: "rounded-full",
     },
     size: {
       sm: "h-9 px-4 text-sm has-[>svg]:px-3 [&_svg:not([class*='size-'])]:size-3.5",
@@ -28,10 +38,14 @@ export const button = tv({
       "icon-sm": "size-9 [&_svg:not([class*='size-'])]:size-3.5",
       icon: "size-11 [&_svg:not([class*='size-'])]:size-4.5",
       "icon-lg": "size-12 [&_svg:not([class*='size-'])]:size-5",
+      // Píldora con círculo de flecha a la derecha (el círculo lleva su propio tamaño)
+      "pill-md": "h-12 gap-3 pr-1.5 pl-5 text-[0.95rem]",
+      "pill-lg": "h-14 gap-4 pr-2 pl-6 text-base",
     },
   },
   defaultVariants: {
     variant: "default",
+    shape: "default",
     size: "md",
   },
 });

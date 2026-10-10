@@ -1,0 +1,56 @@
+---
+// Listado de todas las propiedades (filtrable desde el mapa: properties-map.ts lee los data-* de cada <li>).
+import Section from '@/components/atoms/Section.astro';
+import IconText from '@/components/atoms/IconText.astro';
+import ArrowCircle from '@/components/atoms/ArrowCircle.astro';
+import MediaCard from '@/components/molecules/MediaCard.astro';
+import { Badge } from '@/components/starwind/badge';
+import MapPin from '@tabler/icons/outline/map-pin.svg';
+import { communities } from '@/data/communities';
+
+const stateNames: Record<string, string> = { TN: 'Tennessee', KY: 'Kentucky', AL: 'Alabama' };
+const sorted = [...communities].sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<Section label="All properties">
+  <ul class="grid-gap grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-property-list>
+    {
+      sorted.map((c) => (
+        <li data-name={c.name.toLowerCase()} data-state={c.state} data-city={c.city} data-reveal>
+          <MediaCard
+            href={c.url ?? '#'}
+            target={c.url ? '_blank' : undefined}
+            rel={c.url ? 'noopener' : undefined}
+            pad="sm"
+            image={c.photo ?? c.logo}
+            imageAlt={c.photo ? `${c.name}, ${c.city}, ${c.state}` : `${c.name} logo`}
+            contain={!c.photo}
+            sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            title={c.name}
+            truncate
+            class="transition-shadow duration-500 hover:shadow-[0_24px_48px_-28px_rgb(7_53_69/0.5)]"
+            data-focus-pin={c.name}
+          >
+            <Badge slot="media" variant="light" size="sm" class="absolute top-3 left-3 py-1">
+              {stateNames[c.state]}
+            </Badge>
+            <IconText slot="sub" icon={MapPin} class="mt-0.5 text-sm text-neutral-500">
+              {c.city}, {c.state}
+            </IconText>
+            {c.url ? (
+              <ArrowCircle slot="end" />
+            ) : (
+              <span slot="end" class="shrink-0 text-xs text-neutral-400">
+                Site soon
+              </span>
+            )}
+          </MediaCard>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="mt-10 hidden text-center text-neutral-500" data-empty>No properties match your search.</p>
+  <p class="mt-8 text-xs text-neutral-400">
+    Map locations come from each property’s address. A few are approximate (city center) until their exact address is confirmed. Map tiles © Esri, © OpenStreetMap contributors.
+  </p>
+</Section>

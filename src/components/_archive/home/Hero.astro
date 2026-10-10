@@ -1,0 +1,92 @@
+---
+import Img from '@/components/atoms/Img.astro';
+import ArrowUpRight from '@tabler/icons/outline/arrow-up-right.svg';
+import PillLink from '@/components/_archive/PillLink.astro';
+import { communities, cities, states } from '@/data/communities';
+import { paths, photos } from '@/data/site';
+---
+
+<section class="px-3 pt-3 sm:px-4" aria-labelledby="hero-title">
+  <div class="mx-auto grid max-w-360 gap-3 lg:min-h-[min(780px,calc(100dvh-7.5rem))] lg:grid-cols-12">
+    <!-- Tarjeta teal: mensaje y acción -->
+    <div class="relative flex flex-col justify-end overflow-hidden rounded-2xl bg-brand-950 p-7 pt-14 text-white sm:p-10 sm:pt-20 lg:col-span-7 lg:p-14">
+      <div class="relative">
+        <h1
+          id="hero-title"
+          class="font-display max-w-[16ch] text-[clamp(2.5rem,5.6vw,5.2rem)] leading-[0.98] font-semibold tracking-[-0.035em] text-balance"
+          data-scene="split-lines"
+        >
+          Management that protects your asset <span class="text-brand-300">and the people who live in it.</span>
+        </h1>
+        <p class="mt-6 max-w-[46ch] text-lg leading-relaxed text-brand-100/85" data-reveal data-delay="0.35">
+          Nex-Gen runs multifamily properties for owners and investors from Clarksville to Birmingham, with
+          hands-on teams on site and a weekly report on your desk.
+        </p>
+        <div class="mt-9 flex flex-wrap items-center gap-3" data-reveal data-delay="0.5">
+          <PillLink href="#proposal" variant="brand" size="lg">Request a proposal</PillLink>
+          <PillLink href="#communities" variant="ghost-light" size="lg">Find an apartment</PillLink>
+        </div>
+        <p class="mt-10 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-white/12 pt-6 text-sm text-brand-100/80" data-reveal data-delay="0.6">
+          <span class="font-semibold text-white tabular-nums">{communities.length} properties</span>
+          <span aria-hidden="true" class="text-brand-400">·</span>
+          <span class="tabular-nums">{cities.length} cities</span>
+          <span aria-hidden="true" class="text-brand-400">·</span>
+          <span>{states.join(' ')}</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Tarjeta foto -->
+    <div class="relative min-h-115 overflow-hidden rounded-2xl bg-brand-900 lg:col-span-5" data-reveal="scale">
+      <Img sizes="(min-width: 1024px) 40vw, 100vw"
+        src={photos.hero.src}
+        alt={photos.hero.alt}
+        width="1200"
+        height="1792"
+        fetchpriority="high"
+        class="absolute inset-0 size-full object-cover"
+        data-hero-photo
+      />
+      <div class="absolute inset-0 bg-linear-to-t from-brand-950/70 via-transparent to-transparent" aria-hidden="true">
+      </div>
+
+      <div class="absolute right-4 bottom-4 left-4 flex items-end justify-between gap-4">
+        <div class="rounded-2xl bg-brand-400 px-5 py-4 text-brand-950">
+          <p class="font-display text-4xl leading-none font-bold tracking-tight tabular-nums">{communities.length}</p>
+          <p class="mt-1 text-sm font-medium">properties, one team</p>
+        </div>
+        <p class="max-w-[22ch] text-right text-sm leading-snug text-white/90">
+          Properties that feel cared for, because they are.
+        </p>
+      </div>
+    </div>
+
+    <!-- Carril de caminos por audiencia -->
+    <nav aria-label="Choose your path" class="grid gap-3 sm:grid-cols-3 lg:col-span-12" data-reveal-stagger>
+      {
+        paths.map((path, i) => (
+          <a
+            href={path.href}
+            class:list={[
+              'group flex items-center justify-between gap-4 rounded-2xl px-6 py-5 transition-colors duration-300',
+              i === 0 ? 'bg-brand-400 text-brand-950 hover:bg-brand-300' : 'bg-white text-brand-950 ring-1 ring-brand-950/6 hover:bg-brand-50',
+            ]}
+          >
+            <span>
+              <span class="font-display block text-lg font-semibold tracking-tight">{path.label}</span>
+              <span class:list={['text-sm', i === 0 ? 'text-brand-950/75' : 'text-neutral-500']}>{path.line}</span>
+            </span>
+            <span
+              class:list={[
+                'grid size-11 shrink-0 place-items-center rounded-full',
+                i === 0 ? 'bg-brand-950 text-brand-300' : 'bg-brand-950/5 text-brand-950',
+              ]}
+            >
+              <ArrowUpRight class="size-5 rotate-45 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-0" stroke-width="1.75" />
+            </span>
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</section>

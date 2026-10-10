@@ -1,0 +1,69 @@
+---
+// Variante del hero con un "corte" redondeado abajo a la izquierda de la tarjeta del video:
+// una pestaña del color del fondo de la página, unida a la tarjeta con dos radios invertidos.
+// Para volver al hero original, en src/pages/index.astro importa Hero.astro en lugar de este.
+import ArrowButton from '@/components/molecules/ArrowButton.astro';
+import Notch from '@/components/molecules/Notch.astro';
+import AvatarStat from '@/components/molecules/AvatarStat.astro';
+import { communities, cities } from '@/data/communities';
+
+// Tres comunidades reales para el grupo de avatares
+const faces = ['Blue Grass Meadows', 'Heritage Pointe Apartments', 'The Rowe At Gate 1']
+  .map((name) => communities.find((c) => c.name === name))
+  .filter((c) => c?.photo) as { photo: string }[];
+---
+
+<section class="h-svh min-h-160 p-3 sm:p-4" aria-labelledby="hero-title">
+  <!-- transform-gpu: la tarjeta tiene su propia capa y el recorte redondeado se aplica también mientras el vídeo hace su fundido (si no, Chrome lo pinta sin esquinas un instante al cargar) -->
+  <div class="relative isolate flex h-full transform-gpu flex-col overflow-hidden rounded-2xl rounded-bl-none bg-brand-950 text-white [--hero-notch-h:4.5rem] md:[--hero-notch-h:6rem]">
+    <video
+      class="absolute inset-0 -z-10 size-full object-cover opacity-0 transition-opacity duration-1400 ease-out data-ready:opacity-100 motion-reduce:transition-none"
+      poster="/videos/hero-poster.webp"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+      data-hero-video
+    >
+      <source src="/videos/hero-720.mp4" type="video/mp4" media="(max-width: 767px)" />
+      <source src="/videos/hero-1080.mp4" type="video/mp4" />
+    </video>
+    <div class="absolute inset-0 -z-10 bg-linear-to-r from-brand-950/85 via-brand-950/65 to-brand-950/5" aria-hidden="true"></div>
+    <div class="absolute inset-x-0 bottom-0 -z-10 h-2/5 bg-linear-to-t from-brand-950/80 to-transparent" aria-hidden="true"></div>
+    <div class="absolute inset-x-0 top-0 -z-10 h-40 bg-linear-to-b from-brand-950/55 to-transparent" aria-hidden="true"></div>
+
+    <!-- Titular y botón: suben para dejar sitio al corte -->
+    <!-- pb = alto del corte + gutter: del botón al corte hay el mismo espacio que a los lados, en cada breakpoint -->
+    <div class="container-site flex flex-1 flex-col justify-end pt-32 pb-[calc(var(--hero-notch-h)+var(--gutter))]">
+      <div class="max-w-4xl">
+        <h1
+          id="hero-title"
+          class="font-display text-[clamp(2.8rem,6vw,4rem)] leading-[0.98] font-semibold text-balance"
+          data-scene="split-lines"
+        >
+          Multifamily management that protects your asset and the people who live in it.
+        </h1>
+        <div class="action-gap" data-reveal="from-left" data-delay="0.4">
+          <ArrowButton href="/contact" data-hero-cta>Request a proposal</ArrowButton>
+        </div>
+      </div>
+    </div>
+
+    <!-- Corte: pestaña del color del fondo con radios invertidos -->
+    <Notch height="fixed" flushOnMobile>
+      <AvatarStat href="/our-properties" items={faces.map((c) => ({ src: c.photo }))} title={`${communities.length} properties`} text={`${cities.length} cities · TN, KY, AL`} data-reveal="fade" />
+    </Notch>
+
+    <p class="absolute right-6 bottom-6 hidden text-xs text-white/60 sm:block">
+      Clarksville, Tennessee · home of Nex&#8209;Gen
+    </p>
+  </div>
+</section>
+
+
+<script>
+  import { initHeroVideo } from '@/scripts/hero-video';
+  initHeroVideo();
+</script>

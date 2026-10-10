@@ -1,0 +1,22 @@
+---
+// Icono Tabler dentro de un círculo (tarjetas de datos y servicios). 64px en móvil, 80px desde sm.
+// tone: neutral (sobre tarjetas blancas) · white (sobre tarjetas grises) · dark.
+interface Props {
+  icon: (props: Record<string, unknown>) => unknown;
+  tone?: 'neutral' | 'white' | 'dark';
+  size?: 'md' | 'sm';
+  class?: string;
+}
+
+const { icon: Icon, tone = 'neutral', size = 'md', class: className } = Astro.props;
+
+const tones = {
+  neutral: 'bg-neutral-100 text-brand-700',
+  white: 'bg-white text-brand-700',
+  dark: 'bg-brand-950 text-brand-300',
+}[tone];
+---
+
+<span class:list={['grid shrink-0 place-items-center rounded-full', size === 'md' ? 'size-16 sm:size-20' : 'size-12 sm:size-14', tones, className]} aria-hidden="true">
+  <Icon class={size === 'md' ? 'size-8 sm:size-10' : 'size-6 sm:size-7'} stroke-width="1" />
+</span>

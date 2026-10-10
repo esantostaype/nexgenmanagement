@@ -12,7 +12,9 @@
     "astro": "astro",
     "check": "astro check",
     "accent": "node scripts/accent.mjs",
-    "og": "node scripts/og.mjs"
+    "og": "node scripts/og.mjs",
+    "lint:classes": "node scripts/canonical-classes.mjs --check",
+    "fix:classes": "node scripts/canonical-classes.mjs"
   },
   "dependencies": {
     "@starwind-ui/astro": "^1.3.0",

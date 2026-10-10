@@ -1,0 +1,40 @@
+---
+// Datos de contacto con icono: teléfono, dirección (abre Google Maps), email y horario.
+import Phone from '@tabler/icons/outline/phone.svg';
+import MapPin from '@tabler/icons/outline/map-pin.svg';
+import Mail from '@tabler/icons/outline/mail.svg';
+import Clock from '@tabler/icons/outline/clock.svg';
+
+interface Props {
+  title: string;
+  contact: { phone: string; phoneHref: string; email: string; address: readonly string[]; hours: string; mapsHref: string };
+  class?: string;
+}
+
+const { title, contact, class: className } = Astro.props;
+const icon = 'mt-0.5 size-4.5 shrink-0 text-brand-400';
+---
+
+<div class={className}>
+  <p class="font-display font-semibold text-white">{title}</p>
+  <address class="mt-5 flex flex-col gap-4 text-[0.95rem] not-italic">
+    <a href={contact.phoneHref} class="flex gap-3 transition-colors hover:text-brand-300">
+      <Phone class={icon} stroke-width="1.75" aria-hidden="true" />
+      <span class="tabular-nums">{contact.phone}</span>
+    </a>
+    <a href={contact.mapsHref} target="_blank" rel="noopener" class="flex gap-3 transition-colors hover:text-brand-300">
+      <MapPin class={icon} stroke-width="1.75" aria-hidden="true" />
+      <span>
+        {contact.address.map((line, i) => (i ? [<br />, line] : line))}
+      </span>
+    </a>
+    <a href={`mailto:${contact.email}`} class="flex gap-3 break-all transition-colors hover:text-brand-300">
+      <Mail class={icon} stroke-width="1.75" aria-hidden="true" />
+      {contact.email}
+    </a>
+    <span class="flex gap-3 text-brand-100/70">
+      <Clock class={icon} stroke-width="1.75" aria-hidden="true" />
+      {contact.hours}
+    </span>
+  </address>
+</div>

@@ -1,0 +1,26 @@
+---
+// Campo de búsqueda con lupa, sin caja propia (va dentro de una barra o píldora). Usa el Input de Starwind.
+import { Input } from '@/components/starwind/input';
+import SearchIcon from '@tabler/icons/outline/search.svg';
+
+interface Props {
+  name: string;
+  label: string;
+  placeholder?: string;
+  class?: string;
+}
+
+const { name, label, placeholder = label, class: className } = Astro.props;
+---
+
+<label class:list={['flex flex-1 items-center gap-3 rounded-full px-4 py-2.5', className]}>
+  <SearchIcon class="size-5 shrink-0 text-neutral-400" stroke-width="1.75" aria-hidden="true" />
+  <span class="sr-only">{label}</span>
+  <Input
+    name={name}
+    type="search"
+    placeholder={placeholder}
+    autocomplete="off"
+    class="h-auto rounded-none border-0 bg-transparent p-0 text-[0.95rem] font-medium text-brand-950 shadow-none placeholder:font-normal placeholder:text-neutral-400 focus-visible:ring-0"
+  />
+</label>

@@ -1,0 +1,65 @@
+---
+// Barra del header (píldora): logo a la izquierda, menú en el centro y acciones a la derecha (slot "actions").
+// Estados, controlados por atributos del <header> padre:
+//   data-variant="overlay" → transparente y en blanco sobre el hero; con [data-scrolled], blanca con sombra.
+//   data-variant="solid"   → siempre blanca.
+//   [data-menu-open]       → transparente y en blanco sobre el panel del menú móvil (misma posición y tamaño).
+import LogoLink from '@/components/molecules/LogoLink.astro';
+import MainNav from '@/components/molecules/MainNav.astro';
+import type { NavEntry } from '@/data/navigation';
+
+interface Props {
+  variant: 'overlay' | 'solid';
+  items: NavEntry[];
+}
+
+const { variant, items } = Astro.props;
+---
+
+<div class="relative z-60">
+  <div
+    class:list={[
+      'header-bar flex h-16 items-center justify-between rounded-full py-2 transition-[background-color,box-shadow,color,padding] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
+      variant === 'overlay'
+        ? 'text-white group-data-scrolled/header:bg-white group-data-scrolled/header:text-brand-950 group-data-scrolled/header:shadow-[0_12px_32px_-16px_rgb(7_53_69/0.35)]'
+        : 'bg-white text-brand-950 shadow-[0_12px_32px_-18px_rgb(7_53_69/0.3)]',
+    ]}
+  >
+    <LogoLink height={variant === 'overlay' ? 56 : 48} alignCircle={variant === 'overlay'} />
+    <MainNav items={items} />
+    <div class="flex items-center">
+      <slot name="actions" />
+    </div>
+  </div>
+</div>
+
+<style>
+  /* La barra mide como mucho el contenedor (1320px + 8px por lado) y va centrada: en desktop no cambia de ancho
+     al hacer scroll, solo aparece el fondo. El relleno coloca el logo donde empieza el contenido del hero:
+     inicio del contenido (margen del hero + gutter, o centrado a 1320px) menos el inicio de la barra. */
+  .header-bar {
+    max-width: calc(1320px + 1rem);
+    margin-inline: auto;
+    /* --hero-inset: margen de la tarjeta del hero (p-3 sm:p-4). La barra deja 12px a los lados (px-3 del header) */
+    --hero-inset: 0.75rem;
+    padding-inline: calc(
+      var(--hero-inset) + max(var(--gutter), (100vw - 2 * var(--hero-inset) - 1320px) / 2) - (100vw - min(100vw - 1.5rem, 1320px + 1rem)) / 2
+    );
+  }
+  @media (width >= 40rem) {
+    .header-bar {
+      --hero-inset: 1rem;
+    }
+  }
+  /* Menú móvil abierto: transparente y en blanco sobre el panel oscuro */
+  :global([data-menu-open]) .header-bar {
+    background-color: transparent;
+    box-shadow: none;
+    color: white;
+  }
+  /* Barra blanca (con scroll, o variante sólida): mismo relleno a los lados que arriba y abajo (py-2) */
+  :global([data-scrolled]) .header-bar,
+  :global([data-variant='solid']) .header-bar {
+    padding-inline: 0.5rem;
+  }
+</style>

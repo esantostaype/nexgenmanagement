@@ -1,0 +1,57 @@
+---
+import BuildingCommunity from '@tabler/icons/outline/building-community.svg';
+import MapPin from '@tabler/icons/outline/map-pin.svg';
+import Route from '@tabler/icons/outline/route.svg';
+import AvatarGroup from '@/components/molecules/AvatarGroup.astro';
+import Section from '@/components/atoms/Section.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import InfoCard from '@/components/molecules/InfoCard.astro';
+import MediaCard from '@/components/molecules/MediaCard.astro';
+import IconCircle from '@/components/atoms/IconCircle.astro';
+import ArrowLink from '@/components/molecules/ArrowLink.astro';
+import { communities, cities, states } from '@/data/communities';
+import { team } from '@/data/site';
+
+const counters = [
+  { icon: BuildingCommunity, step: '01', label: 'Properties under management', value: communities.length },
+  { icon: MapPin, step: '02', label: 'Cities where our teams work', value: cities.length },
+  { icon: Route, step: '03', label: 'States: Tennessee, Kentucky, Alabama', value: states.length },
+];
+---
+
+<!-- Layout de la sección "About" de Bexon (index-2) -->
+<Section id="about" labelledby="about-title" innerClass="grid-gap grid md:grid-cols-2 lg:grid-cols-3">
+  {
+    counters.map((c, i) => (
+      <InfoCard tall text={c.label} class={i === 0 ? 'order-3 md:order-2 lg:order-1' : i === 1 ? 'order-4' : 'order-5'} data-reveal data-delay={String(i * 0.1)}>
+        <IconCircle slot="top" icon={c.icon} />
+        <span slot="aside" class="font-display text-lg font-medium text-neutral-600 tabular-nums">{c.step}.</span>
+        <p class="font-display mt-3 text-[clamp(3.5rem,6vw,5.25rem)] leading-none font-medium tracking-[-0.04em] text-brand-950 tabular-nums" data-count={c.value}>
+          {c.value}
+        </p>
+      </InfoCard>
+    ))
+  }
+
+  <!-- Bloque principal, sin caja: texto sobre el fondo + imagen vertical (Clarksville al atardecer) -->
+  <div class="order-1 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6 md:col-span-2 md:gap-8 lg:order-2 lg:gap-10 lg:pl-10">
+    <SectionHeading id="about-title" eyebrow="Get to know us" title="A regional operator, close to every property: your partner for properties that stay cared for.">
+      <ArrowLink slot="actions" href="/about">Learn more</ArrowLink>
+    </SectionHeading>
+
+    <MediaCard
+      variant="image"
+      image="/images/gallery/clarksville-sunset.jpg"
+      imageAlt="Downtown Clarksville, Tennessee at sunset, home of Nex-Gen Management"
+      sizes="(min-width: 640px) 430px, 100vw"
+      parallax
+      class="min-h-60 w-full shrink-0 sm:w-37.5 md:min-h-80"
+      data-reveal="scale"
+    />
+  </div>
+
+  <!-- Equipo -->
+  <InfoCard tone="brand" tall titleSize="lg" title={`A team of ${team.length} people, based in Clarksville.`} class="order-2 md:order-3" data-reveal>
+    <AvatarGroup slot="top" items={team.slice(0, 3).map((m) => ({ src: 'photo' in m ? m.photo : undefined, name: m.name }))} more label="Part of our team" />
+  </InfoCard>
+</Section>

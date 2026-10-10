@@ -1,0 +1,15 @@
+---
+// Buscador de muestra (no interactivo): lupa + texto de ejemplo dentro de una píldora. Invita a buscar.
+import SearchIcon from '@tabler/icons/outline/search.svg';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<span class:list={['flex h-12 w-full items-center gap-3 rounded-full bg-brand-50 px-4 text-sm text-brand-900/70', className]} aria-hidden="true">
+  <SearchIcon class="size-4.5 shrink-0" stroke-width="1.75" />
+  <span class="truncate"><slot /></span>
+</span>

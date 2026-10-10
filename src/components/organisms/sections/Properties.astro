@@ -1,0 +1,103 @@
+---
+import Section from '@/components/atoms/Section.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import InfoCard from '@/components/molecules/InfoCard.astro';
+import MediaCard from '@/components/molecules/MediaCard.astro';
+import { Badge } from '@/components/starwind/badge';
+import IconCircle from '@/components/atoms/IconCircle.astro';
+import ArrowButton from '@/components/molecules/ArrowButton.astro';
+import SearchHint from '@/components/atoms/SearchHint.astro';
+import Award from '@tabler/icons/outline/award.svg';
+import MapPin from '@tabler/icons/outline/map-pin.svg';
+import { communities, cities, states } from '@/data/communities';
+import { award } from '@/data/site';
+
+// Proyección simple de lat/lng al recuadro del mapa (TN, KY, AL)
+const bounds = { minLat: 33.2, maxLat: 38.4, minLng: -89.4, maxLng: -83.6 };
+const project = (lat: number, lng: number) => ({
+  x: ((lng - bounds.minLng) / (bounds.maxLng - bounds.minLng)) * 100,
+  y: (1 - (lat - bounds.minLat) / (bounds.maxLat - bounds.minLat)) * 100,
+});
+const pins = communities.map((c) => ({ ...project(c.lat, c.lng), name: c.name }));
+
+// Todas las propiedades con foto; empieza por tres exteriores con buena luz
+const lead = ['The Park at Carson', 'Blue Grass Meadows', 'The Flats at Lancaster'];
+const polaroids = [
+  ...lead.map((n) => communities.find((c) => c.name === n)!),
+  ...communities.filter((c) => !lead.includes(c.name)),
+].filter((c) => c?.photo);
+
+// Posición en reposo de cada polaroid (0 = delante). Debe coincidir con polaroidPos() de home.ts
+const restTransform = (k: number) =>
+  k === 0
+    ? 'translate(0px, 0px) rotate(3deg)'
+    : k === 1
+      ? 'translate(-18px, -12px) rotate(-1deg) scale(0.97)'
+      : 'translate(-36px, -24px) rotate(-5deg) scale(0.94)';
+---
+
+<!-- Layout inspirado en "Discover the value behind smart property investments" -->
+<Section id="communities" labelledby="communities-title" innerClass="grid gap-12 lg:grid-cols-12">
+    <SectionHeading id="communities-title" eyebrow="Our properties" title={`${communities.length} properties, one standard of care.`} class="lg:col-span-5">
+      <p>
+        Apartments and townhomes in {cities.length} cities across Tennessee, Kentucky and Alabama. Find your next
+        home or see the portfolio we manage for our owners.
+      </p>
+      <ArrowButton slot="actions" href="/our-properties" variant="dark">Explore our properties</ArrowButton>
+    </SectionHeading>
+
+    <div class="grid-gap grid sm:grid-cols-2 lg:col-span-7" data-reveal-stagger>
+      <InfoCard href="/our-properties" title="Find a home near you" text="Search the properties by city or state and visit each one’s site.">
+        <SearchHint slot="top">Clarksville, Nashville, Birmingham…</SearchHint>
+      </InfoCard>
+
+      <InfoCard href={award.href} target="_blank" rel="noopener" title={award.title} text={`${award.by}, ${award.year}.`}>
+        <IconCircle slot="top" icon={Award} tone="dark" size="sm" />
+      </InfoCard>
+
+      <InfoCard href="/our-properties" title="Where we manage" text="Every dot is a property our team runs today." contentClass="max-w-[24ch]" class="min-h-75 sm:col-span-2">
+        <!-- Mapa de puntos: cada pin es una comunidad en su latitud/longitud -->
+        <div slot="bg" class="dot-field absolute inset-y-0 left-0 w-full sm:w-[62%]">
+          {
+            pins.map((p) => (
+              <span class="absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-500 ring-4 ring-brand-500/15" style={`left:${p.x}%;top:${p.y}%`} />
+            ))
+          }
+        </div>
+        <Badge slot="kicker" variant="dark" size="sm" class="mb-3 py-1">
+          <MapPin class="size-3.5" stroke-width="2" />
+          {states.join(' · ')}
+        </Badge>
+        <!-- Polaroids: carrusel con todas las propiedades con foto; se ven 3 y sobresalen de la tarjeta.
+             Motion las va pasando una a una (home.ts, [data-polaroids]). Sin JS se ven las 3 primeras. -->
+        <span slot="decor" class="absolute -right-5 -bottom-8 hidden h-62.5 w-[42%] sm:block" data-polaroids data-float="10" aria-hidden="true">
+          {
+            polaroids.map((c, i) => (
+              <MediaCard
+                variant="polaroid"
+                image={c.photo!}
+                sizes="260px"
+                ratio="aspect-16/10"
+                title={c.name}
+                titleSize="sm"
+                text={`${c.city}, ${c.state}`}
+                class="absolute right-0 bottom-0 will-change-transform"
+                style={`z-index:${30 - i};transform:${restTransform(i)}`}
+                hidden={i > 2}
+                data-polaroid
+              />
+            ))
+          }
+        </span>
+      </InfoCard>
+    </div>
+</Section>
+
+<style>
+  /* Fondo de puntos del mapa: es la retícula sobre la que se proyectan las coordenadas reales */
+  .dot-field {
+    background-image: radial-gradient(circle, rgb(7 53 69 / 0.13) 1.2px, transparent 1.6px);
+    background-size: 12px 12px;
+    mask-image: linear-gradient(90deg, #000 70%, transparent);
+  }
+</style>

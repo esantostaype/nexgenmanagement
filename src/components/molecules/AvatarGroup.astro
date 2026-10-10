@@ -1,0 +1,40 @@
+---
+// Grupo de avatares solapados (utilidad `avatar-stack`), con una burbuja "+" opcional al final.
+// Cada avatar escala con la utilidad `avatar`: 24px en móvil, 32px en md y 40px en lg.
+import Avatar from '@/components/atoms/Avatar.astro';
+import Plus from '@tabler/icons/outline/plus.svg';
+
+interface Props {
+  items: { src?: string; name?: string }[];
+  /** Muestra una burbuja oscura con "+" al final (p. ej. "y más") */
+  more?: boolean;
+  /** Color del fondo donde se apoya el grupo: anillo de separación entre avatares */
+  ring?: 'white' | 'background';
+  /** Etiqueta accesible del grupo. Sin ella, el grupo es decorativo (aria-hidden) */
+  label?: string;
+  /** Clases extra para la burbuja "+" (p. ej. animación con el hover del enlace padre) */
+  moreClass?: string;
+  class?: string;
+}
+
+const { items, more = false, ring = 'white', label, moreClass, class: className } = Astro.props;
+const decorative = !label;
+const ringClass = ring === 'white' ? 'ring-white' : 'ring-background';
+---
+
+<ul class:list={['avatar-stack', className]} aria-label={label} aria-hidden={decorative ? 'true' : undefined}>
+  {
+    items.map((item) => (
+      <li class="flex">
+        <Avatar src={item.src} name={item.name} decorative={decorative} ring={ring} />
+      </li>
+    ))
+  }
+  {
+    more && (
+      <li class:list={['avatar grid place-items-center rounded-full bg-brand-950 text-white ring-2', ringClass, moreClass]} aria-hidden="true">
+        <Plus class="size-3 md:size-3.5 lg:size-4" stroke-width="2" />
+      </li>
+    )
+  }
+</ul>

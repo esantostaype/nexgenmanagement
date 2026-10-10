@@ -1,0 +1,18 @@
+---
+// CTA del header: oculto (ancho 0) mientras el botón del hero ([data-hero-cta]) está en pantalla; al salir de ella,
+// Motion anima su ancho y empuja a los elementos vecinos (home.ts, bindHeaderCta).
+import ArrowButton from '@/components/molecules/ArrowButton.astro';
+
+interface Props {
+  href: string;
+  label: string;
+}
+
+const { href, label } = Astro.props;
+---
+
+<div class="hidden overflow-hidden sm:block" style="width:0" data-header-cta aria-hidden="true">
+  <div class="pl-2">
+    <ArrowButton href={href} size="md" tabindex="-1" data-header-cta-link>{label}</ArrowButton>
+  </div>
+</div>

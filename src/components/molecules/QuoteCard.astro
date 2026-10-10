@@ -1,0 +1,85 @@
+---
+// Tarjeta de cita genérica (la cita va en el slot). Variantes:
+//   testimonial → comillas, cita y, abajo a la izquierda, una pestaña recortada con el avatar y el nombre del autor.
+//   person      → cita grande a la izquierda y la persona recortada a la derecha (cabeza fuera de la tarjeta,
+//                 torso a ras del borde), con tres ondas que crecen al entrar en pantalla (home.ts, [data-ripples]).
+import Img from '@/components/atoms/Img.astro';
+import Avatar from '@/components/atoms/Avatar.astro';
+import Card from '@/components/atoms/Card.astro';
+import InverseCorner from '@/components/atoms/InverseCorner.astro';
+import Quote from '@tabler/icons/filled/quote.svg';
+
+interface Props {
+  variant?: 'testimonial' | 'person';
+  name: string;
+  role?: string;
+  /** person: recorte PNG con fondo transparente · testimonial: foto del avatar (si no, iniciales) */
+  photo?: string;
+  photoAlt?: string;
+  /** id de la cita (para aria-labelledby de la sección) */
+  id?: string;
+  class?: string;
+}
+
+const { variant = 'testimonial', name, role, photo, photoAlt = '', id, class: className } = Astro.props;
+---
+
+{
+  variant === 'person' ? (
+    <figure class:list={['relative mx-auto grid max-w-5xl rounded-2xl bg-white md:min-h-105 md:grid-cols-[1.4fr_1fr]', className]} data-reveal="fade">
+      <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl" aria-hidden="true" data-ripples>
+        <span class="absolute bottom-0 left-1/2 size-170 translate-x-[-50%] translate-y-[42%] rounded-full bg-brand-50 md:left-[86%]" data-ripple />
+        <span class="absolute bottom-0 left-1/2 size-115 translate-x-[-50%] translate-y-[42%] rounded-full bg-brand-100 md:left-[86%]" data-ripple />
+        <span class="absolute bottom-0 left-1/2 size-70 translate-x-[-50%] translate-y-[42%] rounded-full bg-brand-200 md:left-[86%]" data-ripple />
+      </div>
+
+      <div class="relative z-10 flex flex-col justify-center p-8 sm:p-12 md:py-16 md:pr-4 md:pl-14">
+        <Quote class="size-9 text-brand-500" data-reveal="scale" />
+        <blockquote id={id} class="font-display mt-6 text-[clamp(1.6rem,3vw,2.35rem)] leading-[1.15] font-medium tracking-[-0.02em] text-pretty text-brand-950" data-scene="split-lines">
+          <slot />
+        </blockquote>
+        <figcaption class="mt-8 flex items-center gap-4" data-reveal="from-left" data-delay="0.2">
+          <span class="h-px w-10 bg-brand-950/20" aria-hidden="true" />
+          <span>
+            <span class="block font-semibold text-brand-950">{name}</span>
+            {role && <span class="block text-sm text-neutral-500">{role}</span>}
+          </span>
+        </figcaption>
+      </div>
+
+      {photo && (
+        <div class="relative h-105 md:h-auto">
+          <div class="absolute inset-x-0 top-0 bottom-0 overflow-hidden rounded-b-2xl md:-top-12 md:rounded-bl-none">
+            <Img src={photo} alt={photoAlt} sizes="350px" loading="lazy" class="absolute top-0 left-1/2 w-75 max-w-none -translate-x-1/2 md:w-87.5" data-reveal="fade-up" />
+          </div>
+        </div>
+      )}
+    </figure>
+  ) : (
+    <Card as="figure" class:list={['relative flex h-full min-h-75 flex-col pb-24!', className]}>
+      <Quote class="size-7 text-brand-200" aria-hidden="true" />
+      <blockquote id={id} class="mt-4 leading-relaxed text-pretty text-neutral-600">
+        <slot />
+      </blockquote>
+      <figcaption class="absolute bottom-0 left-0 flex items-center gap-3 rounded-tr-2xl bg-background pt-3 pr-5">
+        <InverseCorner position="top" />
+        <InverseCorner position="right" />
+        <Avatar src={photo} name={name} tone="dark" decorative />
+        <span>
+          <span class="font-display block font-semibold text-brand-950">{name}</span>
+          {role && <span class="block text-xs text-neutral-500">{role}</span>}
+        </span>
+      </figcaption>
+    </Card>
+  )
+}
+
+<style>
+  /* person: las ondas empiezan sin tamaño solo si hay JS y movimiento; si no, se ven tal cual */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) [data-ripples]:not([data-shown]) [data-ripple] {
+      transform: scale(0);
+    }
+  }
+
+</style>

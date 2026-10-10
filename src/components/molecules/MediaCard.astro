@@ -1,0 +1,172 @@
+---
+// Tarjeta genérica con imagen. Variantes:
+//   stack    → imagen y contenido apilados (mediaPosition: top | bottom). Servicios, propiedades, tarjeta del mapa.
+//              Relleno de 8px y la imagen con radio 8px (16 − 8); el texto con card-pad-inset (pad="sm": compacto).
+//   side     → imagen a la izquierda y contenido a la derecha (desde sm). Posts.
+//   overlay  → imagen a sangre de fondo y el contenido encima, abajo, sobre un degradado. Post destacado.
+//   polaroid → marco blanco con sombra y pie pequeño. Carrusel de propiedades.
+//   image    → solo la imagen recortada (con parallax opcional).
+//
+// Slots:
+//   header  → encima del título (etiquetas + icono…)
+//   meta    → justo encima del título (fecha, categoría…)
+//   media   → sobre la imagen, posicionado por quien lo usa (badges, píldora "Read more"…)
+//   sub     → línea bajo el título en stack (p. ej. ciudad con icono)
+//   end     → a la derecha del título en stack (p. ej. un círculo con flecha)
+//   default → debajo del texto (acciones, enlaces…)
+//
+// Con `href` toda la tarjeta es el enlace (no metas otros <a> dentro; usa ArrowLink as="span").
+import type { HTMLAttributes } from 'astro/types';
+import Img from '@/components/atoms/Img.astro';
+import Card from '@/components/atoms/Card.astro';
+
+interface Props extends HTMLAttributes<'div'> {
+  variant?: 'stack' | 'side' | 'overlay' | 'polaroid' | 'image';
+  image: string;
+  imageAlt?: string;
+  /** Ancho real con el que se muestra la imagen (atributo sizes de <Img>) */
+  sizes: string;
+  /** Proporción de la imagen en stack/side/polaroid */
+  ratio?: string;
+  /** Logos: la imagen se ve entera en lugar de recortarse */
+  contain?: boolean;
+  parallax?: boolean;
+  mediaPosition?: 'top' | 'bottom';
+  title?: string;
+  text?: string;
+  /** sm: 14px · md: 20px · lg: 22–32px · xl: 26–35px */
+  titleSize?: 'sm' | 'md' | 'lg' | 'xl';
+  /** Etiqueta del título (h3 en listados de contenido) */
+  titleAs?: 'span' | 'h2' | 'h3';
+  /** Título en una sola línea con puntos suspensivos */
+  truncate?: boolean;
+  href?: string;
+  target?: string;
+  rel?: string;
+  tone?: 'white' | 'neutral' | 'none';
+  pad?: 'md' | 'sm' | 'none';
+  /** stack: relleno alrededor de la imagen. sm = 8px (imagen con radio 8px) · md = 12px (imagen con radio 4px) */
+  inset?: 'sm' | 'md';
+  /** Etiqueta de la tarjeta (article para posts, li…) */
+  as?: 'div' | 'article' | 'li' | 'figure';
+  class?: string;
+}
+
+const {
+  variant = 'stack',
+  image,
+  imageAlt = '',
+  sizes,
+  ratio = 'aspect-4/3',
+  contain = false,
+  parallax = false,
+  mediaPosition = 'top',
+  title,
+  text,
+  titleSize = 'md',
+  titleAs = 'span',
+  truncate = false,
+  href,
+  target,
+  rel,
+  tone = variant === 'side' || variant === 'overlay' || variant === 'image' ? 'none' : 'white',
+  pad = variant === 'polaroid' || variant === 'image' ? 'none' : variant === 'side' ? 'none' : 'md',
+  inset = 'sm',
+  as = 'div',
+  class: className,
+  ...rest
+} = Astro.props;
+
+const TitleTag = titleAs;
+const light = variant === 'overlay';
+const titleClass = [
+  // text-balance reactiva el salto de línea y anula truncate: solo se aplica si el título puede ocupar varias líneas
+  'font-display block',
+  truncate || variant === 'polaroid' ? 'truncate' : 'text-balance',
+  {
+    sm: 'text-sm font-semibold',
+    md: 'text-xl font-semibold tracking-tight',
+    lg: 'text-[clamp(1.35rem,2.2vw,2rem)] leading-[1.1] font-semibold tracking-[-0.02em]',
+    xl: 'max-w-[22ch] text-[clamp(1.6rem,2.6vw,2.2rem)] leading-[1.12] font-semibold tracking-[-0.02em]',
+  }[titleSize],
+  light ? 'text-white' : 'text-brand-950',
+];
+const textClass = ['block', titleSize === 'sm' ? 'text-xs text-neutral-500' : light ? 'mt-1 text-white/80' : 'mt-1 text-neutral-600'];
+const zoom = href ? 'transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]' : '';
+const imgClass = ['size-full', contain ? 'object-contain p-6' : 'object-cover', zoom];
+// stack: imagen con radio 8px (radio de la tarjeta 16px − relleno 8px)
+const stackMediaClass = ['relative block overflow-hidden bg-neutral-100', inset === 'md' ? 'rounded-sm' : 'rounded-lg', ratio];
+const stackBodyClass = pad === 'sm' ? 'px-2 pt-3 pb-1' : inset === 'md' ? 'card-pad-inset-md' : 'card-pad-inset';
+const hasBody = title || text || Astro.slots.has('header') || Astro.slots.has('meta') || Astro.slots.has('default') || Astro.slots.has('end');
+---
+
+{
+  variant === 'image' ? (
+    <figure class:list={['relative overflow-hidden rounded-2xl', className]} {...rest}>
+      <Img src={image} alt={imageAlt} sizes={sizes} loading="lazy" class="absolute inset-0 size-full object-cover" data-parallax={parallax ? '' : undefined} />
+      <slot name="media" />
+    </figure>
+  ) : variant === 'overlay' ? (
+    <Card as={as} href={href} target={target} rel={rel} tone="none" pad="md" class:list={['group relative isolate flex flex-col justify-end overflow-hidden text-white', className]} {...rest}>
+      <Img src={image} alt={imageAlt} sizes={sizes} loading="lazy" class:list={['absolute inset-0 -z-10', imgClass]} />
+      <span class="absolute inset-0 -z-10 bg-linear-to-t from-brand-950/85 via-brand-950/25 to-transparent" aria-hidden="true" />
+      <slot name="media" />
+      <slot name="meta" />
+      {title && <TitleTag class:list={[titleClass, 'mt-4']}>{title}</TitleTag>}
+      {text && <span class:list={textClass}>{text}</span>}
+      <slot />
+    </Card>
+  ) : variant === 'polaroid' ? (
+    <span class:list={['block w-full rounded-2xl bg-white p-2 shadow-[0_24px_40px_-24px_rgb(0_0_0/0.45)]', className]} {...rest}>
+      <Img sizes={sizes} src={image} alt={imageAlt} loading="lazy" class:list={['w-full rounded-lg object-cover', ratio]} />
+      <span class="block px-1 pt-2 pb-1">
+        {title && <TitleTag class:list={titleClass}>{title}</TitleTag>}
+        {text && <span class:list={textClass}>{text}</span>}
+      </span>
+    </span>
+  ) : variant === 'side' ? (
+    <Card as={as} href={href} target={target} rel={rel} tone={tone} pad={pad} class:list={['group grid-gap grid h-full items-center sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]', className]} {...rest}>
+      <span class:list={['relative block overflow-hidden rounded-2xl sm:aspect-auto sm:h-full sm:min-h-60', ratio]}>
+        <Img sizes={sizes} src={image} alt={imageAlt} loading="lazy" class:list={['absolute inset-0', imgClass]} />
+        <slot name="media" />
+      </span>
+      <span class="block">
+        <slot name="header" />
+        <slot name="meta" />
+        {title && <TitleTag class:list={[titleClass, Astro.slots.has('meta') && 'mt-3']}>{title}</TitleTag>}
+        {text && <span class:list={textClass}>{text}</span>}
+        <slot />
+      </span>
+    </Card>
+  ) : (
+    <Card as={as} href={href} target={target} rel={rel} tone={tone} pad="none" class:list={['group flex h-full flex-col', inset === 'md' ? 'p-3' : 'p-2', className]} {...rest}>
+      {mediaPosition === 'top' && (
+        <span class:list={stackMediaClass}>
+          <Img sizes={sizes} src={image} alt={imageAlt} loading="lazy" class:list={['absolute inset-0', imgClass]} />
+          <slot name="media" />
+        </span>
+      )}
+      {hasBody && (
+        <span class:list={['flex flex-1 flex-col', stackBodyClass]}>
+          <slot name="header" />
+          <span class:list={['flex flex-1 items-end justify-between gap-4', Astro.slots.has('header') && 'mt-8']}>
+            <span class="block min-w-0">
+              <slot name="meta" />
+              {title && <TitleTag class:list={titleClass}>{title}</TitleTag>}
+              {text && <span class:list={[textClass, titleSize === 'lg' && 'mt-3 text-[0.95rem] leading-relaxed']}>{text}</span>}
+              <slot name="sub" />
+            </span>
+            <slot name="end" />
+          </span>
+          <slot />
+        </span>
+      )}
+      {mediaPosition === 'bottom' && (
+        <span class:list={stackMediaClass}>
+          <Img sizes={sizes} src={image} alt={imageAlt} loading="lazy" class:list={['absolute inset-0', imgClass]} />
+          <slot name="media" />
+        </span>
+      )}
+    </Card>
+  )
+}

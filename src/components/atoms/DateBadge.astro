@@ -1,0 +1,15 @@
+---
+// Fecha en bloque: día grande y mes debajo (sobre la imagen de un post).
+interface Props {
+  day: string;
+  month: string;
+  class?: string;
+}
+
+const { day, month, class: className } = Astro.props;
+---
+
+<span class:list={['flex flex-col items-center rounded-xl bg-brand-400 px-4 py-3 leading-none text-brand-950', className]}>
+  <span class="font-display text-3xl font-semibold tabular-nums">{day}</span>
+  <span class="mt-1.5 text-xs font-semibold tracking-wide uppercase">{month}</span>
+</span>

@@ -1,0 +1,52 @@
+---
+// Enlace de texto con flecha (acciones secundarias: "Learn more", "Explore more", "All articles"…).
+// - dot: la flecha va dentro de un círculo oscuro.
+// - underline: texto subrayado fino y flecha suelta.
+// La flecha apunta a → en reposo y gira a ↗ en hover. Usa `group` en un padre si toda la tarjeta es el hover.
+// Sin href se renderiza como <span>: para tarjetas que ya son un enlace entero (no se anidan <a>).
+import type { HTMLAttributes } from 'astro/types';
+import ArrowUpRight from '@tabler/icons/outline/arrow-up-right.svg';
+import ArrowCircle from '@/components/atoms/ArrowCircle.astro';
+
+interface Props extends HTMLAttributes<'a'> {
+  href?: string;
+  variant?: 'dot' | 'underline';
+  size?: 'sm' | 'md';
+  /** Si la tarjeta que lo contiene ya tiene `group` (hover en toda la tarjeta), no lo añade aquí */
+  inGroup?: boolean;
+  external?: boolean;
+  class?: string;
+}
+
+const { href, variant = 'dot', size = 'md', inGroup = false, external = false, class: className, ...rest } = Astro.props;
+const Tag = href ? 'a' : 'span';
+const turn = 'rotate-45 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-0';
+---
+
+<Tag
+  href={href}
+  class:list={[
+    !inGroup && 'group',
+    'inline-flex items-center font-medium text-current',
+    size === 'sm' ? 'gap-2 text-sm' : 'gap-3',
+    className,
+  ]}
+  {...(external && href ? { target: '_blank', rel: 'noopener' } : {})}
+  {...rest}
+>
+  {
+    variant === 'underline' ? (
+      <>
+        <span class="border-b border-current/25 pb-0.5 transition-colors group-hover:border-current">
+          <slot />
+        </span>
+        <ArrowUpRight class:list={['size-5', turn]} stroke-width="1.75" />
+      </>
+    ) : (
+      <>
+        <slot />
+        <ArrowCircle tone="dark-white" size={size === 'sm' ? 'sm' : 'md'} />
+      </>
+    )
+  }
+</Tag>

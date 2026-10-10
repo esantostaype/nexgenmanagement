@@ -1,0 +1,16 @@
+---
+// Icono Tabler + texto en línea (ciudad, fecha…).
+interface Props {
+  icon: (props: Record<string, unknown>) => unknown;
+  /** Color del icono */
+  iconClass?: string;
+  class?: string;
+}
+
+const { icon: Icon, iconClass = '', class: className } = Astro.props;
+---
+
+<span class:list={['inline-flex items-center gap-1.5', className]}>
+  <Icon class:list={['size-4 shrink-0', iconClass]} stroke-width="1.75" aria-hidden="true" />
+  <slot />
+</span>

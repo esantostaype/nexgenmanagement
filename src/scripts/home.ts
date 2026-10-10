@@ -14,32 +14,45 @@ function bindHeader() {
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
+  // Menú móvil a pantalla completa: el mismo botón del header lo abre y lo cierra (queda encima del panel)
   const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const panel = document.getElementById('mobile-menu');
-  const setOpen = (open: boolean) => {
+  const subToggles = Array.from(panel?.querySelectorAll<HTMLButtonElement>('[data-submenu-toggle]') ?? []);
+  const setSub = (btn: HTMLButtonElement, open: boolean) => {
+    btn.setAttribute('aria-expanded', String(open));
+    document.getElementById(btn.getAttribute('aria-controls') ?? '')?.setAttribute('data-open', String(open));
+  };
+  const isOpen = () => toggle?.getAttribute('aria-expanded') === 'true';
+  const setOpen = (open: boolean, focus = true) => {
     toggle?.setAttribute('aria-expanded', String(open));
     toggle?.querySelector('.sr-only')?.replaceChildren(open ? 'Close menu' : 'Open menu');
     panel?.setAttribute('data-open', String(open));
+    header.toggleAttribute('data-menu-open', open);
     lockScroll(open);
+    if (!open) subToggles.forEach((b) => setSub(b, false));
+    if (focus) toggle?.focus({ preventScroll: true });
   };
-  const onToggle = () => setOpen(toggle?.getAttribute('aria-expanded') !== 'true');
+  const onToggle = () => setOpen(!isOpen());
+  const onSub = (e: Event) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    setSub(btn, btn.getAttribute('aria-expanded') !== 'true');
+  };
   const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
-      setOpen(false);
-      toggle.focus();
-    }
+    if (e.key === 'Escape' && isOpen()) setOpen(false);
   };
-  const close = () => setOpen(false);
+  const onLink = () => setOpen(false, false);
 
   toggle?.addEventListener('click', onToggle);
-  panel?.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+  subToggles.forEach((b) => b.addEventListener('click', onSub));
+  panel?.querySelectorAll('a').forEach((a) => a.addEventListener('click', onLink));
   document.addEventListener('keydown', onKey);
 
   return () => {
     window.removeEventListener('scroll', onScroll);
     document.removeEventListener('keydown', onKey);
     toggle?.removeEventListener('click', onToggle);
-    setOpen(false);
+    subToggles.forEach((b) => b.removeEventListener('click', onSub));
+    setOpen(false, false);
   };
 }
 
@@ -305,7 +318,7 @@ function bindTestimonials() {
 }
 
 /* ------------------------------------------------------------------ Polaroids (sección Properties) */
-// Posiciones de la pila (0 = delante). Deben coincidir con restTransform() de home2/Communities.astro
+// Posiciones de la pila (0 = delante). Deben coincidir con restTransform() de organisms/sections/Properties.astro
 const polaroidPos = (k: number) =>
   k === 0
     ? { x: 0, y: 0, rotate: 3, scale: 1, opacity: 1 }

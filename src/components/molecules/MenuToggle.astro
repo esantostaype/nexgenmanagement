@@ -1,0 +1,29 @@
+---
+// Botón que abre y cierra el menú móvil (solo por debajo de lg). Muestra la X y pasa a blanco cuando está abierto.
+// home.ts lo encuentra por [data-menu-toggle].
+import { Button } from '@/components/starwind/button';
+import Menu from '@tabler/icons/outline/menu-2.svg';
+import X from '@tabler/icons/outline/x.svg';
+
+interface Props {
+  /** id del panel que controla */
+  controls: string;
+  class?: string;
+}
+
+const { controls, class: className } = Astro.props;
+---
+
+<Button
+  variant="dark"
+  shape="pill"
+  size="icon-lg"
+  data-menu-toggle
+  aria-expanded="false"
+  aria-controls={controls}
+  class:list={['aria-expanded:bg-white aria-expanded:text-brand-950 aria-expanded:hover:bg-brand-50 lg:hidden', className]}
+>
+  <span class="sr-only">Open menu</span>
+  <Menu class="size-5 [[aria-expanded=true]>&]:hidden" stroke-width="1.75" />
+  <X class="hidden size-5 [[aria-expanded=true]>&]:block" stroke-width="1.75" />
+</Button>

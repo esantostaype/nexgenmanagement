@@ -1,0 +1,39 @@
+---
+import Section from '@/components/atoms/Section.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import QuoteCard from '@/components/molecules/QuoteCard.astro';
+import CarouselControls from '@/components/molecules/CarouselControls.astro';
+import { realTestimonials } from '@/data/site';
+---
+
+<!-- Testimonios: a la izquierda comillas, título y controles (flechas + barra de progreso);
+     a la derecha un carrusel en bucle que avanza solo y se pausa al pasar el ratón (home.ts, [data-testimonials]) -->
+<Section labelledby="testimonials-title" class="overflow-x-clip" data-testimonials innerClass="grid gap-10 lg:grid-cols-12 lg:gap-8">
+    <div class="flex flex-col lg:col-span-3">
+      <SectionHeading id="testimonials-title" eyebrow="Testimonials" title="What our customers are saying" />
+      <CarouselControls label="testimonials" class="action-gap lg:mt-auto" />
+    </div>
+
+    <!-- Ventana del carrusel: recorta las tarjetas y, en escritorio, llega hasta el borde derecho del navegador -->
+    <div class="testi-bleed -mx-(--gutter) cursor-grab touch-pan-y overflow-hidden px-(--gutter) select-none data-dragging:cursor-grabbing lg:col-span-9 lg:mx-0 lg:px-0" data-testi-viewport>
+    <ul class="grid-gap flex will-change-transform" data-testi-track data-reveal-stagger>
+      {
+        realTestimonials.map((t) => (
+          <li class="w-[85%] shrink-0 sm:w-85">
+            <QuoteCard name={t.name}>{t.quote}</QuoteCard>
+          </li>
+        ))
+      }
+    </ul>
+    </div>
+</Section>
+
+<style>
+  /* En escritorio el carrusel sale del container hasta el borde derecho del navegador */
+  @media (min-width: 1024px) {
+    .testi-bleed {
+      margin-right: calc(-1 * max(var(--gutter), (100vw - 1320px) / 2));
+    }
+  }
+
+</style>

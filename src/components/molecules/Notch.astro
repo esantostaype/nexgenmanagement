@@ -1,0 +1,47 @@
+---
+// Pestaña del color del fondo que "corta" la esquina inferior izquierda de una tarjeta grande (hero, mapa),
+// unida a ella con dos radios invertidos. Su contenido arranca donde empieza el contenido de la página.
+// - height="fixed": alto = var(--hero-notch-h) del padre, contenido centrado (el padre lo usa para su espaciado).
+// - height="auto": relleno vertical propio.
+// - flushOnMobile: en móvil el contenido arranca en el borde de la tarjeta, no en el gutter.
+import InverseCorner from '@/components/atoms/InverseCorner.astro';
+
+interface Props {
+  height?: 'fixed' | 'auto';
+  flushOnMobile?: boolean;
+  class?: string;
+}
+
+const { height = 'auto', flushOnMobile = false, class: className } = Astro.props;
+---
+
+<div class:list={['notch absolute bottom-0 left-0 rounded-tr-2xl bg-background text-brand-950', `notch--${height}`, flushOnMobile && 'notch--flush', className]}>
+  <InverseCorner position="top" />
+  <InverseCorner position="right" />
+  <slot />
+</div>
+
+<style>
+  .notch {
+    padding: 0 1rem 0 max(var(--gutter), calc((100vw - 2rem - 1320px) / 2));
+  }
+  .notch--fixed {
+    display: flex;
+    align-items: center;
+    height: var(--hero-notch-h);
+  }
+  .notch--auto {
+    padding-top: 1.75rem;
+    padding-bottom: 1.5rem;
+  }
+  @media (width < 40rem) {
+    .notch--flush {
+      padding-left: 0;
+    }
+  }
+  @media (width >= 48rem) {
+    .notch {
+      padding-right: 3rem;
+    }
+  }
+</style>

@@ -1,0 +1,35 @@
+---
+// Menú móvil a pantalla completa (12–16px de margen, panel brand-950). Arriba queda la propia barra del header
+// encima (logo y botón en su sitio); enlaces a la izquierda y centrados en vertical. Lo abre y cierra home.ts.
+import ArrowButton from '@/components/molecules/ArrowButton.astro';
+import MobileNavItem from '@/components/molecules/MobileNavItem.astro';
+import type { NavEntry } from '@/data/navigation';
+
+interface Props {
+  items: NavEntry[];
+}
+
+const { items } = Astro.props;
+---
+
+<div
+  id="mobile-menu"
+  data-open="false"
+  class="pointer-events-none fixed inset-0 z-50 bg-background/80 p-3 opacity-0 backdrop-blur-sm transition-opacity duration-400 ease-[cubic-bezier(0.32,0.72,0,1)] data-[open=true]:pointer-events-auto data-[open=true]:opacity-100 sm:p-4 lg:hidden"
+  aria-label="Menu"
+>
+  <div class="flex h-full scale-[0.98] flex-col overflow-y-auto rounded-2xl bg-brand-950 text-white transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] [[data-open=true]>&]:scale-100">
+    <!-- Hueco de la barra del header, que queda encima con su logo y su botón (mismo tamaño y posición) -->
+    <div class="h-20 shrink-0" aria-hidden="true"></div>
+
+    <nav aria-label="Mobile" class="card-pad flex flex-1 flex-col justify-center">
+      <ul class="flex flex-col gap-1">
+        {items.map((item, i) => <MobileNavItem item={item} id={`mobile-sub-${i}`} />)}
+      </ul>
+    </nav>
+
+    <div class="card-pad shrink-0">
+      <ArrowButton href="/contact" class="flex w-full justify-between">Get a proposal</ArrowButton>
+    </div>
+  </div>
+</div>

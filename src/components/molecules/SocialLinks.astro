@@ -1,0 +1,31 @@
+---
+// Botones redondos de redes sociales (Button de Starwind). icon: facebook | instagram | linkedin | x.
+import { Button } from '@/components/starwind/button';
+import Facebook from '@tabler/icons/outline/brand-facebook.svg';
+import Instagram from '@tabler/icons/outline/brand-instagram.svg';
+import Linkedin from '@tabler/icons/outline/brand-linkedin.svg';
+import BrandX from '@tabler/icons/outline/brand-x.svg';
+
+interface Props {
+  items: readonly { label: string; href: string; icon: 'facebook' | 'instagram' | 'linkedin' | 'x' }[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+const icons = { facebook: Facebook, instagram: Instagram, linkedin: Linkedin, x: BrandX };
+---
+
+<ul class:list={['flex gap-2', className]}>
+  {
+    items.map((s) => {
+      const Icon = icons[s.icon];
+      return (
+        <li>
+          <Button href={s.href} target="_blank" rel="noopener" aria-label={s.label} shape="pill" size="icon-sm" class="size-10 bg-white/8 text-white hover:bg-brand-400 hover:text-brand-950">
+            <Icon class="size-4.5" stroke-width="1.75" />
+          </Button>
+        </li>
+      );
+    })
+  }
+</ul>

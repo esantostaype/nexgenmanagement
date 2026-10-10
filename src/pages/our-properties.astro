@@ -1,29 +1,10 @@
 ---
-import Img from '@/components/Img.astro';
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/home2/Header.astro';
-import Footer from '@/components/home2/Footer.astro';
-import SearchIcon from '@tabler/icons/outline/search.svg';
-import MapPin from '@tabler/icons/outline/map-pin.svg';
-import ArrowUpRight from '@tabler/icons/outline/arrow-up-right.svg';
-import { getImage } from 'astro:assets';
-import { communities, states } from '@/data/communities';
-import { localImage } from '@/lib/images';
-
-const stateNames: Record<string, string> = { TN: 'Tennessee', KY: 'Kentucky', AL: 'Alabama' };
-const sorted = [...communities].sort((a, b) => a.name.localeCompare(b.name));
-// El mapa pinta su HTML en el navegador: le pasamos versiones WebP ya optimizadas
-// (pin de 48px → 112px para retina; tarjeta emergente de 260px → 560px).
-const mapData = await Promise.all(
-  communities.map(async ({ name, city, state, photo, logo, url, lat, lng, precise }) => {
-    const meta = localImage(photo ?? logo)!;
-    const [pin, card] = await Promise.all([
-      getImage({ src: meta, width: Math.min(112, meta.width), format: 'webp', quality: 72 }),
-      getImage({ src: meta, width: Math.min(560, meta.width), format: 'webp', quality: 72 }),
-    ]);
-    return { name, city, state, url, lat, lng, precise, hasPhoto: Boolean(photo), pin: pin.src, card: card.src };
-  }),
-);
+import BaseLayout from '@/components/templates/BaseLayout.astro';
+import Header from '@/components/organisms/Header.astro';
+import Footer from '@/components/organisms/Footer.astro';
+import PropertiesMap from '@/components/organisms/sections/PropertiesMap.astro';
+import PropertyGrid from '@/components/organisms/sections/PropertyGrid.astro';
+import { communities } from '@/data/communities';
 ---
 
 <BaseLayout
@@ -33,123 +14,11 @@ const mapData = await Promise.all(
 >
   <Header variant="solid" />
   <main>
-    <!-- Hero: misma forma que el hero de la home (tarjeta a pantalla completa con corte abajo a la izquierda).
-         isolate: los z-index del buscador y de Leaflet quedan dentro de la tarjeta, por debajo del header -->
-    <section class="h-[min(70svh,640px)] min-h-[560px] p-4" aria-labelledby="properties-title">
-      <div class="relative isolate h-full overflow-hidden rounded-2xl rounded-bl-none bg-neutral-200">
-        <!-- Tinte del mapa: pasa las teselas a gris puro y las oscurece un poco a la escala neutral de Tailwind
-             (tierra = neutral-200 #e5e5e5; agua, ríos y fronteras más oscuros para que contrasten) -->
-        <svg class="absolute size-0" aria-hidden="true" focusable="false">
-          <filter id="map-tint" color-interpolation-filters="sRGB">
-            <feColorMatrix type="saturate" values="0" />
-            <feComponentTransfer>
-              <feFuncR type="table" tableValues="0 0.06 0.13 0.2 0.28 0.36 0.45 0.56 0.77 0.84 1" />
-              <feFuncG type="table" tableValues="0 0.06 0.13 0.2 0.28 0.36 0.45 0.56 0.77 0.84 1" />
-              <feFuncB type="table" tableValues="0 0.06 0.13 0.2 0.28 0.36 0.45 0.56 0.77 0.84 1" />
-            </feComponentTransfer>
-          </filter>
-        </svg>
-        <div id="properties-map" data-reveal="fade" class="absolute inset-0" aria-label="Map of Nex-Gen properties"></div>
-
-        <!-- Buscador: por encima de los pines (z 600) y por debajo de los popups (z 700) -->
-        <form data-reveal="fade-down" class="absolute inset-x-3 top-28 z-[650] mx-auto flex max-w-[680px] flex-col gap-2 rounded-2xl bg-white p-2 shadow-[0_24px_48px_-24px_rgb(7_53_69/0.45)] sm:inset-x-6 sm:flex-row sm:items-center sm:rounded-full" data-map-filter role="search">
-          <label class="flex flex-1 items-center gap-3 rounded-full px-4 py-2.5">
-            <SearchIcon class="size-5 shrink-0 text-neutral-400" stroke-width="1.75" />
-            <span class="sr-only">Search by property or city</span>
-            <input name="q" type="search" placeholder="Search by property or city" autocomplete="off" class="w-full border-0 bg-transparent p-0 text-[0.95rem] font-medium text-brand-950 placeholder:font-normal placeholder:text-neutral-400 focus:ring-0 focus:outline-none" />
-          </label>
-          <fieldset class="relative flex shrink-0 gap-1 rounded-full bg-neutral-100 p-1">
-            <!-- Indicador que se desliza (con ligero rebote) hasta la pastilla elegida (properties-map.ts) -->
-            <span class="absolute top-1 bottom-1 left-0 w-0 rounded-full bg-brand-950 transition-[transform,width] duration-500 ease-[cubic-bezier(0.34,1.4,0.64,1)]" aria-hidden="true" data-state-indicator></span>
-            <legend class="sr-only">State</legend>
-            {
-              [{ value: '', label: 'All' }, ...states.map((st) => ({ value: st, label: st }))].map((o) => (
-                <label class="relative z-10 cursor-pointer">
-                  <input type="radio" name="state" value={o.value} checked={o.value === ''} class="peer sr-only" />
-                  <span class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-600 transition-colors duration-300 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 hover:text-brand-950 peer-checked:hover:text-white">
-                    {o.label}
-                  </span>
-                </label>
-              ))
-            }
-          </fieldset>
-        </form>
-
-        <!-- Aviso al usar la rueda sin Ctrl -->
-        <p class="pointer-events-none absolute inset-x-0 top-1/2 z-[650] mx-auto w-fit -translate-y-1/2 rounded-full bg-brand-950/85 px-5 py-2.5 text-sm font-medium text-white opacity-0 backdrop-blur transition-opacity duration-300 data-[show]:opacity-100" aria-hidden="true" data-map-hint>
-          Use Ctrl + scroll to zoom the map
-        </p>
-
-        <!-- Tarjeta de la propiedad elegida: sigue al pin y queda por encima del buscador (z 700) -->
-        <div class="pointer-events-none absolute top-0 left-0 z-[700]" data-map-card hidden></div>
-
-        <!-- Corte (igual que el hero de la home): pestaña del color del fondo con radios invertidos -->
-        <div class="map-notch absolute bottom-0 left-0 z-[650] bg-background text-brand-950">
-          <span class="map-notch-corner map-notch-corner--top" aria-hidden="true"></span>
-          <span class="map-notch-corner map-notch-corner--right" aria-hidden="true"></span>
-          <h1 id="properties-title" class="font-display text-[clamp(1.5rem,4vw,2.5rem)] leading-[1.02] font-semibold text-brand-950" data-scene="split-lines">
-            Find your next home.
-          </h1>
-          <p class="mt-2 max-w-[48ch] text-neutral-600" data-reveal data-delay="0.15">Visit each property’s site for floor plans, pricing and availability.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Listado -->
-    <section class="pt-12 md:pt-16" aria-label="All properties">
-      <div class="container-site">
-        <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-property-list>
-          {
-            sorted.map((c) => (
-              <li data-name={c.name.toLowerCase()} data-state={c.state} data-city={c.city} data-reveal>
-                <a
-                  href={c.url ?? '#'}
-                  target={c.url ? '_blank' : undefined}
-                  rel={c.url ? 'noopener' : undefined}
-                  class="group flex h-full flex-col rounded-2xl bg-white p-3 transition-shadow duration-500 hover:shadow-[0_24px_48px_-28px_rgb(7_53_69/0.5)]"
-                  data-focus-pin={c.name}
-                >
-                  <span class="relative block aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-100">
-                    {c.photo ? (
-                      <Img sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" src={c.photo} alt={`${c.name}, ${c.city}, ${c.state}`} width="600" height="450" loading="lazy" class="size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]" />
-                    ) : (
-                      <Img sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" src={c.logo} alt={`${c.name} logo`} width="600" height="450" loading="lazy" class="size-full object-contain p-6" />
-                    )}
-                    <span class="absolute top-3 left-3 rounded-full bg-white/95 px-3 py-1 text-xs font-medium text-brand-950">{stateNames[c.state]}</span>
-                  </span>
-                  <span class="flex flex-1 items-end justify-between gap-4 p-3 pt-4">
-                    <span class="min-w-0">
-                      <span class="font-display block truncate text-lg font-semibold tracking-tight text-brand-950">{c.name}</span>
-                      <span class="mt-0.5 flex items-center gap-1 text-sm text-neutral-500">
-                        <MapPin class="size-4 shrink-0" stroke-width="1.75" />
-                        {c.city}, {c.state}
-                      </span>
-                    </span>
-                    {c.url ? (
-                      <span class="grid size-10 shrink-0 place-items-center rounded-full bg-brand-950 text-brand-300 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] rotate-45 group-hover:rotate-0">
-                        <ArrowUpRight class="size-[18px]" stroke-width="1.75" />
-                      </span>
-                    ) : (
-                      <span class="shrink-0 text-xs text-neutral-400">Site soon</span>
-                    )}
-                  </span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-        <p class="mt-10 hidden text-center text-neutral-500" data-empty>No properties match your search.</p>
-        <p class="mt-8 text-xs text-neutral-400">
-          Map locations come from each property’s address. A few are approximate (city center) until their exact
-          address is confirmed. Map tiles © Esri, © OpenStreetMap contributors.
-        </p>
-      </div>
-    </section>
-
+    <PropertiesMap title="Find your next home." text="Visit each property’s site for floor plans, pricing and availability." />
+    <PropertyGrid />
   </main>
   <Footer />
 
-  <script type="application/json" id="properties-data" set:html={JSON.stringify(mapData)} />
   <script>
     import { initHome } from '@/scripts/home';
     import { initPropertiesMap } from '@/scripts/properties-map';
@@ -157,62 +26,3 @@ const mapData = await Promise.all(
     initPropertiesMap();
   </script>
 </BaseLayout>
-
-<style>
-  /* Corte del hero (misma técnica y medidas que HeroNotch.astro) */
-  /* Entrada de la tarjeta de propiedad (su HTML se genera en properties-map.ts) */
-  :global(.map-card-inner) {
-    transform-origin: 50% 100%;
-    animation: map-card-in 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
-  }
-  @keyframes map-card-in {
-    from {
-      opacity: 0;
-      transform: translateY(6px) scale(0.94);
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    :global(.map-card-inner) {
-      animation: none;
-    }
-  }
-
-  /* Mapa gris neutral: tinte en las teselas (base y etiquetas) */
-  #properties-map :global(.leaflet-tile-pane) {
-    filter: url(#map-tint);
-  }
-  #properties-map:global(.leaflet-container) {
-    background: var(--color-neutral-200);
-    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  }
-  /* En móvil el zoom es con dos dedos: los botones + / − pisarían el corte */
-  @media (max-width: 639px) {
-    #properties-map :global(.leaflet-control-zoom) {
-      display: none;
-    }
-  }
-  #properties-map :global(.leaflet-control-attribution) {
-    font-family: inherit;
-  }
-
-  .map-notch {
-    --notch-r: 1rem;
-    padding: 1.75rem 3rem 1.5rem max(1rem, calc((100vw - 2rem - 1320px) / 2));
-    border-top-right-radius: var(--notch-r);
-  }
-  .map-notch-corner {
-    position: absolute;
-    width: var(--notch-r);
-    height: var(--notch-r);
-    background: radial-gradient(circle at 100% 0, transparent calc(var(--notch-r) - 0.5px), var(--background) var(--notch-r));
-    pointer-events: none;
-  }
-  .map-notch-corner--top {
-    bottom: 100%;
-    left: 0;
-  }
-  .map-notch-corner--right {
-    bottom: 0;
-    left: 100%;
-  }
-</style>

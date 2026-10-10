@@ -1,0 +1,26 @@
+---
+// Frase destacada (entra por líneas) + botón principal. Para cierres de página o footer.
+import ArrowButton from '@/components/molecules/ArrowButton.astro';
+
+interface Props {
+  text: string;
+  href: string;
+  label: string;
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+
+const { text, href, label, tone = 'dark', class: className } = Astro.props;
+---
+
+<div class={className}>
+  <p
+    class:list={['font-display max-w-[16ch] text-[clamp(1.9rem,3.2vw,2.6rem)] leading-[1.1] font-semibold', tone === 'light' ? 'text-white' : 'text-brand-950']}
+    data-scene="split-lines"
+  >
+    {text}
+  </p>
+  <div class="action-gap" data-reveal="from-left">
+    <ArrowButton href={href}>{label}</ArrowButton>
+  </div>
+</div>

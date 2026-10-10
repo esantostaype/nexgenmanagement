@@ -1,0 +1,38 @@
+---
+// Botón píldora con círculo de flecha a la derecha (CTA principal del sitio), sobre el Button de Starwind.
+// La flecha apunta a → en reposo y gira a ↗ en hover (convención del proyecto).
+// Cualquier atributo extra (data-*, tabindex, aria-*) pasa al <a>/<button>.
+import type { HTMLAttributes } from 'astro/types';
+import { Button } from '@/components/starwind/button';
+import ArrowCircle from '@/components/atoms/ArrowCircle.astro';
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'type'> {
+  href?: string;
+  variant?: 'brand' | 'dark' | 'light';
+  size?: 'md' | 'lg';
+  /** Abre en otra pestaña */
+  external?: boolean;
+  /** Botón de formulario en lugar de enlace */
+  type?: 'button' | 'submit';
+  class?: string;
+}
+
+const { href, variant = 'brand', size = 'lg', external = false, type, class: className, ...rest } = Astro.props;
+
+// Color del círculo según la variante (contraste con el fondo del botón)
+const dot = ({ brand: 'dark', dark: 'brand', light: 'dark-white' } as const)[variant];
+---
+
+<Button
+  href={href}
+  type={href ? undefined : (type ?? 'button')}
+  variant={variant}
+  shape="pill"
+  size={size === 'lg' ? 'pill-lg' : 'pill-md'}
+  class:list={['group active:scale-[0.98]', className]}
+  {...(external ? { target: '_blank', rel: 'noopener' } : {})}
+  {...rest}
+>
+  <slot />
+  <ArrowCircle tone={dot} size={size === 'lg' ? 'lg' : 'md'} />
+</Button>

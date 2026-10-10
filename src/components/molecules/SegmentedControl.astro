@@ -1,0 +1,29 @@
+---
+// Pastillas de opción única (radio) con un indicador que se desliza con ligero rebote hasta la elegida.
+// El indicador lo mueve el script de la página con [data-segment-indicator] (ver properties-map.ts).
+interface Props {
+  name: string;
+  legend: string;
+  options: { value: string; label: string }[];
+  /** Valor marcado al cargar (por defecto el primero) */
+  value?: string;
+  class?: string;
+}
+
+const { name, legend, options, value = options[0]?.value, class: className } = Astro.props;
+---
+
+<fieldset class:list={['relative flex shrink-0 gap-1 rounded-full bg-neutral-100 p-1', className]} data-segmented>
+  <span class="absolute top-1 bottom-1 left-0 w-0 rounded-full bg-brand-950 transition-[transform,width] duration-500 ease-[cubic-bezier(0.34,1.4,0.64,1)]" aria-hidden="true" data-segment-indicator></span>
+  <legend class="sr-only">{legend}</legend>
+  {
+    options.map((o) => (
+      <label class="relative z-10 cursor-pointer">
+        <input type="radio" name={name} value={o.value} checked={o.value === value} class="peer sr-only" />
+        <span class="block rounded-full px-4 py-2 text-sm font-medium text-neutral-600 transition-colors duration-300 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 hover:text-brand-950 peer-checked:hover:text-white">
+          {o.label}
+        </span>
+      </label>
+    ))
+  }
+</fieldset>

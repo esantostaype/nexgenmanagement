@@ -1,0 +1,69 @@
+---
+import Img from '@/components/atoms/Img.astro';
+import ArrowUpRight from '@tabler/icons/outline/arrow-up-right.svg';
+import CreditCard from '@tabler/icons/outline/credit-card.svg';
+import Tool from '@tabler/icons/outline/tool.svg';
+import Key from '@tabler/icons/outline/key.svg';
+import { photos } from '@/data/site';
+
+// Los enlaces del portal se conectan cuando se confirme el proveedor (PRODUCT.md).
+const actions = [
+  { icon: CreditCard, label: 'Pay rent online', text: 'Card or bank transfer, from any device.', href: '#residents' },
+  { icon: Tool, label: 'Request maintenance', text: 'Report it in a minute and follow it to done.', href: '#residents' },
+  { icon: Key, label: 'Apply for an apartment', text: 'Find your property and apply on its site.', href: '#communities' },
+];
+---
+
+<section id="residents" class="scroll-mt-24 px-3 pt-24 sm:px-4 md:pt-32" aria-labelledby="residents-title">
+  <div class="mx-auto grid max-w-360 gap-3 lg:grid-cols-12 lg:grid-rows-[auto_auto]">
+    <div class="flex flex-col justify-between rounded-2xl bg-brand-400 p-7 text-brand-950 sm:p-10 lg:col-span-5 lg:row-span-2">
+      <div>
+        <h2 id="residents-title" class="font-display text-[clamp(2rem,4vw,3.4rem)] leading-[1.02] font-semibold  text-balance" data-reveal>
+          Living in a Nex&#8209;Gen property?
+        </h2>
+        <p class="mt-5 max-w-[40ch] text-brand-950/80" data-reveal data-delay="0.15">
+          Everything you need from us is online, day or night. And when you would rather talk, the office picks up.
+        </p>
+      </div>
+
+      <ul class="mt-12 flex flex-col border-t border-brand-950/15" data-reveal-stagger>
+        {
+          actions.map((a) => (
+            <li class="border-b border-brand-950/15">
+              <a
+                href={a.href}
+                class="group flex items-center gap-4 py-4 transition-opacity duration-300 hover:opacity-80"
+              >
+                <span class="grid size-12 shrink-0 place-items-center rounded-full bg-brand-950 text-brand-300">
+                  <a.icon class="size-5" stroke-width="1.75" />
+                </span>
+                <span class="flex-1">
+                  <span class="font-display block font-semibold tracking-tight">{a.label}</span>
+                  <span class="text-sm text-brand-950/70">{a.text}</span>
+                </span>
+                <ArrowUpRight class="size-5 rotate-45 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-0" stroke-width="1.75" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <figure class="relative min-h-75 overflow-hidden rounded-2xl lg:col-span-4" data-reveal="scale">
+      <Img sizes="(min-width: 1024px) 33vw, 100vw" src={photos.pool.src} alt={photos.pool.alt} width="1536" height="1024" loading="lazy" class="absolute inset-0 size-full object-cover" />
+      <figcaption class="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-brand-950">Pools and sun decks</figcaption>
+    </figure>
+    <figure class="relative min-h-75 overflow-hidden rounded-2xl lg:col-span-3" data-reveal="scale" data-delay="0.1">
+      <Img sizes="(min-width: 1024px) 25vw, 100vw" src={photos.kitchen.src} alt={photos.kitchen.alt} width="1536" height="1024" loading="lazy" class="absolute inset-0 size-full object-cover" />
+      <figcaption class="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-brand-950">Updated kitchens</figcaption>
+    </figure>
+    <figure class="relative min-h-75 overflow-hidden rounded-2xl lg:col-span-3" data-reveal="scale" data-delay="0.15">
+      <Img sizes="(min-width: 1024px) 25vw, 100vw" src={photos.living.src} alt={photos.living.alt} width="1536" height="1024" loading="lazy" class="absolute inset-0 size-full object-cover" />
+      <figcaption class="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-brand-950">Room to settle in</figcaption>
+    </figure>
+    <figure class="relative min-h-75 overflow-hidden rounded-2xl lg:col-span-4" data-reveal="scale" data-delay="0.2">
+      <Img sizes="(min-width: 1024px) 33vw, 100vw" src={photos.pavilion.src} alt={photos.pavilion.alt} width="1536" height="1024" loading="lazy" class="absolute inset-0 size-full object-cover" />
+      <figcaption class="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-brand-950">Outdoor kitchens</figcaption>
+    </figure>
+  </div>
+</section>

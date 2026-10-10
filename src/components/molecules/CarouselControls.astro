@@ -1,0 +1,27 @@
+---
+// Controles de carrusel: flecha anterior, barra de progreso (se desliza con ligero rebote) y flecha siguiente.
+// El script del carrusel los encuentra por data-testi-prev / data-testi-bar / data-testi-next (home.ts).
+import { Button } from '@/components/starwind/button';
+import ArrowLeft from '@tabler/icons/outline/arrow-left.svg';
+import ArrowRight from '@tabler/icons/outline/arrow-right.svg';
+
+interface Props {
+  /** Qué se recorre, para las etiquetas accesibles ("testimonials" → "Previous testimonials") */
+  label: string;
+  class?: string;
+}
+
+const { label, class: className } = Astro.props;
+---
+
+<div class:list={['flex items-center gap-4', className]} data-reveal="from-left">
+  <Button variant="ghost" shape="pill" size="icon" class="text-brand-950 hover:bg-brand-950/5" aria-label={`Previous ${label}`} data-testi-prev>
+    <ArrowLeft class="size-5" stroke-width="1.75" />
+  </Button>
+  <span class="relative h-0.5 w-28 overflow-hidden rounded-full bg-brand-950/15" aria-hidden="true">
+    <span class="absolute inset-y-0 left-0 w-1/3 rounded-full bg-brand-950 transition-transform duration-700 ease-[cubic-bezier(0.34,1.4,0.64,1)] will-change-transform" data-testi-bar></span>
+  </span>
+  <Button variant="ghost" shape="pill" size="icon" class="text-brand-950 hover:bg-brand-950/5" aria-label={`Next ${label}`} data-testi-next>
+    <ArrowRight class="size-5" stroke-width="1.75" />
+  </Button>
+</div>

@@ -1,0 +1,77 @@
+---
+// Tarjeta informativa genérica: un visual arriba (icono, avatares, buscador de muestra…) y título + texto abajo.
+//
+// Slots:
+//   top     → arriba a la izquierda (IconCircle, AvatarGroup, un buscador de muestra…)
+//   aside   → arriba a la derecha (p. ej. un número de paso "01.")
+//   kicker  → justo encima del título (p. ej. un Badge)
+//   default → debajo del texto (p. ej. una cifra grande)
+//   bg      → capa de fondo a sangre, detrás del contenido (mapas, retículas, imágenes)
+//   decor   → elementos absolutos sobre la tarjeta, que pueden sobresalir (polaroids, stickers)
+//
+// <InfoCard title="Find a home near you" text="…" href="/our-properties"><IconCircle slot="top" icon={Search} /></InfoCard>
+import type { HTMLAttributes } from 'astro/types';
+import Card from '@/components/atoms/Card.astro';
+import CardTitle from '@/components/atoms/CardTitle.astro';
+import CardText from '@/components/atoms/CardText.astro';
+
+interface Props extends HTMLAttributes<'div'> {
+  title?: string;
+  text?: string;
+  href?: string;
+  target?: string;
+  rel?: string;
+  tone?: 'white' | 'neutral' | 'brand' | 'dark';
+  /** md: título de tarjeta (20px) · lg: frase destacada (24px) */
+  titleSize?: 'md' | 'lg';
+  /** Alto mínimo común (240px / 320px desde md) */
+  tall?: boolean;
+  /** Clases del bloque de título + texto (p. ej. un ancho máximo) */
+  contentClass?: string;
+  class?: string;
+}
+
+const { title, text, href, target, rel, tone = 'white', titleSize = 'md', tall = false, contentClass, class: className, ...rest } = Astro.props;
+const light = tone === 'brand' || tone === 'dark';
+const hasHeader = Astro.slots.has('top') || Astro.slots.has('aside');
+const hasDecor = Astro.slots.has('decor');
+---
+
+<Card
+  href={href}
+  target={target}
+  rel={rel}
+  tone={tone}
+  class:list={['relative flex flex-col justify-between gap-10', hasDecor ? 'overflow-visible' : 'overflow-hidden', tall && 'min-h-60 md:min-h-80', className]}
+  {...rest}
+>
+  {
+    Astro.slots.has('bg') && (
+      <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl" aria-hidden="true">
+        <slot name="bg" />
+      </div>
+    )
+  }
+  {
+    hasHeader && (
+      <div class="relative flex items-start justify-between gap-4">
+        <slot name="top" />
+        <slot name="aside" />
+      </div>
+    )
+  }
+  <div class:list={['relative mt-auto', contentClass]}>
+    <slot name="kicker" />
+    {
+      title &&
+        (titleSize === 'lg' ? (
+          <p class:list={['font-display max-w-[16ch] text-2xl leading-snug font-semibold tracking-tight', light ? 'text-white' : 'text-brand-950']}>{title}</p>
+        ) : (
+          <CardTitle tone={light ? 'light' : 'dark'}>{title}</CardTitle>
+        ))
+    }
+    {text && <CardText tone={light ? 'light' : 'dark'} flush={!title}>{text}</CardText>}
+    <slot />
+  </div>
+  <slot name="decor" />
+</Card>

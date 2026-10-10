@@ -1,0 +1,20 @@
+---
+// Etiqueta corta en mayúsculas sobre un título de sección.
+// tone: white sobre el fondo gris de la página · brand sobre tarjetas o paneles blancos · dark sobre fondos oscuros.
+interface Props {
+  tone?: 'white' | 'brand' | 'dark';
+  class?: string;
+}
+
+const { tone = 'white', class: className } = Astro.props;
+
+const tones = {
+  white: 'bg-white text-brand-700',
+  brand: 'bg-brand-50 text-brand-700',
+  dark: 'bg-white/10 text-brand-300',
+}[tone];
+---
+
+<span class:list={['inline-block rounded-md px-3 py-1.5 text-xs font-semibold tracking-[0.12em] uppercase sm:text-sm', tones, className]} data-reveal="fade">
+  <slot />
+</span>

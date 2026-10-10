@@ -1,0 +1,14 @@
+---
+// Título de tarjeta (tamaño único del sitio). `as` permite usar un encabezado real cuando corresponda.
+interface Props {
+  as?: 'span' | 'h3' | 'p';
+  tone?: 'dark' | 'light';
+  class?: string;
+}
+
+const { as: Tag = 'span', tone = 'dark', class: className } = Astro.props;
+---
+
+<Tag class:list={['font-display block text-xl font-semibold tracking-tight', tone === 'light' ? 'text-white' : 'text-brand-950', className]}>
+  <slot />
+</Tag>

@@ -1,0 +1,18 @@
+---
+// Menú principal de escritorio (desde lg). El color lo hereda de la barra.
+import NavItem from '@/components/molecules/NavItem.astro';
+import type { NavEntry } from '@/data/navigation';
+
+interface Props {
+  items: NavEntry[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+---
+
+<nav aria-label="Main" class:list={['hidden lg:block', className]}>
+  <ul class="flex items-center gap-1">
+    {items.map((item) => <NavItem item={item} />)}
+  </ul>
+</nav>

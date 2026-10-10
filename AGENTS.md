@@ -28,11 +28,11 @@ Astro + Tailwind v4 + Starwind UI + GSAP + Motion + Lenis, sin React. Iconos: Ta
 ### Estructura
 
 - `astro.config.mjs`: incluye `fonts` (Inter vía Fontsource, self-hosted, con fallback de métricas ajustadas).
-- `src/layouts/BaseLayout.astro`: `<head>` con SEO, `<Font cssVariable="--font-inter" preload />`, `global.css` y `src/scripts/app.ts`.
+- `src/components/templates/BaseLayout.astro`: `<head>` con SEO, `<Font cssVariable="--font-inter" preload />`, `global.css` y `src/scripts/app.ts`.
 - `src/styles/theme.css`: **el único archivo de tema**. Contiene la escala de marca `brand-50…950` (generada) y los tokens semánticos (`--primary`, `--background`, `--muted-foreground`…).
 - `src/styles/global.css`: imports (Tailwind, tw-animate, Lenis, theme), el mapeo `@theme inline` de los tokens a utilidades, las bases y los reveals. Es el único sitio que importa Tailwind.
 - `src/components/starwind/`: componentes de Starwind UI (código propio y editable).
-- `src/components/Container.astro` / `Section.astro`: ancho máximo y espaciado vertical.
+- `src/components/`: componentes por niveles de atomic design (ver «Atomic design»).
 - `src/scripts/app.ts`: inicializa Lenis, los reveals, las escenas y las barras de scroll con `onEveryPage` (`src/scripts/lifecycle.ts`).
 - `src/scripts/animations/`: `gsap.ts`, `smooth-scroll.ts` y `reveal.ts`.
 - `src/scripts/scenes.ts`: escenas de GSAP buscadas por `[data-scene="…"]`.
@@ -54,11 +54,85 @@ npm run accent -- paleta.txt   # o desde un archivo
 - Usa `bg-primary`, `text-primary` o `bg-brand-100…` en las clases. **No escribas colores HEX sueltos.**
 - En Starwind, `accent` es el fondo sutil de hover, no la marca. La marca es `primary` o `brand`.
 
+### Atomic design (obligatorio)
+
+**Nunca HTML suelto.** Toda pieza visual es un componente; las páginas solo componen organismos (y su `<script>` de inicialización). Si algo se repite o podría reutilizarse en otra página, es un componente. Antes de crear uno nuevo, busca si ya existe uno con una variante que sirva; prefiere añadir una variante (`variant`, `tone`, `size`) a un componente genérico antes que crear otro casi igual.
+
+```
+src/components/
+  atoms/        piezas indivisibles: Img, Logo, Avatar, Eyebrow, Card (caja base), CardTitle, CardText, IconCircle,
+                IconText, ArrowCircle, DateBadge, MediaCta, SearchHint, InverseCorner, Section (espaciado de sección)
+  molecules/    combinaciones de átomos con un propósito: ArrowButton, ArrowLink, SectionHeading, AvatarGroup, AvatarStat,
+                InfoCard, MediaCard, QuoteCard, Notch, Popover, SearchField, SegmentedControl, CarouselControls,
+                PostMeta, NavItem, MobileNavItem, LinkList, ContactList, SocialLinks, NewsletterSignup, CtaBlock
+  organisms/    bloques completos: Header, Footer, MobileMenu, PropertyFilter
+    sections/   una sección de página cada uno: Hero, About, Services, Leadership, Properties, Testimonials, News,
+                PropertiesMap, PropertyGrid
+  templates/    BaseLayout (head, fuentes, view transitions, scripts globales)
+  starwind/     primitivas de Starwind UI (Button, Input, Badge…): los átomos y moléculas las usan por dentro
+  _archive/     piezas retiradas; no se importan desde páginas activas
+src/pages/      solo componen: <BaseLayout> + organismos
+src/data/       contenido y datos (site.ts, communities.ts, navigation.ts): nada de textos de datos en los componentes
+```
+
+Reglas:
+
+- Una página no escribe clases ni marcado propio: `<Header /> <main><Hero /> …</main> <Footer />`.
+- Un organismo compone moléculas y átomos; puede tener la rejilla y el orden de su sección, pero no repite estilos que ya tenga un componente.
+- Los componentes reciben datos por props (y slots para contenido rico), no importan textos fijos salvo que sean propios de esa sección.
+- Imports siempre con alias `@/components/<nivel>/<Nombre>.astro`, nunca relativos.
+- Todo lo que el JS necesita encontrar va como `data-*` en el componente (no clases), y su script vive en el componente o en `src/scripts/`.
+- Comentario de cabecera en cada componente: qué es, variantes y slots.
+
+**Tarjetas: un componente genérico con variantes, nunca tarjetas sueltas.**
+
+- `InfoCard` (molécula): visual arriba (slots `top`/`aside`), título + texto abajo, `kicker`, `bg` (capa de fondo), `decor` (elementos que sobresalen). Tonos `white`/`neutral`/`brand`/`dark`, `tall`, `titleSize`.
+- `MediaCard` (molécula): tarjeta con imagen. Variantes `stack` (imagen arriba o abajo), `side`, `overlay` (imagen de fondo), `polaroid`, `image`. Slots `header`, `meta`, `media`, `sub`, `end`, default.
+- `QuoteCard` (molécula): variantes `testimonial` (pestaña del autor) y `person` (persona recortada que sobresale).
+
+**Radios concéntricos (obligatorio).** Radio interior = radio exterior − relleno. Tarjetas de 16px (`rounded-2xl`):
+
+- Tarjeta con imagen dentro: relleno de **8px** e imagen `rounded-lg` (8px) — `MediaCard inset="sm"` (por defecto). Variante `inset="md"`: relleno de 12px e imagen `rounded-sm` (4px).
+- El texto dentro de una tarjeta con imagen usa `card-pad-inset` / `card-pad-inset-md` para quedar a la misma distancia del borde que el resto de tarjetas.
+- Paneles flotantes (desplegables, popovers) de 16px con 8px de relleno: opciones `rounded-lg`.
+- Nunca una imagen o caja interior con el mismo radio que su contenedor si tiene relleno.
+
+### Componentes del sitio (obligatorio)
+
+Todo bloque nuevo se arma con estos componentes; no repitas a mano sus clases.
+
+- **Medidas comunes** (utilidades de `global.css`, salen de la sección About): `section-space` (espacio superior de sección: 40/80/96/112/128 px), `card-pad` (relleno de tarjeta: 24/28/32 px), `grid-gap` (hueco entre tarjetas: 16/20/24 px), `heading-gap` (eyebrow → título) y `action-gap` (título/descripción → acción). Margen lateral: `--gutter` y `.container-site`.
+- `atoms/Section.astro`: toda sección. `width="container"` (por defecto) · `"inset"` (panel a todo el ancho con 12–16 px a los lados) · `"none"`. Props `id`, `labelledby`, `label`, `innerClass`.
+- `molecules/SectionHeading.astro`: eyebrow + título (entra por líneas) + descripción (slot) + acciones (`slot="actions"`). `layout="split"` pone las acciones a la derecha. Un solo tamaño de título para todas las secciones.
+- `atoms/Eyebrow.astro` (tonos `white`, `brand`, `dark`).
+- `atoms/Card.astro` (tonos `white`, `neutral`, `brand`, `dark`; `pad` `md`/`sm`/`none`; con `href` es un enlace) + `atoms/CardTitle.astro` + `atoms/CardText.astro`.
+- `atoms/IconCircle.astro`: icono Tabler en círculo (64/80 px; `size="sm"` 48/56 px).
+- `molecules/ArrowButton.astro`: CTA píldora con círculo de flecha, sobre el Button de Starwind (`variant` `brand`/`dark`/`light`, `size` `md`/`lg`).
+- `molecules/ArrowLink.astro`: enlace de texto con flecha (`variant` `dot`/`underline`).
+- `atoms/Avatar.astro` y `molecules/AvatarGroup.astro`: avatares (24/32/40 px) con foto o iniciales.
+
+### Clases canónicas de Tailwind v4 (obligatorio)
+
+Usa siempre la forma canónica de cada clase (la que sugiere el editor con "Replace with…"); los valores arbitrarios `[…]` solo cuando no exista equivalente en la escala.
+
+- Escala en lugar de píxeles: `size-[460px]` → `size-115`, `w-[300px]` → `w-75`, `size-[18px]` → `size-4.5`, `min-h-[560px]` → `min-h-140`, `max-w-[680px]` → `max-w-170`.
+- Números sin corchetes: `z-[60]` → `z-60`, `duration-[1400ms]` → `duration-1400`, `aspect-[16/10]` → `aspect-16/10`.
+- Variantes de atributo sin corchetes: `data-[open]:` → `data-open:`, `group-data-[scrolled]/header:` → `group-data-scrolled/header:` (con valor sí: `data-[open=true]:`).
+- Negativos y fracciones: `translate-x-[-50%]` → `-translate-x-1/2`.
+- Sintaxis de v4: `bg-linear-to-r` (no `bg-gradient-to-r`), `!` al final (`p-0!`), variables con paréntesis (`px-(--gutter)`).
+
+Antes de dar algo por terminado:
+
+```bash
+npm run lint:classes   # informa de las clases no canónicas
+npm run fix:classes    # las corrige (usa el canonicalizador oficial de Tailwind con el tema del proyecto)
+```
+
 ### Componentes (Starwind UI)
 
 - Se añaden con `npx starwind@latest add <componente> -y`. Ya instalados: button, input, label, textarea, checkbox, select, card y badge.
 - Se importan desde `@/components/starwind/<nombre>`, por ejemplo `import { Button } from '@/components/starwind/button'`.
-- Variantes de Button y Badge: `primary` (marca), `default`, `secondary`, `outline`, `ghost`, `info`, `success`, `warning`, `error`.
+- Variantes de Button y Badge: `primary` (marca), `default`, `secondary`, `outline`, `ghost`, `info`, `success`, `warning`, `error`, y las de la marca Nex-Gen: Button `brand`, `dark`, `light`, `contrast` (con `shape="pill"` y tamaños `pill-md`/`pill-lg`); Badge `brand`, `brand-soft`, `light`, `dark`.
 - Los componentes interactivos (select, dialog…) traen su propio script vanilla. No hace falta React.
 - Formularios: usa HTML nativo con `<form>` y Astro Actions (requiere adaptador) o `fetch` desde un `<script>`.
 
@@ -90,7 +164,7 @@ El catálogo está en https://tabler.io/icons (variantes `outline/` y `filled/`)
 
 ### Imágenes (obligatorio)
 
-- **Todas las imágenes pasan por `<Img>`** (`src/components/Img.astro`): Astro las convierte a **WebP** y genera varias anchuras con `srcset`, así cada pantalla (también las retina) descarga solo lo que necesita. No uses `<img>` a mano.
+- **Todas las imágenes pasan por `<Img>`** (`src/components/atoms/Img.astro`): Astro las convierte a **WebP** y genera varias anchuras con `srcset`, así cada pantalla (también las retina) descarga solo lo que necesita. No uses `<img>` a mano.
 - Las imágenes locales van en `src/assets/images/` (no en `public/`, que no se optimiza) y se referencian con su ruta `"/images/…"`, que `src/lib/images.ts` resuelve. Guarda el original con buena resolución; Astro hace los tamaños.
 - Pasa siempre `sizes` con el ancho real con el que se muestra (p. ej. `sizes="40px"` en un avatar, `sizes="(min-width: 1024px) 33vw, 100vw"` en una tarjeta de 3 columnas). Para un recorte vertical con `object-cover`, calcula el ancho que ocupa la imagen a la altura del marco.
 - Remotas (Unsplash, etc.): el dominio debe estar en `image.domains` de `astro.config.mjs`; se descargan y optimizan al compilar.
@@ -100,7 +174,7 @@ El catálogo está en https://tabler.io/icons (variantes `outline/` y `filled/`)
 ### Convenciones de animación (obligatorias)
 
 - **Todo elemento visible tiene reveal.** Ningún bloque aparece estático: textos, tarjetas, imágenes, listas y footer usan `data-reveal` (o `data-reveal-stagger` en el padre para listas y grupos).
-- **Títulos grandes con la entrada del hero.** Todo `h1`/`h2` (y los titulares de tarjeta destacados) es grande, con `font-display` y un `clamp()` generoso (mínimo de `clamp(2rem,4vw,3.4rem)` en títulos de sección), y lleva `data-scene="split-lines"`: entra por líneas cuando aparece en pantalla. No combines `data-scene="split-lines"` y `data-reveal` en el mismo elemento.
+- **Títulos grandes con la entrada del hero.** Todo `h1`/`h2` (y los titulares de tarjeta destacados) es grande, con `font-display` y un `clamp()` generoso (mínimo de `clamp(2rem,4vw,3.4rem)` en títulos de sección), y lleva `data-scene="split-lines"`: entra por líneas cuando aparece en pantalla. No combines `data-scene="split-lines"` y `data-reveal` en el mismo elemento. La máscara de cada línea (`.split-line-mask` en `global.css`) amplía su recorte para no cortar descendentes (g, y, p) con interlineados ajustados; no la quites.
 - **Botones y enlaces con flecha entran de izquierda a derecha**: `data-reveal="from-left"`, o `data-reveal-stagger="from-left"` en el contenedor si hay varios.
 - **Flechas de botones:** usa `arrow-up-right` girada 45° en reposo (apunta a →) que vuelve a ↗ en hover: `rotate-45 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-0` (el botón lleva `group`). En Tailwind v4 `rotate-*` y `scale-*` son propiedades propias (`rotate`, `scale`): si escribes una transición a mano, inclúyelas.
 - Si un elemento ya se mueve con GSAP (parallax, `data-float`), su reveal es `data-reveal="fade"` para no pelear por el `transform`.

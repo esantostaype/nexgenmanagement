@@ -1,0 +1,68 @@
+---
+// Suscripción a la newsletter: título y texto + campo de email con botón dentro de una píldora (Input y Button de
+// Starwind sin su caja propia). Valida el email; el envío aún no está conectado a ningún servicio.
+import { Button } from '@/components/starwind/button';
+import { Input } from '@/components/starwind/input';
+import ArrowUpRight from '@tabler/icons/outline/arrow-up-right.svg';
+
+interface Props {
+  title: string;
+  text?: string;
+  id?: string;
+  class?: string;
+}
+
+const { title, text, id = 'newsletter-email', class: className } = Astro.props;
+---
+
+<div class:list={['flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6', className]}>
+  <div class="sm:text-right">
+    <p class="font-display font-semibold text-white">{title}</p>
+    {text && <p class="text-sm text-brand-100/60">{text}</p>}
+  </div>
+  <form class="relative w-full sm:w-auto" novalidate data-newsletter>
+    <div class="flex h-14 items-center rounded-full bg-white/8 p-1.5 pl-5 ring-1 ring-white/12 focus-within:ring-brand-400 sm:w-100">
+      <label for={id} class="sr-only">Email address</label>
+      <Input
+        id={id}
+        name="email"
+        type="email"
+        required
+        autocomplete="email"
+        placeholder="your@email.com"
+        class="h-full min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-sm text-white shadow-none placeholder:text-brand-100/45 focus-visible:ring-0 dark:bg-transparent"
+      />
+      <Button type="submit" variant="brand" shape="pill" size="sm" class="group h-full shrink-0 gap-2 px-5">
+        Subscribe
+        <ArrowUpRight class="size-4 rotate-45 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-0" stroke-width="2" />
+      </Button>
+    </div>
+    <p class="absolute top-full left-0 mt-2 pl-5 text-xs text-brand-100/70 data-[tone=error]:text-red-300" role="status" aria-live="polite" data-newsletter-status></p>
+  </form>
+</div>
+
+<script>
+  import { onEveryPage } from '@/scripts/lifecycle';
+
+  onEveryPage(() => {
+    const cleanups = [...document.querySelectorAll<HTMLFormElement>('[data-newsletter]')].map((form) => {
+      const status = form.querySelector<HTMLElement>('[data-newsletter-status]');
+      const input = form.querySelector<HTMLInputElement>('input[type="email"]');
+      const onSubmit = (e: SubmitEvent) => {
+        e.preventDefault();
+        if (!status || !input) return;
+        if (!input.checkValidity()) {
+          status.dataset.tone = 'error';
+          status.textContent = 'Enter a valid email address.';
+          input.focus();
+          return;
+        }
+        status.dataset.tone = 'info';
+        status.textContent = 'Thanks! Newsletter sign-up is not connected yet.';
+      };
+      form.addEventListener('submit', onSubmit);
+      return () => form.removeEventListener('submit', onSubmit);
+    });
+    return () => cleanups.forEach((c) => c());
+  });
+</script>

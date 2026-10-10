@@ -7,16 +7,14 @@ interface MapCommunity {
   city: string;
   state: 'TN' | 'KY' | 'AL';
   hasPhoto: boolean;
-  /** WebP optimizado para el pin (112px) y para la tarjeta emergente (560px) */
+  /** WebP optimizado para el pin (112px) */
   pin: string;
-  card: string;
   url: string | null;
   lat: number;
   lng: number;
   precise: boolean;
 }
 
-const escape = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 /** Las ubicaciones aproximadas (centro de ciudad) se separan un poco para que no se apilen. */
 function spread(list: MapCommunity[]) {
@@ -45,26 +43,6 @@ function pinIcon(c: MapCommunity) {
   });
 }
 
-function cardHtml(c: MapCommunity) {
-  const media = c.hasPhoto
-    ? `<img src="${c.card}" alt="" class="aspect-[16/10] w-full rounded-xl object-cover" />`
-    : `<img src="${c.card}" alt="" class="aspect-[16/10] w-full rounded-xl object-cover" />`;
-  const action = c.url
-    ? `<a href="${c.url}" target="_blank" rel="noopener" class="shrink-0 rounded-full bg-brand-950 px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-brand-800">Visit site</a>`
-    : `<span class="shrink-0 text-xs text-neutral-400">Site soon</span>`;
-  return `
-    <div class="map-card-inner relative w-[260px] rounded-2xl bg-white p-2 shadow-[0_24px_48px_-20px_rgb(7_53_69/0.5)]">
-      ${media}
-      <div class="flex items-end justify-between gap-3 px-1.5 pt-2.5 pb-1">
-        <div class="min-w-0">
-          <p class="font-display truncate text-base leading-tight font-semibold tracking-tight text-brand-950">${escape(c.name)}</p>
-          <p class="mt-0.5 text-xs text-neutral-500">${escape(c.city)}, ${c.state}${c.precise ? '' : ' · approx.'}</p>
-        </div>
-        ${action}
-      </div>
-      <span class="absolute -bottom-1.5 left-1/2 size-3 -translate-x-1/2 rotate-45 rounded-[2px] bg-white" aria-hidden="true"></span>
-    </div>`;
-}
 
 function mountMap(): VoidFunction | void {
   const el = document.getElementById('properties-map');
@@ -142,7 +120,9 @@ function mountMap(): VoidFunction | void {
     open?.marker.getElement()?.classList.remove('is-active');
     open = m;
     m.marker.getElement()?.classList.add('is-active');
-    cardEl.innerHTML = cardHtml(m.c);
+    // La tarjeta es un MediaCard renderizado en la página dentro de <template data-map-card="<nombre>">
+    const tpl = document.querySelector<HTMLTemplateElement>(`template[data-map-card="${CSS.escape(m.c.name)}"]`);
+    cardEl.replaceChildren(tpl ? tpl.content.cloneNode(true) : document.createTextNode(m.c.name));
     cardEl.hidden = false;
     cardEl.classList.remove('pointer-events-none');
     placeCard();
@@ -210,7 +190,7 @@ function mountMap(): VoidFunction | void {
   };
 
   // Indicador deslizante bajo la pastilla de estado elegida
-  const indicator = form?.querySelector<HTMLElement>('[data-state-indicator]');
+  const indicator = form?.querySelector<HTMLElement>('[data-segment-indicator]');
   const moveIndicator = (instant = false) => {
     const checked = form?.querySelector<HTMLInputElement>('input[name="state"]:checked');
     const label = checked?.closest('label');

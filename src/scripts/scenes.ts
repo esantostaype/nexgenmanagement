@@ -14,13 +14,15 @@ export function initScrollScenes() {
       SplitText.create(el, {
         type: 'lines',
         mask: 'lines',
+        // La máscara recibe 'split-line-mask' (global.css amplía su recorte para no cortar descendentes: g, y, p)
+        linesClass: 'split-line',
         autoSplit: true,
         onSplit: (self) => {
           // El CSS lo deja oculto hasta aquí para que no se vea el texto antes de dividirlo
           gsap.set(el, { visibility: 'visible' });
           // Se anima al entrar en pantalla (los que ya están visibles, como el del hero, al instante)
           return gsap.from(self.lines, {
-            yPercent: 110,
+            yPercent: 130,
             duration: 1.1,
             stagger: 0.08,
             ease: 'expo.out',

@@ -1,0 +1,30 @@
+---
+// Columna de enlaces con título (footer, mapas del sitio). Los elementos sin href se muestran como texto.
+interface Props {
+  title: string;
+  links: { label: string; href?: string }[];
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+
+const { title, links, tone = 'light', class: className } = Astro.props;
+---
+
+<nav aria-label={title} class={className}>
+  <p class:list={['font-display font-semibold', tone === 'light' ? 'text-white' : 'text-brand-950']}>{title}</p>
+  <ul class="mt-5 flex flex-col gap-3 text-[0.95rem]">
+    {
+      links.map((l) => (
+        <li>
+          {l.href ? (
+            <a href={l.href} class="transition-colors hover:text-brand-300">
+              {l.label}
+            </a>
+          ) : (
+            <span class="opacity-50">{l.label}</span>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</nav>

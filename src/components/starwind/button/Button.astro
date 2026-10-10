@@ -14,6 +14,7 @@ interface Props
 const {
   variant,
   size,
+  shape,
   as: buttonAs,
   href,
   disabled = false,
@@ -28,7 +29,7 @@ const {
 {
   buttonAs === "a" || href !== undefined ? (
     <a
-      class={button({ variant, size, class: className })}
+      class={button({ variant, size, shape, class: className })}
       href={disabled ? undefined : href}
       aria-disabled={disabled ? "true" : undefined}
       data-disabled={disabled ? "" : undefined}
@@ -40,7 +41,7 @@ const {
     </a>
   ) : (
     <ButtonPrimitive.Root
-      class={button({ variant, size, class: className })}
+      class={button({ variant, size, shape, class: className })}
       disabled={disabled}
       focusableWhenDisabled={focusableWhenDisabled}
       {...rest}
