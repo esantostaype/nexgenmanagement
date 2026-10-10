@@ -10,7 +10,7 @@ import MediaCard from '@/components/molecules/MediaCard.astro';
 import IconCircle from '@/components/atoms/IconCircle.astro';
 import ArrowLink from '@/components/molecules/ArrowLink.astro';
 import { communities, cities, states } from '@/data/communities';
-import { team } from '@/data/site';
+import { teamMembers } from '@/data/team';
 
 const counters = [
   { icon: BuildingCommunity, step: '01', label: 'Properties under management', value: communities.length },
@@ -51,7 +51,7 @@ const counters = [
   </div>
 
   <!-- Equipo -->
-  <InfoCard tone="brand" tall titleSize="lg" title={`A team of ${team.length} people, based in Clarksville.`} class="order-2 md:order-3" data-reveal>
-    <AvatarGroup slot="top" items={team.slice(0, 3).map((m) => ({ src: 'photo' in m ? m.photo : undefined, name: m.name }))} more label="Part of our team" />
+  <InfoCard tone="brand" tall titleSize="lg" title={`A team of ${teamMembers.length} people, based in Clarksville.`} class="order-2 md:order-3" data-reveal>
+    <AvatarGroup slot="top" items={teamMembers.filter((m) => m.avatar).slice(0, 3).map((m) => ({ src: m.avatar, name: m.name }))} more label="Part of our team" />
   </InfoCard>
 </Section>

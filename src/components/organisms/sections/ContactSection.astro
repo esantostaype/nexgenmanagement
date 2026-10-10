@@ -1,0 +1,38 @@
+---
+// Contacto: a la izquierda, cabecera y los datos (teléfono, email, dirección, horario, Google Business) con las redes;
+// a la derecha, el formulario en una tarjeta blanca (ContactForm).
+import Section from '@/components/atoms/Section.astro';
+import Card from '@/components/atoms/Card.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import DetailList from '@/components/molecules/DetailList.astro';
+import SocialLinks from '@/components/molecules/SocialLinks.astro';
+import ContactForm from '@/components/organisms/ContactForm.astro';
+import Phone from '@tabler/icons/outline/phone.svg';
+import Mail from '@tabler/icons/outline/mail.svg';
+import MapPin from '@tabler/icons/outline/map-pin.svg';
+import Clock from '@tabler/icons/outline/clock.svg';
+import BrandGoogle from '@tabler/icons/outline/brand-google.svg';
+import { contact, social } from '@/data/site';
+
+const details = [
+  { icon: Phone, label: 'Phone', lines: [contact.phone], href: contact.phoneHref },
+  { icon: Mail, label: 'Email', lines: [contact.email], href: `mailto:${contact.email}` },
+  { icon: MapPin, label: 'Office', lines: contact.address, href: contact.mapsHref, external: true },
+  { icon: Clock, label: 'Business hours', lines: contact.schedule.map((s) => `${s.days}: ${s.time}`) },
+  { icon: BrandGoogle, label: 'Google Business', lines: ['Nex-Gen Management, LLC'], href: contact.googleBusiness, external: true },
+];
+---
+
+<Section id="get-in-touch" labelledby="contact-title" innerClass="grid gap-10 lg:grid-cols-12 lg:gap-16">
+  <div class="lg:col-span-5">
+    <SectionHeading id="contact-title" eyebrow="Get in touch" title="Quickly contact us.">
+      <p>Call, write or visit our office in downtown Clarksville. We reply within one business day.</p>
+    </SectionHeading>
+    <DetailList items={details} class="action-gap" />
+    <SocialLinks items={social} tone="light" class="action-gap" />
+  </div>
+
+  <Card class="lg:col-span-7 lg:self-start" data-reveal>
+    <ContactForm />
+  </Card>
+</Section>

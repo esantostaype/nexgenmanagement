@@ -1,0 +1,29 @@
+---
+// Tres ondas concéntricas de marca, ancladas abajo y recortadas por su contenedor (ponlo dentro de un padre
+// relative + overflow-hidden). Crecen una tras otra al entrar en pantalla (home.ts, [data-ripples]).
+// size: lg (cita de Billi Jo) · md (tarjetas de perfil). tone: light (celestes, sobre blanco) · dark (sobre brand-950).
+// `class` mueve el centro (p. ej. md:[--rx:86%]).
+interface Props {
+  size?: 'lg' | 'md';
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+
+const { size = 'lg', tone = 'light', class: className } = Astro.props;
+const sizes = size === 'lg' ? ['size-170', 'size-115', 'size-70'] : ['size-120', 'size-85', 'size-50'];
+const fills = tone === 'dark' ? ['bg-brand-900/70', 'bg-brand-800/60', 'bg-brand-700/50'] : ['bg-brand-50', 'bg-brand-100', 'bg-brand-200'];
+const rings = sizes.map((s, i) => `${s} ${fills[i]}`);
+---
+
+<div class:list={['pointer-events-none absolute inset-0 [--rx:50%]', className]} aria-hidden="true" data-ripples>
+  {rings.map((ring) => <span class:list={['absolute bottom-0 left-(--rx) translate-x-[-50%] translate-y-[42%] rounded-full', ring]} data-ripple />)}
+</div>
+
+<style>
+  /* Las ondas empiezan sin tamaño solo si hay JS y movimiento; si no, se ven tal cual */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) [data-ripples]:not([data-shown]) [data-ripple] {
+      transform: scale(0);
+    }
+  }
+</style>

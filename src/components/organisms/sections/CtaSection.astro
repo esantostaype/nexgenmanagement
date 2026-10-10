@@ -1,0 +1,31 @@
+---
+// Cierre de página: eyebrow, título que entra por líneas, texto y CTA que abre el modal de propuesta.
+// Asimétrica: texto a la izquierda y, a la derecha, los datos de contacto directo.
+import Section from '@/components/atoms/Section.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import ArrowButton from '@/components/molecules/ArrowButton.astro';
+import PhoneButton from '@/components/molecules/PhoneButton.astro';
+import { PROPOSAL_DIALOG } from '@/data/forms';
+import { contact } from '@/data/site';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  text?: string;
+}
+
+const { eyebrow = 'Get a proposal', title, text } = Astro.props;
+---
+
+<Section labelledby="cta-title" innerClass="grid items-end gap-10 lg:grid-cols-12">
+  <SectionHeading id="cta-title" eyebrow={eyebrow} title={title} class="lg:col-span-7">
+    {text && <p>{text}</p>}
+    <div slot="actions" class="flex flex-wrap items-center gap-3">
+      <ArrowButton opens={PROPOSAL_DIALOG} variant="dark">Request a proposal</ArrowButton>
+      <PhoneButton phone={contact.phone} href={contact.phoneHref} class="inline-flex! h-14 text-brand-950" />
+    </div>
+  </SectionHeading>
+  <p class="text-neutral-600 lg:col-span-4 lg:col-start-9" data-reveal data-delay="0.2">
+    Prefer email? Write to <a href={`mailto:${contact.email}`} class="font-medium text-brand-950 underline decoration-brand-400 underline-offset-4">{contact.email}</a>. {contact.hours}.
+  </p>
+</Section>

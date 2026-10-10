@@ -1,0 +1,19 @@
+---
+// Dato clave en línea: valor grande + etiqueta en dos líneas (p. ej. en el corte de un hero). Puede repetirse en fila.
+interface Props {
+  value: string | number;
+  label: string;
+  sublabel?: string;
+  class?: string;
+}
+
+const { value, label, sublabel, class: className } = Astro.props;
+---
+
+<span class:list={['flex items-center gap-3', className]}>
+  <span class="font-display text-3xl leading-none font-semibold tracking-tight text-brand-950 tabular-nums md:text-4xl">{value}</span>
+  <span class="text-sm leading-tight">
+    <span class="font-display block font-semibold text-brand-950">{label}</span>
+    {sublabel && <span class="text-neutral-500">{sublabel}</span>}
+  </span>
+</span>

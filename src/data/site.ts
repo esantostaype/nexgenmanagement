@@ -9,6 +9,13 @@ export const contact = {
   email: 'bsuiter@nexgenmgmt.us',
   address: ['705 Red River St STE B', 'Clarksville, TN 37043'],
   hours: 'Mon–Fri · 9AM–5PM',
+  /** Horario completo (página de contacto) */
+  schedule: [
+    { days: 'Monday – Friday', time: '9AM – 5PM' },
+    { days: 'Saturday', time: 'Closed' },
+    { days: 'Sunday', time: 'Closed' },
+  ],
+  googleBusiness: 'https://g.co/kgs/3xUcpVA',
   mapsHref: 'https://maps.google.com/?q=705+Red+River+St+STE+B+Clarksville+TN+37043',
 };
 
@@ -162,42 +169,6 @@ export const award = {
   href: 'https://www.pmaofclarksville.com/',
   photo: '/images/blog/award_nexgen.jpg',
 };
-
-// Últimos posts del blog actual (nexgenmultifamily.com/blog.html). Las páginas de detalle aún no existen.
-export const posts = [
-  {
-    title: 'Management Company of the Year Award',
-    date: '2024-10-01',
-    category: 'Recognition',
-    excerpt: 'Recognized at the Golden Legacy Awards Gala by the Property Management Association of Clarksville.',
-    image: '/images/blog/award_nexgen.jpg',
-    href: '/blog/management-company-of-the-year',
-  },
-  {
-    title: 'Fair Housing Newsletter',
-    date: '2024-10-02',
-    category: 'Fair housing',
-    excerpt: 'Keeping you current on fair housing news and issues, with attorney Angelita Fisher.',
-    image: '/images/blog/news_letter.jpg',
-    href: '/blog/fair-housing-newsletter',
-  },
-  {
-    title: 'Nex-Gen Events 2024',
-    date: '2024',
-    category: 'Events',
-    excerpt: 'Networking, industry insights and workshops tailored for property professionals.',
-    image: '/images/blog/events.jpg',
-    href: '/blog/nex-gen-events-2024',
-  },
-  {
-    title: 'From a $1 ballpark to $14 million in luxury apartments',
-    date: '2024-07-18',
-    category: 'Industry',
-    excerpt: 'How an abandoned baseball stadium in Indianapolis became a sought-after apartment community.',
-    image: '/images/blog/stadium.jpg',
-    href: '/blog/ballpark-to-apartments',
-  },
-];
 
 // ------------------------------------------------------------------ Servicios (nexgenmultifamily.com/services.html)
 // Orden del ciclo de la inversión. Imágenes de Unsplash (referencia temática, no son de Nex-Gen).

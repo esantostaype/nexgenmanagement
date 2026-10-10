@@ -21,7 +21,7 @@ interface Props extends HTMLAttributes<'div'> {
   href?: string;
   target?: string;
   rel?: string;
-  tone?: 'white' | 'neutral' | 'brand' | 'dark';
+  tone?: 'white' | 'neutral' | 'brand' | 'dark' | 'glass';
   /** md: título de tarjeta (20px) · lg: frase destacada (24px) */
   titleSize?: 'md' | 'lg';
   /** Alto mínimo común (240px / 320px desde md) */
@@ -32,7 +32,7 @@ interface Props extends HTMLAttributes<'div'> {
 }
 
 const { title, text, href, target, rel, tone = 'white', titleSize = 'md', tall = false, contentClass, class: className, ...rest } = Astro.props;
-const light = tone === 'brand' || tone === 'dark';
+const light = tone === 'brand' || tone === 'dark' || tone === 'glass';
 const hasHeader = Astro.slots.has('top') || Astro.slots.has('aside');
 const hasDecor = Astro.slots.has('decor');
 ---

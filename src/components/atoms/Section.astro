@@ -1,5 +1,6 @@
 ---
 // Sección de página con el espaciado superior común (section-space: 40/80/96/112/128 px).
+// space="start": la mitad (section-space-start), para la primera sección de una página interna.
 // - container (por defecto): el contenido va dentro de .container-site (1320px + --gutter).
 // - inset: en lugar del container, 12–16px a los lados (paneles a todo el ancho, como Services).
 // - none: sin envoltorio (el contenido decide su ancho).
@@ -14,17 +15,18 @@ interface Props extends HTMLAttributes<'section'> {
   width?: 'container' | 'inset' | 'none';
   /** Clases del envoltorio interior (container o inset) */
   innerClass?: string;
+  space?: 'full' | 'start';
   class?: string;
 }
 
-const { id, labelledby, label, width = 'container', innerClass, class: className, ...rest } = Astro.props;
+const { id, labelledby, label, width = 'container', innerClass, space = 'full', class: className, ...rest } = Astro.props;
 ---
 
 <section
   id={id}
   aria-labelledby={labelledby}
   aria-label={label}
-  class:list={['section-space', id && 'scroll-mt-28', width === 'inset' && 'px-3 sm:px-4', className]}
+  class:list={[space === 'start' ? 'section-space-start' : 'section-space', id && !className?.includes('scroll-mt-') && 'scroll-mt-28', width === 'inset' && 'px-3 sm:px-4', className]}
   {...rest}
 >
   {

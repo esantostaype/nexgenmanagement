@@ -1,0 +1,48 @@
+---
+// Marco de retrato: la persona recortada (PNG/WebP transparente) sobre las ondas de marca. Sin foto, las iniciales.
+//   tone: dark (fondo brand-950, ondas oscuras) · light (fondo brand-50 suave, ondas celestes, como ProfileCard)
+//   popout: la cabeza sobresale un poco por encima del marco (deja ~16px libres arriba)
+// Radio 8px: va dentro de tarjetas o modales de 16px.
+// <PortraitFrame photo="/images/team/…-cutout.webp" name="Katie Newcomb" sizes="300px" />
+import Img from '@/components/atoms/Img.astro';
+import Ripples from '@/components/atoms/Ripples.astro';
+
+interface Props {
+  name: string;
+  photo?: string;
+  photoAlt?: string;
+  sizes: string;
+  /** Proporción del marco */
+  ratio?: string;
+  loading?: 'lazy' | 'eager';
+  tone?: 'dark' | 'light';
+  popout?: boolean;
+  class?: string;
+}
+
+const { name, photo, photoAlt = name, sizes, ratio = 'aspect-4/5', loading = 'lazy', tone = 'dark', popout = false, class: className } = Astro.props;
+const dark = tone === 'dark';
+const initials = name
+  .split(' ')
+  .map((w) => w[0])
+  .slice(0, 2)
+  .join('');
+---
+
+<div class:list={['relative isolate', ratio, className]}>
+  <div class:list={['absolute inset-0 -z-10 overflow-hidden rounded-lg', dark ? 'bg-brand-950' : 'bg-brand-50/60']}>
+    <Ripples size="md" tone={tone} />
+  </div>
+  <!-- Recorte solo abajo y a los lados: con popout la capa sube y la cabeza asoma por encima del marco -->
+  {
+    photo ? (
+      <div class:list={['absolute inset-x-0 bottom-0 overflow-hidden rounded-b-lg', popout ? '-top-5' : 'top-0 rounded-t-lg']}>
+        <Img src={photo} alt={photoAlt} sizes={sizes} loading={loading} class="absolute top-0 left-1/2 h-full w-auto max-w-none -translate-x-1/2" />
+      </div>
+    ) : (
+      <span class:list={['font-display absolute inset-0 grid place-items-center text-6xl font-semibold tracking-tight', dark ? 'text-brand-300' : 'text-brand-700']} aria-hidden="true">
+        {initials}
+      </span>
+    )
+  }
+</div>

@@ -1,0 +1,29 @@
+---
+// Preguntas frecuentes: cabecera fija a la izquierda (5 columnas) y el acordeón a la derecha (7).
+import Section from '@/components/atoms/Section.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import FaqList from '@/components/molecules/FaqList.astro';
+import ArrowLink from '@/components/molecules/ArrowLink.astro';
+import { contact } from '@/data/site';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  text?: string;
+  items: { q: string; a: string }[];
+}
+
+const { eyebrow = 'FAQ', title, text, items } = Astro.props;
+---
+
+<Section id="faq" labelledby="faq-title" innerClass="grid gap-10 lg:grid-cols-12 lg:gap-16">
+  <div class="lg:col-span-5">
+    <div class="lg:sticky lg:top-32">
+      <SectionHeading id="faq-title" eyebrow={eyebrow} title={title}>
+        {text && <p>{text}</p>}
+        <ArrowLink slot="actions" href={`mailto:${contact.email}`}>Email our team</ArrowLink>
+      </SectionHeading>
+    </div>
+  </div>
+  <FaqList items={items} class="lg:col-span-7" />
+</Section>

@@ -1,0 +1,81 @@
+---
+// Tipografía para contenido largo en Markdown (cuerpo de un post): párrafos, h2/h3, listas, citas, enlaces y negritas
+// con la escala del sitio. Envuelve el <Content /> de una entrada de colección.
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string;
+}
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<div class:list={['prose-site', className]} {...rest}>
+  <slot />
+</div>
+
+<style>
+  .prose-site {
+    color: var(--color-neutral-600);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+  .prose-site :global(> * + *) {
+    margin-top: 1.25em;
+  }
+  .prose-site :global(h2) {
+    margin-top: 2em;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-brand-950);
+  }
+  .prose-site :global(h3) {
+    margin-top: 1.75em;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-brand-950);
+  }
+  .prose-site :global(h2 + *),
+  .prose-site :global(h3 + *) {
+    margin-top: 0.75em;
+  }
+  .prose-site :global(strong) {
+    font-weight: 600;
+    color: var(--color-brand-950);
+  }
+  .prose-site :global(a) {
+    color: var(--color-brand-700);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .prose-site :global(ul),
+  .prose-site :global(ol) {
+    display: grid;
+    gap: 0.6em;
+    padding-left: 1.25em;
+  }
+  .prose-site :global(ul) {
+    list-style: disc;
+  }
+  .prose-site :global(ol) {
+    list-style: decimal;
+  }
+  .prose-site :global(li::marker) {
+    color: var(--color-brand-500);
+    font-weight: 600;
+  }
+  .prose-site :global(blockquote) {
+    border-left: 3px solid var(--color-brand-400);
+    padding-left: 1.25em;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.4;
+    color: var(--color-brand-950);
+  }
+</style>

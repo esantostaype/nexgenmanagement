@@ -1,0 +1,66 @@
+---
+// Listado del blog: el post más reciente destacado a lo ancho (MediaCard side) y el resto en una rejilla de tarjetas
+// (MediaCard stack) con categoría, fecha y extracto.
+import Section from '@/components/atoms/Section.astro';
+import DateBadge from '@/components/atoms/DateBadge.astro';
+import ArrowCircle from '@/components/atoms/ArrowCircle.astro';
+import MediaCard from '@/components/molecules/MediaCard.astro';
+import PostMeta from '@/components/molecules/PostMeta.astro';
+import ArrowLink from '@/components/molecules/ArrowLink.astro';
+import { Badge } from '@/components/starwind/badge';
+import { getPosts, postBadge, postDate, postUrl } from '@/lib/blog';
+
+const [featured, ...rest] = await getPosts();
+const badge = postBadge(featured);
+---
+
+<Section id="posts" label="Blog posts">
+  <MediaCard
+    variant="side"
+    as="article"
+    tone="white"
+    pad="sm"
+    href={postUrl(featured)}
+    image={featured.data.image}
+    imageAlt={featured.data.imageAlt}
+    sizes="(min-width: 640px) 55vw, 100vw"
+    ratio="aspect-16/10"
+    class="transition-shadow duration-500 hover:shadow-[0_24px_48px_-28px_rgb(7_53_69/0.5)]"
+    data-reveal
+  >
+    <DateBadge slot="media" day={badge.day} month={badge.month} class="absolute top-3 left-3 sm:top-4 sm:left-4" />
+    <span slot="header" class="block p-3 sm:p-6 lg:p-10">
+      <Badge variant="brand-soft" size="md" class="w-fit py-1.5">Latest · {featured.data.category}</Badge>
+      <h2 class="font-display heading-gap text-[clamp(1.6rem,3vw,2.5rem)] leading-[1.08] font-medium text-balance text-brand-950">{featured.data.title}</h2>
+      <span class="action-gap block max-w-[46ch] leading-relaxed text-neutral-600">{featured.data.excerpt}</span>
+      <ArrowLink inGroup class="action-gap">Read article</ArrowLink>
+    </span>
+  </MediaCard>
+
+  <ul class="grid-gap mt-6 grid sm:grid-cols-2 lg:mt-8 lg:grid-cols-3" data-reveal-stagger>
+    {
+      rest.map((post) => (
+        <li>
+          <MediaCard
+            as="article"
+            href={postUrl(post)}
+            image={post.data.image}
+            imageAlt={post.data.imageAlt}
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            ratio="aspect-16/10"
+            title={post.data.title}
+            titleAs="h3"
+            text={post.data.excerpt}
+            class="transition-shadow duration-500 hover:shadow-[0_24px_48px_-28px_rgb(7_53_69/0.5)]"
+          >
+            <Badge slot="media" variant="light" size="sm" class="absolute top-3 left-3 py-1">
+              {post.data.category}
+            </Badge>
+            <PostMeta slot="meta" date={postDate(post)} category={post.data.source ? `Via ${post.data.source.name}` : 'Nex-Gen'} class="mb-3" />
+            <ArrowCircle slot="end" />
+          </MediaCard>
+        </li>
+      ))
+    }
+  </ul>
+</Section>

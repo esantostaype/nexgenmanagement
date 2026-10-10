@@ -54,6 +54,18 @@
       "version": "1.5.0",
       "framework": "astro",
       "registry": "default"
+    },
+    {
+      "name": "dialog",
+      "version": "2.0.3",
+      "framework": "astro",
+      "registry": "default"
+    },
+    {
+      "name": "accordion",
+      "version": "2.0.4",
+      "framework": "astro",
+      "registry": "default"
     }
   ],
   "tailwind": {

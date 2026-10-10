@@ -1,5 +1,4 @@
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import { onEveryPage } from './lifecycle';
 
 interface MapCommunity {
@@ -82,11 +81,13 @@ function mountMap(): VoidFunction | void {
   const narrow = () => el.clientWidth < 640;
   const fitOptions = () => ({
     paddingTopLeft: (narrow() ? [24, 250] : [60, 200]) as L.PointExpression,
-    paddingBottomRight: (narrow() ? [24, 170] : [60, 40]) as L.PointExpression,
+    // Sin corte por debajo de 1280px (el título va bajo el mapa): poco margen abajo
+    paddingBottomRight: (narrow() ? [24, 40] : [60, 40]) as L.PointExpression,
   });
 
   const layer = L.featureGroup(markers.map((m) => m.marker)).addTo(map);
   map.fitBounds(layer.getBounds(), fitOptions());
+
 
   // Tarjeta de la propiedad: elemento propio (no popup de Leaflet) para poder quedar por encima del buscador
   const cardEl = document.querySelector<HTMLElement>('[data-map-card]');
@@ -189,31 +190,9 @@ function mountMap(): VoidFunction | void {
     if (fit && visible.length) map.flyToBounds(layer.getBounds(), { ...fitOptions(), maxZoom: 13, duration: 0.8 });
   };
 
-  // Indicador deslizante bajo la pastilla de estado elegida
-  const indicator = form?.querySelector<HTMLElement>('[data-segment-indicator]');
-  const moveIndicator = (instant = false) => {
-    const checked = form?.querySelector<HTMLInputElement>('input[name="state"]:checked');
-    const label = checked?.closest('label');
-    if (!indicator || !label) return;
-    if (instant) indicator.style.transition = 'none';
-    indicator.style.width = `${label.offsetWidth}px`;
-    indicator.style.transform = `translateX(${label.offsetLeft}px)`;
-    if (instant) {
-      void indicator.offsetWidth; // aplica la posición antes de reactivar la transición
-      indicator.style.transition = '';
-    }
-  };
-  moveIndicator(true);
-  document.fonts.ready.then(() => moveIndicator(true));
-  const onResize = () => moveIndicator(true);
-  window.addEventListener('resize', onResize);
-
   // Pastillas de estado: reencuadran el mapa
   form?.querySelectorAll<HTMLInputElement>('input[name="state"]').forEach((r) =>
-    r.addEventListener('change', () => {
-      moveIndicator();
-      apply(true);
-    }),
+    r.addEventListener('change', () => apply(true)),
   );
   form?.querySelector('input[name="q"]')?.addEventListener('input', () => apply(false));
   form?.addEventListener('submit', (e) => {
@@ -233,7 +212,6 @@ function mountMap(): VoidFunction | void {
     document.removeEventListener('keydown', onKey);
     el.removeEventListener('wheel', onWheel);
     window.clearTimeout(hintTimer);
-    window.removeEventListener('resize', onResize);
     map.remove();
   };
 }
@@ -246,3 +224,7 @@ export function initPropertiesMap() {
   bound = true;
   onEveryPage(mountMap);
 }
+
+// Desarrollo: este módulo registra inicializaciones por página (onEveryPage). Si Vite lo recargara en caliente,
+// quedarían duplicadas (la versión vieja y la nueva) y fallarían al navegar: al cambiar, se recarga la página entera.
+import.meta.hot?.accept(() => location.reload());

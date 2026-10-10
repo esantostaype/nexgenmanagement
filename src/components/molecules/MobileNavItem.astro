@@ -1,7 +1,8 @@
 ---
 // Elemento del menú móvil: enlace, texto (sin página aún) o acordeón con su submenú ([data-submenu-toggle], home.ts).
+// La página actual va en el celeste de marca (aria-current).
 import ChevronDown from '@tabler/icons/outline/chevron-down.svg';
-import type { NavEntry } from '@/data/navigation';
+import { isActive, type NavEntry } from '@/data/navigation';
 
 interface Props {
   item: NavEntry;
@@ -10,7 +11,9 @@ interface Props {
 }
 
 const { item, id } = Astro.props;
-const base = 'font-display block py-2 text-[1.375rem] font-medium tracking-tight';
+const base = 'font-display block py-2 text-[1.375rem] font-medium tracking-tight aria-[current=page]:text-brand-400';
+const path = Astro.url.pathname;
+const current = (href?: string) => (isActive(href, path) ? ('page' as const) : undefined);
 ---
 
 <li class="w-full">
@@ -26,7 +29,7 @@ const base = 'font-display block py-2 text-[1.375rem] font-medium tracking-tight
             {item.children.map((child, j) => (
               <li class:list={[j === 0 && 'pt-1', j === item.children!.length - 1 && 'pb-3']}>
                 {child.href ? (
-                  <a href={child.href} class="block py-1 text-base text-white/70 hover:text-white">
+                  <a href={child.href} aria-current={current(child.href)} class="block py-1 text-base text-white/70 hover:text-white aria-[current=page]:text-brand-400">
                     {child.label}
                   </a>
                 ) : (
@@ -38,7 +41,7 @@ const base = 'font-display block py-2 text-[1.375rem] font-medium tracking-tight
         </div>
       </>
     ) : item.href ? (
-      <a href={item.href} class={base}>
+      <a href={item.href} aria-current={current(item.href)} class={base}>
         {item.label}
       </a>
     ) : (

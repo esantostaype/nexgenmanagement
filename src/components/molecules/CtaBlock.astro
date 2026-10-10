@@ -4,13 +4,15 @@ import ArrowButton from '@/components/molecules/ArrowButton.astro';
 
 interface Props {
   text: string;
-  href: string;
+  href?: string;
+  /** id del Dialog que abre en lugar de navegar */
+  opens?: string;
   label: string;
   tone?: 'light' | 'dark';
   class?: string;
 }
 
-const { text, href, label, tone = 'dark', class: className } = Astro.props;
+const { text, href, opens, label, tone = 'dark', class: className } = Astro.props;
 ---
 
 <div class={className}>
@@ -21,6 +23,6 @@ const { text, href, label, tone = 'dark', class: className } = Astro.props;
     {text}
   </p>
   <div class="action-gap" data-reveal="from-left">
-    <ArrowButton href={href}>{label}</ArrowButton>
+    <ArrowButton href={href} opens={opens}>{label}</ArrowButton>
   </div>
 </div>

@@ -3,6 +3,9 @@
 // filtros encima, tarjeta flotante por propiedad y el corte con el título. La lógica está en properties-map.ts.
 // isolate: los z-index del buscador y de Leaflet quedan dentro de la tarjeta, por debajo del header.
 import { getImage } from 'astro:assets';
+// CSS de Leaflet aquí (no en properties-map.ts): así va en el <head> de esta página y <ClientRouter /> lo mantiene
+// al volver a ella. Importado desde el script, en desarrollo Vite lo inyecta una sola vez y se pierde al navegar.
+import 'leaflet/dist/leaflet.css';
 import Notch from '@/components/molecules/Notch.astro';
 import MediaCard from '@/components/molecules/MediaCard.astro';
 import Popover from '@/components/molecules/Popover.astro';
@@ -28,8 +31,11 @@ const mapData = await Promise.all(
 );
 ---
 
-<section class="h-[min(70svh,640px)] min-h-140 p-3 sm:p-4" aria-labelledby="properties-title">
-  <div class="relative isolate h-full transform-gpu overflow-hidden rounded-2xl rounded-bl-none bg-neutral-200">
+<!-- Desde 1280px: tarjeta con corte (como el hero de la home). Por debajo: tarjeta rectangular redondeada y el título
+     debajo. El corte va fuera de la tarjeta (sobre ella con z-750) para poder pasar a bloque normal. -->
+<section class="page-hero p-3 sm:p-4 xl:h-[min(70svh,640px)] xl:min-h-140" aria-labelledby="properties-title">
+  <div class="relative xl:h-full">
+  <div class="relative isolate h-[min(70svh,560px)] min-h-110 transform-gpu overflow-hidden rounded-2xl bg-neutral-200 xl:h-full xl:rounded-bl-none">
     <!-- Tinte del mapa: pasa las teselas a gris puro y las oscurece un poco a la escala neutral de Tailwind
          (tierra = neutral-200 #e5e5e5; agua, ríos y fronteras más oscuros para que contrasten) -->
     <svg class="absolute size-0" aria-hidden="true" focusable="false">
@@ -59,10 +65,13 @@ const mapData = await Promise.all(
     <!-- Contenedor de la tarjeta de la propiedad elegida: sigue al pin (z 700) -->
     <div class="pointer-events-none absolute top-0 left-0 z-700" data-map-card hidden></div>
 
-    <Notch class="z-650">
-      <h1 id="properties-title" class="font-display text-[clamp(1.5rem,4vw,2.5rem)] leading-[1.02] font-semibold text-brand-950" data-scene="split-lines">{title}</h1>
-      <p class="mt-2 max-w-[48ch] text-neutral-600" data-reveal data-delay="0.15">{text}</p>
-    </Notch>
+  </div>
+
+  <!-- Corte con el título: por encima de las tarjetas flotantes de las propiedades (z 700) -->
+  <Notch class="z-750" stackBelow>
+    <h1 id="properties-title" class="font-display text-[clamp(1.5rem,4vw,2.5rem)] leading-[1.02] font-semibold text-brand-950" data-scene="split-lines">{title}</h1>
+    <p class="mt-2 max-w-[48ch] text-neutral-600" data-reveal data-delay="0.15">{text}</p>
+  </Notch>
   </div>
 </section>
 

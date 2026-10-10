@@ -1,0 +1,128 @@
+---
+// Tarjeta de persona: recorte PNG (fondo transparente) sobre las ondas de marca, nombre, cargo y contacto.
+// Relleno de 8px y la foto con radio 8px (16 − 8). Sirve para realtors, equipo, etc.
+// `popout`: la persona es más grande y la cabeza sobresale por encima de la tarjeta (deja ese espacio arriba).
+// variant="portrait": retrato a toda la anchura sobre brand-950 con ondas (PortraitFrame), nombre y cargo; con `opens`
+// toda la tarjeta abre ese modal (p. ej. la bio). `opens` y `compact` también sirven en la variante por defecto (cutout).
+// Sin foto, muestra las iniciales.
+//
+// <ProfileCard name="Rebecca Strong" role="Realtor" photo="/images/brand/…png" email="…" phone="…" phoneHref="tel:…" />
+import Img from '@/components/atoms/Img.astro';
+import Card from '@/components/atoms/Card.astro';
+import CardTitle from '@/components/atoms/CardTitle.astro';
+import IconText from '@/components/atoms/IconText.astro';
+import Ripples from '@/components/atoms/Ripples.astro';
+import ArrowCircle from '@/components/atoms/ArrowCircle.astro';
+import PortraitFrame from '@/components/molecules/PortraitFrame.astro';
+import Mail from '@tabler/icons/outline/mail.svg';
+import Phone from '@tabler/icons/outline/phone.svg';
+
+interface Props {
+  variant?: 'cutout' | 'portrait';
+  name: string;
+  role?: string;
+  /** Recorte con fondo transparente (en portrait es opcional: sin foto, iniciales) */
+  photo?: string;
+  photoAlt?: string;
+  email?: string;
+  phone?: string;
+  phoneHref?: string;
+  /** Etiqueta del nombre (h3 en listados) */
+  titleAs?: 'span' | 'h3' | 'p';
+  popout?: boolean;
+  /** id del modal que abre la tarjeta (p. ej. la bio): toda la tarjeta es el botón */
+  opens?: string;
+  /** Solo nombre y cargo, en pequeño (rejillas de equipo) */
+  compact?: boolean;
+  class?: string;
+}
+
+const { variant = 'cutout', name, role, photo, photoAlt = name, email, phone, phoneHref, titleAs = 'h3', popout = false, opens, compact = false, class: className } = Astro.props;
+const initials = name
+  .split(' ')
+  .map((w) => w[0])
+  .slice(0, 2)
+  .join('');
+const link = 'w-fit max-w-full text-[0.95rem] text-neutral-600 transition-colors hover:text-brand-700';
+---
+
+{
+  variant === 'portrait' ? (
+    <Card pad="none" class:list={['group relative flex h-full flex-col p-2', opens && 'transition-shadow duration-500 hover:shadow-[0_24px_48px_-28px_rgb(7_53_69/0.5)]', className]} data-reveal>
+      <PortraitFrame name={name} photo={photo} photoAlt={photoAlt} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw" />
+      <div class="flex flex-1 items-end justify-between gap-3 px-2 pt-3 pb-1 sm:px-3 sm:pt-4 sm:pb-2">
+        <div class="min-w-0">
+          <CardTitle as={titleAs} class="text-base sm:text-lg">{name}</CardTitle>
+          {role && <p class="mt-0.5 text-xs text-neutral-500 sm:text-sm">{role}</p>}
+        </div>
+        {opens && <ArrowCircle class="shrink-0" />}
+      </div>
+      {opens && (
+        <button
+          type="button"
+          class="absolute inset-0 rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+          aria-label={`Open bio: ${name}`}
+          aria-haspopup="dialog"
+          data-sw-dialog-trigger
+          data-sw-dialog-target-id={opens}
+        />
+      )}
+    </Card>
+  ) : (
+    <Card pad="none" class:list={['group relative flex h-full flex-col p-2', opens && 'transition-shadow duration-500 hover:shadow-[0_24px_48px_-28px_rgb(7_53_69/0.5)]', className]} data-reveal>
+      <div class="relative aspect-4/3">
+        <div class="absolute inset-0 overflow-hidden rounded-lg bg-white">
+          <Ripples size="md" />
+        </div>
+        <!-- Recorte solo abajo y a los lados: con popout la capa sube 80px (la cabeza queda fuera de la tarjeta) y la persona,
+             más grande (120%) y anclada arriba, se corta a la altura de la cintura -->
+        <div class:list={['absolute inset-x-0 bottom-0 overflow-hidden rounded-b-lg', popout ? '-top-20' : 'top-0']}>
+          {photo ? (
+            <Img src={photo} alt={photoAlt} sizes="400px" loading="lazy" class:list={['absolute left-1/2 w-auto max-w-none -translate-x-1/2', popout ? (compact ? 'top-8 h-[120%]' : 'top-9 h-[120%]') : 'bottom-0 h-11/12']} />
+          ) : (
+            <span class="font-display absolute inset-x-0 bottom-0 grid h-[calc(100%-5rem)] place-items-center text-5xl font-semibold tracking-tight text-brand-700" aria-hidden="true">
+              {initials}
+            </span>
+          )}
+        </div>
+      </div>
+      <div class:list={['flex flex-1', compact ? 'items-end justify-between gap-3 px-2 pt-3 pb-1 sm:px-3 sm:pt-4 sm:pb-2' : 'card-pad-inset flex-col']}>
+        <div class="min-w-0">
+          <CardTitle as={titleAs} class={compact ? 'text-base leading-[1.1] sm:text-lg' : undefined}>{name}</CardTitle>
+          {role && <p class:list={['text-neutral-500', compact ? 'mt-1 text-xs leading-tight sm:text-sm' : 'mt-1 text-sm']}>{role}</p>}
+        </div>
+        {opens && <ArrowCircle class="shrink-0" />}
+        {
+          (email || phone) && (
+            <address class="mt-5 flex flex-col gap-2 border-t border-neutral-100 pt-5 not-italic">
+              {email && (
+                <a href={`mailto:${email}`} class={link}>
+                  <IconText icon={Mail} iconClass="text-brand-500" truncate>
+                    {email}
+                  </IconText>
+                </a>
+              )}
+              {phone && (
+                <a href={phoneHref} class={link}>
+                  <IconText icon={Phone} iconClass="text-brand-500" class="tabular-nums">
+                    {phone}
+                  </IconText>
+                </a>
+              )}
+            </address>
+          )
+        }
+      </div>
+      {opens && (
+        <button
+          type="button"
+          class="absolute inset-0 rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+          aria-label={`Open bio: ${name}`}
+          aria-haspopup="dialog"
+          data-sw-dialog-trigger
+          data-sw-dialog-target-id={opens}
+        />
+      )}
+    </Card>
+  )
+}

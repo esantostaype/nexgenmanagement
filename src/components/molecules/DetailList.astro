@@ -1,0 +1,38 @@
+---
+// Lista de datos con icono en círculo, etiqueta pequeña y valor (contacto, dirección, horario…). Con `href` el valor
+// es un enlace; `lines` permite valores de varias líneas (una dirección).
+// <DetailList items={[{ icon: Phone, label: 'Phone', lines: ['(931) 503-7000'], href: 'tel:…' }]} />
+interface Props {
+  items: { icon: (props: Record<string, unknown>) => unknown; label: string; lines: readonly string[]; href?: string; external?: boolean }[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+---
+
+<ul class:list={['grid gap-5', className]} data-reveal-stagger>
+  {
+    items.map(({ icon: Icon, label, lines, href, external }) => {
+      const Tag = href ? 'a' : 'span';
+      return (
+        <li>
+          <Tag
+            href={href}
+            {...(external ? { target: '_blank', rel: 'noopener' } : {})}
+            class:list={['group flex items-start gap-4', href && 'w-fit']}
+          >
+            <span class="grid size-11 shrink-0 place-items-center rounded-full bg-white text-brand-700 transition-colors duration-300 group-hover:bg-brand-950 group-hover:text-brand-300" aria-hidden="true">
+              <Icon class="size-5" stroke-width="1.75" />
+            </span>
+            <span class="block pt-0.5">
+              <span class="block text-xs font-semibold tracking-[0.12em] text-neutral-500 uppercase">{label}</span>
+              <span class:list={['mt-1 block leading-snug text-brand-950', href && 'transition-colors group-hover:text-brand-700']}>
+                {lines.map((line, i) => (i ? [<br />, line] : line))}
+              </span>
+            </span>
+          </Tag>
+        </li>
+      );
+    })
+  }
+</ul>

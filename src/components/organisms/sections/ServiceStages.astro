@@ -1,0 +1,14 @@
+---
+// Las cuatro etapas de servicios con la navegación por anclas fija encima (el sticky necesita este contenedor común).
+// Las etapas alternan el lado de su columna fija para mantener el ritmo asimétrico de la home.
+import AnchorNav from '@/components/molecules/AnchorNav.astro';
+import ServiceStage from '@/components/organisms/sections/ServiceStage.astro';
+import { serviceStages } from '@/data/services';
+
+const number = (i: number) => String(i + 1).padStart(2, '0');
+---
+
+<div class="pt-6 md:pt-8">
+  <AnchorNav label="Service stages" items={serviceStages.map((s, i) => ({ id: s.id, label: s.label, number: number(i) }))} class="px-3" />
+  {serviceStages.map((stage, i) => <ServiceStage stage={stage} number={number(i)} reverse={i % 2 === 1} first={i === 0} />)}
+</div>

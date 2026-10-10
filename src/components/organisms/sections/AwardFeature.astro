@@ -1,0 +1,32 @@
+---
+// Premio destacado: tarjeta con la foto a la izquierda y el reconocimiento a la derecha (MediaCard side).
+import Section from '@/components/atoms/Section.astro';
+import Eyebrow from '@/components/atoms/Eyebrow.astro';
+import MediaCard from '@/components/molecules/MediaCard.astro';
+import ArrowLink from '@/components/molecules/ArrowLink.astro';
+import { award } from '@/data/site';
+---
+
+<Section id="award" labelledby="award-title">
+  <MediaCard
+    variant="side"
+    tone="white"
+    pad="sm"
+    image={award.photo}
+    imageAlt={`${award.title} award, ${award.year}`}
+    sizes="(min-width: 640px) 50vw, 100vw"
+    ratio="aspect-4/3"
+    data-reveal
+  >
+    <span slot="header" class="block p-3 sm:p-6 lg:p-10">
+      <Eyebrow tone="brand">Recognition · {award.year}</Eyebrow>
+      <h2 id="award-title" class="font-display heading-gap text-[clamp(1.8rem,3.4vw,2.8rem)] leading-[1.05] font-medium text-balance text-brand-950" data-scene="split-lines">
+        {award.title}
+      </h2>
+      <span class="action-gap block max-w-[42ch] text-lg leading-relaxed text-neutral-600">
+        Awarded by the {award.by} at the Golden Legacy Awards Gala, for the care our teams put into every property.
+      </span>
+      <ArrowLink href={award.href} external class="action-gap">About PMAC</ArrowLink>
+    </span>
+  </MediaCard>
+</Section>

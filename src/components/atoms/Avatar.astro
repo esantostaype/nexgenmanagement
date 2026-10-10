@@ -1,5 +1,6 @@
 ---
-// Avatar redondo: foto (optimizada con <Img>) o iniciales si no hay foto.
+// Avatar redondo: foto (optimizada con <Img>) o iniciales si no hay foto. Detrás de la foto, fondo brand-950: los
+// avatares del equipo son recortes transparentes (src/assets/images/team/avatars).
 // Tamaño responsive con la utilidad `avatar` (global.css): 24px en móvil, 32px en md y 40px en lg.
 import Img from '@/components/atoms/Img.astro';
 
@@ -33,7 +34,7 @@ const SIZES = '(min-width: 1024px) 40px, (min-width: 768px) 32px, 24px';
 
 {
   src ? (
-    <Img src={src} alt={decorative ? '' : name} sizes={SIZES} width="40" height="40" loading="lazy" class:list={['avatar shrink-0 rounded-full object-cover object-top', ringClass, className]} />
+    <Img src={src} alt={decorative ? '' : name} sizes={SIZES} width="40" height="40" loading="lazy" class:list={['avatar shrink-0 rounded-full bg-brand-950 object-cover object-top', ringClass, className]} />
   ) : (
     <span
       class:list={[

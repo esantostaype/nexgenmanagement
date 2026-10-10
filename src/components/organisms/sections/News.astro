@@ -6,23 +6,11 @@ import ArrowLink from '@/components/molecules/ArrowLink.astro';
 import { Badge } from '@/components/starwind/badge';
 import DateBadge from '@/components/atoms/DateBadge.astro';
 import PostMeta from '@/components/molecules/PostMeta.astro';
-import { posts } from '@/data/site';
+import { getPosts, postBadge, postDate, postUrl } from '@/lib/blog';
 
-// Tres más recientes (las fechas con solo año van al final de su año)
-const sortKey = (d: string) => (d.length === 4 ? `${d}-00-00` : d);
-const [featured, ...rest] = [...posts].sort((a, b) => sortKey(b.date).localeCompare(sortKey(a.date))).slice(0, 3);
-
-const parse = (date: string) => (date.length === 4 ? null : new Date(`${date}T12:00:00`));
-const badge = (date: string) => {
-  const d = parse(date);
-  return d ? { day: String(d.getDate()).padStart(2, '0'), month: d.toLocaleString('en-US', { month: 'short' }) } : { day: date, month: 'Year' };
-};
-// "09 May, 2026"
-const longDate = (date: string) => {
-  const d = parse(date);
-  return d ? `${String(d.getDate()).padStart(2, '0')} ${d.toLocaleString('en-US', { month: 'short' })}, ${d.getFullYear()}` : date;
-};
-const b = badge(featured.date);
+// Los tres posts más recientes del blog (colección `blog`)
+const [featured, ...rest] = (await getPosts()).slice(0, 3);
+const b = postBadge(featured);
 ---
 
 <!-- Destacado grande a la izquierda (foto completa, fecha y título encima) y dos posts apilados a la derecha -->
@@ -36,17 +24,18 @@ const b = badge(featured.date);
       <MediaCard
         variant="overlay"
         as="article"
-        href={featured.href}
-        image={featured.image}
+        href={postUrl(featured)}
+        image={featured.data.image}
+        imageAlt={featured.data.imageAlt}
         sizes="(min-width: 1024px) 50vw, 100vw"
-        title={featured.title}
+        title={featured.data.title}
         titleAs="h3"
         titleSize="xl"
         class="min-h-105 lg:min-h-135"
         data-reveal="fade-up"
       >
         <DateBadge slot="media" day={b.day} month={b.month} class="absolute top-6 left-6 sm:top-7 sm:left-7 md:top-8 md:left-8" />
-        <Badge slot="meta" variant="brand" size="md" class="w-fit py-1.5">{featured.category}</Badge>
+        <Badge slot="meta" variant="brand" size="md" class="w-fit py-1.5">{featured.data.category}</Badge>
       </MediaCard>
 
       <!-- Dos posts: foto + fecha, categoría, título y "Explore more" -->
@@ -57,14 +46,15 @@ const b = badge(featured.date);
               <MediaCard
                 variant="side"
                 as="article"
-                href={post.href}
-                image={post.image}
+                href={postUrl(post)}
+                image={post.data.image}
+                imageAlt={post.data.imageAlt}
                 sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                title={post.title}
+                title={post.data.title}
                 titleAs="h3"
                 titleSize="lg"
               >
-                <PostMeta slot="meta" date={longDate(post.date)} category={post.category} />
+                <PostMeta slot="meta" date={postDate(post)} category={post.data.category} />
                 <ArrowLink inGroup class="action-gap">Explore more</ArrowLink>
               </MediaCard>
             </li>

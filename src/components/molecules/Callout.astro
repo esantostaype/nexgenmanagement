@@ -1,0 +1,26 @@
+---
+// Bloque destacado con icono, etiqueta, título y texto (p. ej. "What you get" de un servicio).
+// Va dentro de tarjetas de 16px: radio de 8px (rounded-lg) si la tarjeta tiene 8px de relleno, o 12px (rounded-xl).
+import CircleCheck from '@tabler/icons/outline/circle-check.svg';
+
+interface Props {
+  label?: string;
+  title: string;
+  text: string;
+  icon?: (props: Record<string, unknown>) => unknown;
+  class?: string;
+}
+
+const { label = 'What you get', title, text, icon: Icon = CircleCheck, class: className } = Astro.props;
+---
+
+<div class:list={['flex gap-4 rounded-xl bg-brand-950 p-5 text-white', className]} data-reveal>
+  <span class="grid size-10 shrink-0 place-items-center rounded-full bg-brand-400 text-brand-950" aria-hidden="true">
+    <Icon class="size-5" stroke-width="2" />
+  </span>
+  <span class="block">
+    <span class="block text-xs font-semibold tracking-[0.12em] text-brand-300 uppercase">{label}</span>
+    <span class="font-display mt-1 block text-lg font-semibold">{title}</span>
+    <span class="mt-1 block text-[0.95rem] leading-relaxed text-brand-100/75">{text}</span>
+  </span>
+</div>

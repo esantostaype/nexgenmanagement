@@ -1,0 +1,45 @@
+---
+import BaseLayout from '@/components/templates/BaseLayout.astro';
+import Header from '@/components/organisms/Header.astro';
+import Footer from '@/components/organisms/Footer.astro';
+import PageHero from '@/components/organisms/sections/PageHero.astro';
+import FeatureGrid from '@/components/organisms/sections/FeatureGrid.astro';
+import Realtors from '@/components/organisms/sections/Realtors.astro';
+import Faq from '@/components/organisms/sections/Faq.astro';
+import { salesFaq, salesWays } from '@/data/home-sales';
+---
+
+<BaseLayout
+  title="Home Sales in Clarksville, TN | Nex-Gen Management"
+  description="Residential real estate for home buyers and sellers in Clarksville, Tennessee, with Nex-Gen realtors Billi Jo Suiter and Rebecca Strong."
+  lang="en"
+>
+  <Header variant="overlay" />
+  <main>
+    <PageHero
+      eyebrow="Nex-Gen Home Sales"
+      title="Home sales in Clarksville, Tennessee."
+      text="Buying, selling or weighing an opportunity: local guidance from the first conversation to closing."
+    />
+    <FeatureGrid
+      id="how-we-help"
+      eyebrow="Buy · Sell · Invest"
+      title="Real estate with an owner’s eye."
+      text="Local guidance for buyers and sellers in Clarksville, from the first conversation to closing."
+      items={salesWays}
+    />
+    <Realtors />
+    <Faq
+      eyebrow="Clarksville home sales FAQ"
+      title="Home buying and selling questions."
+      text="Quick answers before you call. Anything else, our team is one email away."
+      items={salesFaq}
+    />
+  </main>
+  <Footer />
+
+  <script>
+    import { initHome } from '@/scripts/home';
+    initHome();
+  </script>
+</BaseLayout>

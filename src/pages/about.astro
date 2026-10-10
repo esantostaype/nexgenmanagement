@@ -1,0 +1,40 @@
+---
+import BaseLayout from '@/components/templates/BaseLayout.astro';
+import Header from '@/components/organisms/Header.astro';
+import Footer from '@/components/organisms/Footer.astro';
+import PageHero from '@/components/organisms/sections/PageHero.astro';
+import FeatureGrid from '@/components/organisms/sections/FeatureGrid.astro';
+import OurStory from '@/components/organisms/sections/OurStory.astro';
+import Leadership from '@/components/organisms/sections/Leadership.astro';
+import AwardFeature from '@/components/organisms/sections/AwardFeature.astro';
+import CoreValues from '@/components/organisms/sections/CoreValues.astro';
+import TeamTeaser from '@/components/organisms/sections/TeamTeaser.astro';
+import { aboutMission } from '@/data/about';
+---
+
+<BaseLayout
+  title="About Us | Nex-Gen Management"
+  description="Nex-Gen Management is a Clarksville, TN multifamily property management company founded in 2018 by Billi Jo Suiter. Our mission, story, values and team."
+  lang="en"
+>
+  <Header variant="overlay" />
+  <main>
+    <PageHero
+      eyebrow="About Nex-Gen"
+      title="Multifamily management, made in Clarksville."
+      text="A local team that keeps owners informed and residents cared for, property by property, since 2018."
+    />
+    <FeatureGrid id="mission" eyebrow="Our mission" title={aboutMission.title} text={aboutMission.text} items={aboutMission.points} />
+    <OurStory />
+    <Leadership />
+    <AwardFeature />
+    <CoreValues />
+    <TeamTeaser />
+  </main>
+  <Footer />
+
+  <script>
+    import { initHome } from '@/scripts/home';
+    initHome();
+  </script>
+</BaseLayout>

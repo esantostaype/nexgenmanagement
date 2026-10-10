@@ -2,11 +2,12 @@
 // Tarjeta de cita genérica (la cita va en el slot). Variantes:
 //   testimonial → comillas, cita y, abajo a la izquierda, una pestaña recortada con el avatar y el nombre del autor.
 //   person      → cita grande a la izquierda y la persona recortada a la derecha (cabeza fuera de la tarjeta,
-//                 torso a ras del borde), con tres ondas que crecen al entrar en pantalla (home.ts, [data-ripples]).
+//                 torso a ras del borde), con las ondas de <Ripples>.
 import Img from '@/components/atoms/Img.astro';
 import Avatar from '@/components/atoms/Avatar.astro';
 import Card from '@/components/atoms/Card.astro';
 import InverseCorner from '@/components/atoms/InverseCorner.astro';
+import Ripples from '@/components/atoms/Ripples.astro';
 import Quote from '@tabler/icons/filled/quote.svg';
 
 interface Props {
@@ -27,10 +28,8 @@ const { variant = 'testimonial', name, role, photo, photoAlt = '', id, class: cl
 {
   variant === 'person' ? (
     <figure class:list={['relative mx-auto grid max-w-5xl rounded-2xl bg-white md:min-h-105 md:grid-cols-[1.4fr_1fr]', className]} data-reveal="fade">
-      <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl" aria-hidden="true" data-ripples>
-        <span class="absolute bottom-0 left-1/2 size-170 translate-x-[-50%] translate-y-[42%] rounded-full bg-brand-50 md:left-[86%]" data-ripple />
-        <span class="absolute bottom-0 left-1/2 size-115 translate-x-[-50%] translate-y-[42%] rounded-full bg-brand-100 md:left-[86%]" data-ripple />
-        <span class="absolute bottom-0 left-1/2 size-70 translate-x-[-50%] translate-y-[42%] rounded-full bg-brand-200 md:left-[86%]" data-ripple />
+      <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+        <Ripples class="md:[--rx:86%]" />
       </div>
 
       <div class="relative z-10 flex flex-col justify-center p-8 sm:p-12 md:py-16 md:pr-4 md:pl-14">
@@ -73,13 +72,3 @@ const { variant = 'testimonial', name, role, photo, photoAlt = '', id, class: cl
     </Card>
   )
 }
-
-<style>
-  /* person: las ondas empiezan sin tamaño solo si hay JS y movimiento; si no, se ven tal cual */
-  @media (prefers-reduced-motion: no-preference) {
-    :global(html.js) [data-ripples]:not([data-shown]) [data-ripple] {
-      transform: scale(0);
-    }
-  }
-
-</style>

@@ -1,0 +1,25 @@
+---
+// Invitación a conocer al equipo: tarjeta blanca con avatares (fondo brand-950), título y botón a /team.
+import Section from '@/components/atoms/Section.astro';
+import Card from '@/components/atoms/Card.astro';
+import AvatarGroup from '@/components/molecules/AvatarGroup.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import ArrowButton from '@/components/molecules/ArrowButton.astro';
+import { teamMembers } from '@/data/team';
+
+const faces = teamMembers.filter((m) => m.avatar).slice(0, 5);
+---
+
+<Section id="team-teaser" labelledby="team-teaser-title">
+  <Card pad="none" class="flex flex-col gap-8 p-8 sm:p-12 lg:flex-row lg:items-end lg:justify-between xl:p-16" data-reveal="fade">
+    <div>
+      <AvatarGroup items={faces.map((m) => ({ src: m.avatar, name: m.name }))} more ring="white" label="Part of our team" class="mb-8" />
+      <SectionHeading id="team-teaser-title" eyebrow="Meet the team" eyebrowTone="brand" title={`${teamMembers.length} people, one community.`}>
+        <p>Managers, accountants and coordinators who treat every property like their own.</p>
+      </SectionHeading>
+    </div>
+    <div class="shrink-0" data-reveal="from-left">
+      <ArrowButton href="/team">Meet the team</ArrowButton>
+    </div>
+  </Card>
+</Section>

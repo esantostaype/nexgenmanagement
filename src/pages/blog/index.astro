@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@/components/templates/BaseLayout.astro';
+import Header from '@/components/organisms/Header.astro';
+import Footer from '@/components/organisms/Footer.astro';
+import PageHero from '@/components/organisms/sections/PageHero.astro';
+import BlogList from '@/components/organisms/sections/BlogList.astro';
+---
+
+<BaseLayout
+  title="Blog | Nex-Gen Management"
+  description="News, market reports, fair housing updates and insights on multifamily property management from Nex-Gen Management in Clarksville, TN."
+  lang="en"
+>
+  <Header variant="overlay" />
+  <main>
+    <PageHero eyebrow="Trending Nex-Gen" title="News and insights from our team." text="Stay up to date with the latest buzz in our industry, our community and more." />
+    <BlogList />
+  </main>
+  <Footer />
+
+  <script>
+    import { initHome } from '@/scripts/home';
+    initHome();
+  </script>
+</BaseLayout>

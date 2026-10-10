@@ -1,0 +1,85 @@
+---
+// Formulario de propuesta con componentes de Starwind (Select, Input, Textarea). Los campos de propietario solo se
+// muestran si se elige "Property owner or investor". Valida en el navegador; el envío aún no está conectado.
+import FormField from '@/components/molecules/FormField.astro';
+import ArrowButton from '@/components/molecules/ArrowButton.astro';
+import { Input } from '@/components/starwind/input';
+import { Textarea } from '@/components/starwind/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/starwind/select';
+import { audiences } from '@/data/forms';
+import { contact } from '@/data/site';
+
+interface Props {
+  /** Prefijo de los ids (si hay más de un formulario en la página) */
+  idPrefix?: string;
+  class?: string;
+}
+
+const { idPrefix = 'proposal', class: className } = Astro.props;
+const id = (name: string) => `${idPrefix}-${name}`;
+---
+
+<form class:list={['grid gap-5', className]} novalidate data-proposal-form data-contact-phone={contact.phone} data-contact-email={contact.email}>
+  <FormField for={id('audience')} label="I am a…">
+    <Select name="audience" defaultValue="owner">
+      <SelectTrigger id={id('audience')} class="h-12 w-full">
+        <SelectValue placeholder="Choose one" />
+      </SelectTrigger>
+      <SelectContent>
+        {audiences.map((a) => <SelectItem value={a.value}>{a.label}</SelectItem>)}
+      </SelectContent>
+    </Select>
+  </FormField>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <FormField for={id('name')} label="Full name">
+      <Input id={id('name')} name="name" autocomplete="name" required class="h-12" />
+    </FormField>
+    <FormField for={id('email')} label="Email">
+      <Input id={id('email')} name="email" type="email" autocomplete="email" required class="h-12" />
+    </FormField>
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <FormField for={id('phone')} label="Phone" optional>
+      <Input id={id('phone')} name="phone" type="tel" autocomplete="tel" class="h-12" />
+    </FormField>
+    <FormField for={id('units')} label="Units or properties" data-owner-only>
+      <Input id={id('units')} name="units" inputmode="numeric" placeholder="e.g. 120 units, 2 properties" class="h-12" />
+    </FormField>
+  </div>
+
+  <FormField for={id('message')} label="How can we help?">
+    <Textarea id={id('message')} name="message" rows={4} placeholder="Property address, current situation, timeline…" />
+  </FormField>
+
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <p class="min-h-5 text-sm text-neutral-600 data-[tone=error]:text-red-600" role="status" aria-live="polite" data-form-status></p>
+    <ArrowButton type="submit" variant="dark" class="shrink-0">Send request</ArrowButton>
+  </div>
+</form>
+
+<script>
+  import { onEveryPage } from '@/scripts/lifecycle';
+  import { bindPendingForm } from '@/scripts/forms';
+
+  onEveryPage(() => {
+    const cleanups = [...document.querySelectorAll<HTMLFormElement>('[data-proposal-form]')].map((form) => {
+      const ownerOnly = form.querySelectorAll<HTMLElement>('[data-owner-only]');
+
+      // Campos de propietario: solo con "Property owner or investor"
+      const syncAudience = () => {
+        const audience = new FormData(form).get('audience') ?? 'owner';
+        ownerOnly.forEach((el) => (el.hidden = audience !== 'owner'));
+      };
+      syncAudience();
+      form.addEventListener('starwind:value-change', syncAudience);
+      const unbind = bindPendingForm(form, { required: 'Add your name so we know who to reply to.' });
+      return () => {
+        form.removeEventListener('starwind:value-change', syncAudience);
+        unbind();
+      };
+    });
+    return () => cleanups.forEach((c) => c());
+  });
+</script>

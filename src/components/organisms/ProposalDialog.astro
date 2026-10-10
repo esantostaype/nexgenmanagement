@@ -1,0 +1,20 @@
+---
+// Modal con el formulario de propuesta. Va una sola vez en la plantilla; cualquier CTA lo abre
+// con `<ArrowButton opens={PROPOSAL_DIALOG}>` (atributos data-sw-dialog-trigger + data-sw-dialog-target-id).
+import { DialogDescription, DialogHeader, DialogTitle } from '@/components/starwind/dialog';
+import Modal from '@/components/organisms/Modal.astro';
+import Eyebrow from '@/components/atoms/Eyebrow.astro';
+import ProposalForm from '@/components/organisms/ProposalForm.astro';
+import { PROPOSAL_DIALOG } from '@/data/forms';
+---
+
+<Modal id={PROPOSAL_DIALOG}>
+  <DialogHeader class="pr-10 text-left">
+    <Eyebrow tone="brand" class="w-fit">Get a proposal</Eyebrow>
+    <DialogTitle class="font-display heading-gap text-[clamp(1.6rem,3vw,2.2rem)] leading-[1.1] font-medium text-brand-950">
+      Tell us about your property.
+    </DialogTitle>
+    <DialogDescription class="text-neutral-600">We reply within one business day with next steps and a tailored proposal.</DialogDescription>
+  </DialogHeader>
+  <ProposalForm class="action-gap" />
+</Modal>

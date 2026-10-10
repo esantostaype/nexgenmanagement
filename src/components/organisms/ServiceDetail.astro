@@ -1,0 +1,60 @@
+---
+// Ficha de un servicio en formato infografía: cabecera (icono, nombre, titular corto y párrafo breve), imagen,
+// grupos de pastillas, pasos, "What you get" y "For" (público). Tarjeta blanca de 16px con card-pad; la imagen
+// va a sangre arriba con 8px de relleno (radio 8px, concéntrico).
+import Card from '@/components/atoms/Card.astro';
+import Img from '@/components/atoms/Img.astro';
+import IconCircle from '@/components/atoms/IconCircle.astro';
+import ChipGroup from '@/components/molecules/ChipGroup.astro';
+import StepList from '@/components/molecules/StepList.astro';
+import Callout from '@/components/molecules/Callout.astro';
+import { serviceIcons } from '@/lib/service-icons';
+import type { getService } from '@/data/services';
+
+interface Props {
+  service: ReturnType<typeof getService>;
+  class?: string;
+}
+
+const { service: s, class: className } = Astro.props;
+const Icon = serviceIcons[s.icon];
+---
+
+<Card as="article" pad="none" id={s.slug} class:list={['scroll-mt-26 p-2', className]} data-reveal aria-labelledby={`${s.slug}-title`}>
+  <!-- Imagen con el nombre y el icono encima -->
+  <div class="relative aspect-16/7 overflow-hidden rounded-lg">
+    <Img src={s.image} alt="" sizes="(min-width: 1024px) 58vw, 100vw" loading="lazy" class="absolute inset-0 size-full object-cover" />
+    <span class="absolute inset-0 bg-linear-to-t from-brand-950/70 via-brand-950/10 to-transparent" aria-hidden="true"></span>
+    <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-4 sm:p-5">
+      <h3 id={`${s.slug}-title`} class="font-display text-2xl font-semibold tracking-tight text-white sm:text-[1.75rem]">{s.title}</h3>
+      <IconCircle icon={Icon} tone="white" size="sm" class="shrink-0" />
+    </div>
+  </div>
+
+  <div class="card-pad-inset grid gap-6">
+    <div>
+      <p class="font-display text-[clamp(1.35rem,2.2vw,1.75rem)] leading-tight font-semibold tracking-[-0.02em] text-balance text-brand-950">{s.headline}</p>
+      <p class="mt-2 max-w-[60ch] leading-relaxed text-neutral-600">{s.summary}</p>
+    </div>
+
+    {
+      (s.steps || s.groups) && (
+        <div class:list={['grid gap-6', s.steps && s.groups && 'md:grid-cols-2']}>
+          {s.steps && <StepList title={s.steps.title} items={s.steps.items} />}
+          {s.groups && (
+            <div class="grid gap-5">
+              {s.groups.map((g) => (
+                <ChipGroup title={g.title} items={g.items} />
+              ))}
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    <div class:list={['grid gap-4', s.audience && 'md:grid-cols-[1fr_auto] md:items-end']}>
+      <Callout title={s.deliverable.title} text={s.deliverable.text} />
+      {s.audience && <ChipGroup title="Made for" items={s.audience} tone="neutral" class="md:max-w-56" />}
+    </div>
+  </div>
+</Card>

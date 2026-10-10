@@ -1,0 +1,29 @@
+---
+// Preguntas frecuentes sobre el Accordion de Starwind: cada pregunta es una tarjeta blanca de 16px que se despliega.
+// La primera viene abierta; el "+" gira a "×" y se oscurece al abrir.
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/starwind/accordion';
+import Plus from '@tabler/icons/outline/plus.svg';
+
+interface Props {
+  items: { q: string; a: string }[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+---
+
+<Accordion defaultValue="faq-0" class:list={['grid content-start gap-3', className]} data-reveal-stagger>
+  {
+    items.map((item, i) => (
+      <AccordionItem value={`faq-${i}`} class="rounded-2xl bg-white px-6 sm:px-7">
+        <AccordionTrigger class="font-display gap-6 py-5 text-lg font-semibold text-brand-950 hover:text-brand-700 sm:py-6 [&[data-state=open]>svg]:rotate-45 [&[data-state=open]>svg]:bg-brand-950 [&[data-state=open]>svg]:text-white">
+          {item.q}
+          <Plus slot="icon" class="size-8 shrink-0 rounded-full bg-brand-50 p-1.5 text-brand-700 transition-[rotate,background-color,color] duration-300" stroke-width="2" aria-hidden="true" />
+        </AccordionTrigger>
+        <AccordionContent>
+          <p class="max-w-[60ch] pr-12 leading-relaxed text-neutral-600">{item.a}</p>
+        </AccordionContent>
+      </AccordionItem>
+    ))
+  }
+</Accordion>

@@ -84,8 +84,8 @@ const titleClass = [
   'font-display block',
   truncate || variant === 'polaroid' ? 'truncate' : 'text-balance',
   {
-    sm: 'text-sm font-semibold',
-    md: 'text-xl font-semibold tracking-tight',
+    sm: 'text-sm md:text-base font-semibold',
+    md: 'text-base sm:text-lg md:text-xl font-semibold tracking-tight',
     lg: 'text-[clamp(1.35rem,2.2vw,2rem)] leading-[1.1] font-semibold tracking-[-0.02em]',
     xl: 'max-w-[22ch] text-[clamp(1.6rem,2.6vw,2.2rem)] leading-[1.12] font-semibold tracking-[-0.02em]',
   }[titleSize],
@@ -125,8 +125,9 @@ const hasBody = title || text || Astro.slots.has('header') || Astro.slots.has('m
       </span>
     </span>
   ) : variant === 'side' ? (
-    <Card as={as} href={href} target={target} rel={rel} tone={tone} pad={pad} class:list={['group grid-gap grid h-full items-center sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]', className]} {...rest}>
-      <span class:list={['relative block overflow-hidden rounded-2xl sm:aspect-auto sm:h-full sm:min-h-60', ratio]}>
+    <Card as={as} href={href} target={target} rel={rel} tone={tone} pad="none" class:list={['group grid-gap grid h-full items-center sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]', pad !== 'none' && 'p-2', className]} {...rest}>
+      <!-- Radio concéntrico: a sangre (pad none) 16px; con relleno, 8px de relleno y la imagen con 16 − 8 = 8px -->
+      <span class:list={['relative block overflow-hidden sm:aspect-auto sm:h-full sm:min-h-60', pad === 'none' ? 'rounded-2xl' : 'rounded-lg', ratio]}>
         <Img sizes={sizes} src={image} alt={imageAlt} loading="lazy" class:list={['absolute inset-0', imgClass]} />
         <slot name="media" />
       </span>

@@ -1,8 +1,9 @@
 ---
 // Elemento del menú de escritorio: enlace, texto (si aún no hay página) o desplegable con hover / foco de teclado.
-// El color lo hereda de la barra (blanco sobre el hero, oscuro con scroll).
+// El color lo hereda de la barra (blanco sobre el hero, oscuro con scroll). La página actual queda marcada
+// (aria-current) con el mismo fondo del hover.
 import ChevronDown from '@tabler/icons/outline/chevron-down.svg';
-import type { NavEntry } from '@/data/navigation';
+import { isActive, type NavEntry } from '@/data/navigation';
 
 interface Props {
   item: NavEntry;
@@ -10,6 +11,9 @@ interface Props {
 
 const { item } = Astro.props;
 const base = 'rounded-full px-3.5 py-2 text-[0.92rem]';
+const path = Astro.url.pathname;
+const active = isActive(item.href, path) || !!item.children?.some((c) => isActive(c.href, path));
+const current = active ? ('page' as const) : undefined;
 ---
 
 {
@@ -17,19 +21,20 @@ const base = 'rounded-full px-3.5 py-2 text-[0.92rem]';
     <li class="group/sub relative">
       <button
         type="button"
-        class:list={[base, 'inline-flex cursor-default items-center gap-1 opacity-90 transition-[background-color,opacity] hover:bg-current/10 hover:opacity-100']}
+        class:list={[base, 'inline-flex cursor-default items-center gap-1 opacity-90 transition-[background-color,opacity] hover:bg-current/10 hover:opacity-100', active && 'bg-current/10 opacity-100']}
         aria-haspopup="true"
       >
         {item.label}
         <ChevronDown class="size-4 transition-transform duration-300 group-hover/sub:rotate-180 group-focus-within/sub:rotate-180" stroke-width="2" />
       </button>
       <div class="invisible absolute top-full left-0 translate-y-1 pt-3 opacity-0 transition-[opacity,visibility,translate] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-focus-within/sub:visible group-focus-within/sub:translate-y-0 group-focus-within/sub:opacity-100 group-hover/sub:visible group-hover/sub:translate-y-0 group-hover/sub:opacity-100">
-        <!-- Panel de 16px de radio y 8px de relleno: las opciones llevan 16 − 8 = 8px (rounded-lg) -->
-        <ul class="min-w-48 rounded-2xl bg-white p-2 text-brand-950 shadow-[0_24px_48px_-20px_rgb(7_53_69/0.4)]">
+        <!-- Panel de 16px de radio y 8px de relleno: las opciones llevan 16 − 8 = 8px (rounded-lg). Hover y página actual con
+             el mismo fondo que el menú (color actual al 10%); 2px entre opciones -->
+        <ul class="grid min-w-48 gap-0.5 rounded-2xl bg-white p-2 text-brand-950 shadow-[0_24px_48px_-20px_rgb(7_53_69/0.4)]">
           {item.children.map((child) => (
             <li>
               {child.href ? (
-                <a href={child.href} class="block rounded-lg px-3.5 py-2.5 text-[0.92rem] transition-colors hover:bg-brand-50">
+                <a href={child.href} aria-current={isActive(child.href, path) ? 'page' : undefined} class="block rounded-lg px-3.5 py-2.5 text-[0.92rem] transition-colors hover:bg-current/10 aria-[current=page]:bg-current/10">
                   {child.label}
                 </a>
               ) : (
@@ -42,7 +47,7 @@ const base = 'rounded-full px-3.5 py-2 text-[0.92rem]';
     </li>
   ) : item.href ? (
     <li>
-      <a href={item.href} class:list={[base, 'opacity-90 transition-[background-color,opacity] hover:bg-current/10 hover:opacity-100']}>
+      <a href={item.href} aria-current={current} class:list={[base, 'opacity-90 transition-[background-color,opacity] hover:bg-current/10 hover:opacity-100 aria-[current=page]:bg-current/10 aria-[current=page]:opacity-100']}>
         {item.label}
       </a>
     </li>

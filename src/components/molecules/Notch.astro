@@ -4,18 +4,21 @@
 // - height="fixed": alto = var(--hero-notch-h) del padre, contenido centrado (el padre lo usa para su espaciado).
 // - height="auto": relleno vertical propio.
 // - flushOnMobile: en móvil el contenido arranca en el borde de la tarjeta, no en el gutter.
+// - stackBelow: por debajo de 1280px deja de ser un corte y pasa a ser un bloque normal bajo la tarjeta (sin fondo
+//   ni radios invertidos), alineado con el contenido de la página. Debe ir fuera del recorte de la tarjeta.
 import InverseCorner from '@/components/atoms/InverseCorner.astro';
 
 interface Props {
   height?: 'fixed' | 'auto';
   flushOnMobile?: boolean;
+  stackBelow?: boolean;
   class?: string;
 }
 
-const { height = 'auto', flushOnMobile = false, class: className } = Astro.props;
+const { height = 'auto', flushOnMobile = false, stackBelow = false, class: className } = Astro.props;
 ---
 
-<div class:list={['notch absolute bottom-0 left-0 rounded-tr-2xl bg-background text-brand-950', `notch--${height}`, flushOnMobile && 'notch--flush', className]}>
+<div class:list={['notch absolute bottom-0 left-0 rounded-tr-2xl bg-background text-brand-950', `notch--${height}`, flushOnMobile && 'notch--flush', stackBelow && 'notch--stack', className]}>
   <InverseCorner position="top" />
   <InverseCorner position="right" />
   <slot />
@@ -42,6 +45,25 @@ const { height = 'auto', flushOnMobile = false, class: className } = Astro.props
   @media (width >= 48rem) {
     .notch {
       padding-right: 3rem;
+    }
+  }
+  /* stackBelow: bloque normal bajo la tarjeta hasta 1280px. Alineado con el contenido: gutter menos el margen
+     de la sección (p-3 / sm:p-4) */
+  @media (width < 80rem) {
+    .notch--stack {
+      position: static;
+      height: auto;
+      border-radius: 0;
+      background: transparent;
+      padding: 1.5rem max(0px, calc(var(--gutter) - 0.75rem)) 0;
+    }
+    .notch--stack :global(.inverse-corner) {
+      display: none;
+    }
+  }
+  @media (40rem <= width < 80rem) {
+    .notch--stack {
+      padding-inline: max(0px, calc(var(--gutter) - 1rem));
     }
   }
 </style>

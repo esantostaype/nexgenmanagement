@@ -1,0 +1,31 @@
+---
+// Realtors de Nex-Gen: tarjeta oscura con la cabecera y el CTA a la izquierda (5 columnas) y las tarjetas de perfil
+// a la derecha (7), con las personas sobresaliendo por arriba.
+import Section from '@/components/atoms/Section.astro';
+import Card from '@/components/atoms/Card.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import ProfileCard from '@/components/molecules/ProfileCard.astro';
+import ArrowButton from '@/components/molecules/ArrowButton.astro';
+import { PROPOSAL_DIALOG } from '@/data/forms';
+import { salesRealtors } from '@/data/home-sales';
+---
+
+<Section id="realtors" labelledby="realtors-title" innerClass="grid gap-16 lg:grid-cols-12 lg:gap-6">
+  <Card tone="dark" pad="none" class="flex flex-col justify-center p-8 sm:p-12 lg:col-span-5 lg:mt-12 xl:p-16" data-reveal="fade">
+    <SectionHeading id="realtors-title" eyebrow="Your real estate team" eyebrowTone="dark" tone="light" title="Meet our realtors.">
+      <p>Two local agents, backed by a team that manages properties every day.</p>
+      <ArrowButton slot="actions" opens={PROPOSAL_DIALOG}>Talk to a realtor</ArrowButton>
+    </SectionHeading>
+  </Card>
+
+  <!-- pt-12: espacio para las cabezas que sobresalen (ProfileCard popout) -->
+  <ul class="grid gap-x-6 gap-y-20 pt-12 sm:grid-cols-2 lg:col-span-7">
+    {
+      salesRealtors.map((r) => (
+        <li>
+          <ProfileCard name={r.name} role={r.role} photo={r.photo} photoAlt={`${r.name}, ${r.role} at Nex-Gen`} email={r.email} phone={r.phone} phoneHref={r.phoneHref} popout />
+        </li>
+      ))
+    }
+  </ul>
+</Section>

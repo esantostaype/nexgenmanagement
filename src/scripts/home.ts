@@ -1,143 +1,25 @@
 import { animate, inView, stagger } from 'motion';
 import { gsap, ScrollTrigger } from './animations/gsap';
-import { lockScroll } from './animations/smooth-scroll';
 import { onEveryPage } from './lifecycle';
 
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ------------------------------------------------------------------ Header */
-function bindHeader() {
-  const header = document.querySelector<HTMLElement>('[data-site-header]');
-  if (!header) return () => {};
-
-  const onScroll = () => header.toggleAttribute('data-scrolled', window.scrollY > 24);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
-
-  // Menú móvil a pantalla completa: el mismo botón del header lo abre y lo cierra (queda encima del panel)
-  const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]');
-  const panel = document.getElementById('mobile-menu');
-  const subToggles = Array.from(panel?.querySelectorAll<HTMLButtonElement>('[data-submenu-toggle]') ?? []);
-  const setSub = (btn: HTMLButtonElement, open: boolean) => {
-    btn.setAttribute('aria-expanded', String(open));
-    document.getElementById(btn.getAttribute('aria-controls') ?? '')?.setAttribute('data-open', String(open));
-  };
-  const isOpen = () => toggle?.getAttribute('aria-expanded') === 'true';
-  const setOpen = (open: boolean, focus = true) => {
-    toggle?.setAttribute('aria-expanded', String(open));
-    toggle?.querySelector('.sr-only')?.replaceChildren(open ? 'Close menu' : 'Open menu');
-    panel?.setAttribute('data-open', String(open));
-    header.toggleAttribute('data-menu-open', open);
-    lockScroll(open);
-    if (!open) subToggles.forEach((b) => setSub(b, false));
-    if (focus) toggle?.focus({ preventScroll: true });
-  };
-  const onToggle = () => setOpen(!isOpen());
-  const onSub = (e: Event) => {
-    const btn = e.currentTarget as HTMLButtonElement;
-    setSub(btn, btn.getAttribute('aria-expanded') !== 'true');
-  };
-  const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && isOpen()) setOpen(false);
-  };
-  const onLink = () => setOpen(false, false);
-
-  toggle?.addEventListener('click', onToggle);
-  subToggles.forEach((b) => b.addEventListener('click', onSub));
-  panel?.querySelectorAll('a').forEach((a) => a.addEventListener('click', onLink));
-  document.addEventListener('keydown', onKey);
-
-  return () => {
-    window.removeEventListener('scroll', onScroll);
-    document.removeEventListener('keydown', onKey);
-    toggle?.removeEventListener('click', onToggle);
-    subToggles.forEach((b) => b.removeEventListener('click', onSub));
-    setOpen(false, false);
-  };
-}
-
-/* ------------------------------------------------------------------ CTA del header */
-/**
- * "Get a proposal" aparece en el header solo cuando el botón del hero sale de la pantalla.
- * Motion anima el ancho de su contenedor (0 → ancho real), así el teléfono se desplaza a la izquierda.
- * En páginas sin botón en el hero, se muestra desde el principio.
- */
-function bindHeaderCta() {
-  const wrap = document.querySelector<HTMLElement>('[data-header-cta]');
-  const link = wrap?.querySelector<HTMLElement>('[data-header-cta-link]');
-  if (!wrap || !link) return () => {};
-
-  const heroCta = document.querySelector<HTMLElement>('[data-hero-cta]');
-  const inner = wrap.firstElementChild as HTMLElement;
-  // Ancho real del botón + el padding izquierdo del contenedor; offsetWidth ignora las transformaciones de la animación
-  const targetWidth = () => link.offsetWidth + (parseFloat(getComputedStyle(inner).paddingLeft) || 0);
-  let visible = false;
-
-  const set = (show: boolean, instant = false) => {
-    if (show === visible && !instant) return;
-    visible = show;
-    wrap.setAttribute('aria-hidden', String(!show));
-    link.tabIndex = show ? 0 : -1;
-    const width = show ? targetWidth() : 0;
-
-    if (instant || reducedMotion()) {
-      wrap.style.width = `${width}px`;
-      link.style.opacity = show ? '1' : '0';
-      return;
-    }
-    animate(wrap, { width }, { type: 'spring', stiffness: 260, damping: 30 });
-    animate(
-      link,
-      { opacity: show ? 1 : 0, x: show ? 0 : 16, scale: show ? 1 : 0.92 },
-      { duration: show ? 0.45 : 0.25, delay: show ? 0.08 : 0, ease: [0.16, 1, 0.3, 1] },
-    );
-  };
-
-  if (!heroCta) {
-    set(true, true);
-    return () => {};
-  }
-
-  link.style.opacity = '0';
-  // Si la página se carga ya desplazada (botón del hero fuera de pantalla), muéstralo sin animar
-  const r = heroCta.getBoundingClientRect();
-  if (r.bottom < 0 || r.top > window.innerHeight) set(true, true);
-  // inView: el callback corre al entrar; la función que devuelve, al salir
-  const stop = inView(
-    heroCta,
-    () => {
-      set(false);
-      return () => set(true);
-    },
-    { amount: 0 },
-  );
-
-  // Si el viewport cambia de tamaño, recalcula el ancho del botón visible
-  const onResize = () => {
-    if (visible) wrap.style.width = `${targetWidth()}px`;
-  };
-  window.addEventListener('resize', onResize);
-
-  return () => {
-    stop();
-    window.removeEventListener('resize', onResize);
-  };
-}
-
-/* ------------------------------------------------------------------ Ondas (cita de Billi Jo) */
-/** Las ondas detrás de la persona crecen una tras otra, de la más pequeña (última en el DOM) a la grande. */
+/* ------------------------------------------------------------------ Ondas (atoms/Ripples) */
+/** En cada grupo, las ondas crecen una tras otra, de la más pequeña (última en el DOM) a la grande. */
 function bindRipples() {
-  const root = document.querySelector<HTMLElement>('[data-ripples]');
-  const rings = root ? Array.from(root.querySelectorAll<HTMLElement>('[data-ripple]')) : [];
-  if (!root || !rings.length || reducedMotion()) return () => {};
-  return inView(
-    root,
-    () => {
-      root.setAttribute('data-shown', '');
-      animate(rings, { scale: [0, 1] }, { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: stagger(0.18, { from: 'last' }) });
-    },
-    { amount: 0.35 },
+  const roots = Array.from(document.querySelectorAll<HTMLElement>('[data-ripples]'));
+  if (!roots.length || reducedMotion()) return () => {};
+  const stops = roots.map((root) =>
+    inView(
+      root,
+      () => {
+        root.setAttribute('data-shown', '');
+        animate(Array.from(root.querySelectorAll<HTMLElement>('[data-ripple]')), { scale: [0, 1] }, { duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: stagger(0.18, { from: 'last' }) });
+      },
+      { amount: 0.35 },
+    ),
   );
+  return () => stops.forEach((stop) => stop());
 }
 
 /* ------------------------------------------------------------------ Testimonios */
@@ -464,50 +346,6 @@ function bindDirectory() {
 }
 
 /* ------------------------------------------------------------------ Formulario de propuesta */
-function bindProposalForm() {
-  const form = document.querySelector<HTMLFormElement>('[data-proposal-form]');
-  if (!form) return () => {};
-
-  const status = form.querySelector<HTMLElement>('[data-form-status]');
-  const ownerOnly = form.querySelectorAll<HTMLElement>('[data-owner-only]');
-
-  const syncAudience = () => {
-    const audience = new FormData(form).get('audience') ?? 'owner';
-    ownerOnly.forEach((el) => (el.hidden = audience !== 'owner'));
-  };
-  form.addEventListener('starwind:value-change', syncAudience);
-  syncAudience();
-
-  const onSubmit = (e: SubmitEvent) => {
-    e.preventDefault();
-    const invalid = Array.from(form.querySelectorAll<HTMLInputElement>('input[required]')).find((i) => !i.checkValidity());
-    if (invalid) {
-      invalid.focus();
-      invalid.setAttribute('aria-invalid', 'true');
-      if (status) {
-        status.dataset.tone = 'error';
-        status.textContent =
-          invalid.type === 'email' ? 'Enter a valid email so we can reply.' : 'Add your name so we know who to reply to.';
-      }
-      return;
-    }
-    // TODO: conectar al endpoint real (Astro Action o servicio de formularios) antes de publicar.
-    if (status) {
-      status.dataset.tone = 'error';
-      status.textContent = `This form is not connected yet. Call ${'(931) 503-7000'} or email bsuiter@nexgenmgmt.us.`;
-    }
-  };
-  const onInput = (e: Event) => (e.target as HTMLElement).removeAttribute('aria-invalid');
-
-  form.addEventListener('submit', onSubmit);
-  form.addEventListener('input', onInput);
-
-  return () => {
-    form.removeEventListener('starwind:value-change', syncAudience);
-    form.removeEventListener('submit', onSubmit);
-    form.removeEventListener('input', onInput);
-  };
-}
 
 /* ------------------------------------------------------------------ Movimiento */
 function initMotion() {
@@ -608,7 +446,11 @@ export function initHome() {
   if (homeBound) return;
   homeBound = true;
   onEveryPage(() => {
-    const cleanups = [bindHeader(), bindHeaderCta(), bindPolaroids(), bindRipples(), bindTestimonials(), bindDirectory(), bindProposalForm(), initMotion()];
+    const cleanups = [bindPolaroids(), bindRipples(), bindTestimonials(), bindDirectory(), initMotion()];
     return () => cleanups.forEach((c) => c());
   });
 }
+
+// Desarrollo: este módulo registra inicializaciones por página (onEveryPage). Si Vite lo recargara en caliente,
+// quedarían duplicadas (la versión vieja y la nueva) y fallarían al navegar: al cambiar, se recarga la página entera.
+import.meta.hot?.accept(() => location.reload());

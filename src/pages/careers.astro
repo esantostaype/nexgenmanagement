@@ -1,0 +1,33 @@
+---
+import BaseLayout from '@/components/templates/BaseLayout.astro';
+import Header from '@/components/organisms/Header.astro';
+import Footer from '@/components/organisms/Footer.astro';
+import PageHero from '@/components/organisms/sections/PageHero.astro';
+import JobApplication from '@/components/organisms/sections/JobApplication.astro';
+import CoreValues from '@/components/organisms/sections/CoreValues.astro';
+import TeamTeaser from '@/components/organisms/sections/TeamTeaser.astro';
+---
+
+<BaseLayout
+  title="Careers | Nex-Gen Management"
+  description="Join Nex-Gen Management in Clarksville, TN. Apply for a job in multifamily property management and discover the values behind our team."
+  lang="en"
+>
+  <Header variant="overlay" />
+  <main>
+    <PageHero
+      eyebrow="Careers"
+      title="Discover boundless possibilities at Nex-Gen."
+      text="Join a Clarksville team that treats every property, resident and teammate like community."
+    />
+    <JobApplication />
+    <CoreValues />
+    <TeamTeaser />
+  </main>
+  <Footer />
+
+  <script>
+    import { initHome } from '@/scripts/home';
+    initHome();
+  </script>
+</BaseLayout>

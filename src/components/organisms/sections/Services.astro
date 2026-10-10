@@ -2,35 +2,18 @@
 // Servicios: a la izquierda eyebrow, título y descripción fijos (sticky); a la derecha las 9 tarjetas
 // en dos columnas. La segunda columna (4 tarjetas) baja algo más despacio que la primera (5) para que
 // ambas terminen a la misma altura (home.ts, [data-svc-cols]).
+import { PROPOSAL_DIALOG } from '@/data/forms';
 import MediaCta from '@/components/atoms/MediaCta.astro';
-import FileSearch from '@tabler/icons/outline/file-search.svg';
-import BuildingEstate from '@tabler/icons/outline/building-estate.svg';
 import Section from '@/components/atoms/Section.astro';
 import SectionHeading from '@/components/molecules/SectionHeading.astro';
 import MediaCard from '@/components/molecules/MediaCard.astro';
 import { Badge } from '@/components/starwind/badge';
 import IconCircle from '@/components/atoms/IconCircle.astro';
 import ArrowButton from '@/components/molecules/ArrowButton.astro';
-import Bulb from '@tabler/icons/outline/bulb.svg';
-import Calculator from '@tabler/icons/outline/calculator.svg';
-import FileInvoice from '@tabler/icons/outline/file-invoice.svg';
-import ReportAnalytics from '@tabler/icons/outline/report-analytics.svg';
-import ReportMoney from '@tabler/icons/outline/report-money.svg';
-import ClipboardCheck from '@tabler/icons/outline/clipboard-check.svg';
-import Folders from '@tabler/icons/outline/folders.svg';
 import { services } from '@/data/site';
+import { serviceIcons } from '@/lib/service-icons';
 
-const icons: Record<string, typeof FileSearch> = {
-  'file-search': FileSearch,
-  'building-estate': BuildingEstate,
-  bulb: Bulb,
-  calculator: Calculator,
-  'file-invoice': FileInvoice,
-  'report-analytics': ReportAnalytics,
-  'report-money': ReportMoney,
-  'clipboard-check': ClipboardCheck,
-  folders: Folders,
-};
+const icons = serviceIcons;
 
 // Columna A: servicios 1, 3, 5, 7, 9 · Columna B: 2, 4, 6, 8. En móvil las columnas se disuelven
 // (display: contents) y `order` devuelve las tarjetas a la secuencia del ciclo de la inversión.
@@ -47,7 +30,7 @@ const columns = [services.filter((_, i) => i % 2 === 0), services.filter((_, i) 
             Nine services that cover the full life of a multifamily asset: from due diligence and acquisition to
             budgets, weekly reports, monthly financials and yearly inspections.
           </p>
-          <ArrowButton slot="actions" href="/contact" variant="dark">Request a proposal</ArrowButton>
+          <ArrowButton slot="actions" opens={PROPOSAL_DIALOG} variant="dark">Request a proposal</ArrowButton>
         </SectionHeading>
       </div>
 
@@ -61,7 +44,7 @@ const columns = [services.filter((_, i) => i % 2 === 0), services.filter((_, i) 
                 return (
                   <li style={`order:${i * 2 + c}`} data-reveal>
                     <MediaCard
-                      href={`/services/${svc.slug}`}
+                      href={`/services#${svc.slug}`}
                       tone="neutral"
                       inset="md"
                       mediaPosition="bottom"

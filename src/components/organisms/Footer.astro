@@ -1,5 +1,6 @@
 ---
 // Footer: logo + suscripción, frase con CTA, columnas de enlaces, contacto, legal y redes.
+import { PROPOSAL_DIALOG } from '@/data/forms';
 import Logo from '@/assets/brand/logo-full.svg';
 import NewsletterSignup from '@/components/molecules/NewsletterSignup.astro';
 import CtaBlock from '@/components/molecules/CtaBlock.astro';
@@ -27,7 +28,7 @@ const columns = [{ title: 'Explore', links: liveNav }];
       </div>
 
       <div class="grid gap-12 py-14 lg:grid-cols-12 lg:py-16">
-        <CtaBlock text="Your property, managed like it’s our own." href="/contact" label="Get a proposal" tone="light" class="lg:col-span-5" />
+        <CtaBlock text="Your property, managed like it’s our own." opens={PROPOSAL_DIALOG} label="Get a proposal" tone="light" class="lg:col-span-5" />
         <div class="grid gap-10 sm:grid-cols-2 lg:col-span-7" data-reveal-stagger>
           {columns.map((col) => <LinkList title={col.title} links={col.links} />)}
           <ContactList title="Get in touch" contact={contact} />

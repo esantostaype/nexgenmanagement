@@ -2,6 +2,7 @@
 // Variante del hero con un "corte" redondeado abajo a la izquierda de la tarjeta del video:
 // una pestaña del color del fondo de la página, unida a la tarjeta con dos radios invertidos.
 // Para volver al hero original, en src/pages/index.astro importa Hero.astro en lugar de este.
+import { PROPOSAL_DIALOG } from '@/data/forms';
 import ArrowButton from '@/components/molecules/ArrowButton.astro';
 import Notch from '@/components/molecules/Notch.astro';
 import AvatarStat from '@/components/molecules/AvatarStat.astro';
@@ -46,7 +47,7 @@ const faces = ['Blue Grass Meadows', 'Heritage Pointe Apartments', 'The Rowe At 
           Multifamily management that protects your asset and the people who live in it.
         </h1>
         <div class="action-gap" data-reveal="from-left" data-delay="0.4">
-          <ArrowButton href="/contact" data-hero-cta>Request a proposal</ArrowButton>
+          <ArrowButton opens={PROPOSAL_DIALOG} data-hero-cta>Request a proposal</ArrowButton>
         </div>
       </div>
     </div>

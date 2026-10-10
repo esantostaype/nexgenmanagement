@@ -1,6 +1,7 @@
 ---
 // Menú móvil a pantalla completa (12–16px de margen, panel brand-950). Arriba queda la propia barra del header
 // encima (logo y botón en su sitio); enlaces a la izquierda y centrados en vertical. Lo abre y cierra home.ts.
+import { PROPOSAL_DIALOG } from '@/data/forms';
 import ArrowButton from '@/components/molecules/ArrowButton.astro';
 import MobileNavItem from '@/components/molecules/MobileNavItem.astro';
 import type { NavEntry } from '@/data/navigation';
@@ -29,7 +30,7 @@ const { items } = Astro.props;
     </nav>
 
     <div class="card-pad shrink-0">
-      <ArrowButton href="/contact" class="flex w-full justify-between">Get a proposal</ArrowButton>
+      <ArrowButton opens={PROPOSAL_DIALOG} class="flex w-full justify-between" data-menu-dismiss>Get a proposal</ArrowButton>
     </div>
   </div>
 </div>

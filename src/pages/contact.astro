@@ -1,0 +1,27 @@
+---
+import BaseLayout from '@/components/templates/BaseLayout.astro';
+import Header from '@/components/organisms/Header.astro';
+import Footer from '@/components/organisms/Footer.astro';
+import PageHero from '@/components/organisms/sections/PageHero.astro';
+import ContactSection from '@/components/organisms/sections/ContactSection.astro';
+import ContactPaths from '@/components/organisms/sections/ContactPaths.astro';
+---
+
+<BaseLayout
+  title="Contact | Nex-Gen Management"
+  description="Contact Nex-Gen Management in Clarksville, TN: (931) 503-7000, bsuiter@nexgenmgmt.us, 705 Red River St STE B. Monday to Friday, 9AM to 5PM."
+  lang="en"
+>
+  <Header variant="overlay" />
+  <main>
+    <PageHero eyebrow="Contact Nex-Gen" title="Let’s shape the future together." text="Questions about a property, a home or a job? Our Clarksville team is here to help." />
+    <ContactSection />
+    <ContactPaths />
+  </main>
+  <Footer />
+
+  <script>
+    import { initHome } from '@/scripts/home';
+    initHome();
+  </script>
+</BaseLayout>

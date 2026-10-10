@@ -1,6 +1,6 @@
 ---
 // Pastillas de opción única (radio) con un indicador que se desliza con ligero rebote hasta la elegida.
-// El indicador lo mueve el script de la página con [data-segment-indicator] (ver properties-map.ts).
+// El script del componente mueve el indicador ([data-segment-indicator]) en todos los grupos de la página.
 interface Props {
   name: string;
   legend: string;
@@ -27,3 +27,36 @@ const { name, legend, options, value = options[0]?.value, class: className } = A
     ))
   }
 </fieldset>
+
+<script>
+  import { onEveryPage } from '@/scripts/lifecycle';
+
+  // Indicador deslizante bajo la opción marcada (con ligero rebote). Al cargar y al redimensionar se coloca sin animar.
+  onEveryPage(() => {
+    const cleanups = [...document.querySelectorAll<HTMLElement>('[data-segmented]')].map((group) => {
+      const indicator = group.querySelector<HTMLElement>('[data-segment-indicator]');
+      const move = (instant = false) => {
+        const label = group.querySelector<HTMLInputElement>('input:checked')?.closest('label');
+        if (!indicator || !label) return;
+        if (instant) indicator.style.transition = 'none';
+        indicator.style.width = `${label.offsetWidth}px`;
+        indicator.style.transform = `translateX(${label.offsetLeft}px)`;
+        if (instant) {
+          void indicator.offsetWidth; // aplica la posición antes de reactivar la transición
+          indicator.style.transition = '';
+        }
+      };
+      const onChange = () => move();
+      const onResize = () => move(true);
+      move(true);
+      document.fonts.ready.then(() => move(true));
+      group.addEventListener('change', onChange);
+      window.addEventListener('resize', onResize);
+      return () => {
+        group.removeEventListener('change', onChange);
+        window.removeEventListener('resize', onResize);
+      };
+    });
+    return () => cleanups.forEach((c) => c());
+  });
+</script>

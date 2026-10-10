@@ -1,0 +1,49 @@
+---
+// Sección de tres tarjetas con icono (cómo ayudamos, qué nos diferencia…). Asimétrica: cabecera fija a la izquierda
+// (4 columnas) y las tarjetas numeradas a la derecha (8). Cada tarjeta puede llevar pastillas (`points`).
+// El icono es una clave de src/lib/feature-icons.ts.
+import Section from '@/components/atoms/Section.astro';
+import IconCircle from '@/components/atoms/IconCircle.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import InfoCard from '@/components/molecules/InfoCard.astro';
+import ChipGroup from '@/components/molecules/ChipGroup.astro';
+import { featureIcons } from '@/lib/feature-icons';
+
+interface Props {
+  id: string;
+  eyebrow: string;
+  title: string;
+  text?: string;
+  items: readonly { icon: string; title: string; text: string; points?: readonly string[] }[];
+  /** Título de las pastillas de cada tarjeta */
+  pointsTitle?: string;
+}
+
+const { id, eyebrow, title, text, items, pointsTitle = 'Includes' } = Astro.props;
+---
+
+<Section id={id} labelledby={`${id}-title`} innerClass="grid gap-10 lg:grid-cols-12 lg:gap-16">
+  <div class="lg:col-span-4">
+    <div class="lg:sticky lg:top-32">
+      <SectionHeading id={`${id}-title`} eyebrow={eyebrow} title={title}>
+        {text && <p>{text}</p>}
+      </SectionHeading>
+    </div>
+  </div>
+
+  <ul class="grid-gap grid sm:grid-cols-3 lg:col-span-8" data-reveal-stagger>
+    {
+      items.map((item, i) => (
+        <li>
+          <InfoCard title={item.title} text={item.text} class="h-full" tall>
+            <IconCircle slot="top" icon={featureIcons[item.icon]} size="sm" />
+            <span slot="aside" class="font-display text-sm font-semibold text-brand-950/30 tabular-nums">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            {item.points && <ChipGroup title={pointsTitle} items={[...item.points]} tone="neutral" class="mt-6" />}
+          </InfoCard>
+        </li>
+      ))
+    }
+  </ul>
+</Section>

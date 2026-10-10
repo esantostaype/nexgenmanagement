@@ -1,0 +1,39 @@
+---
+// Hero de páginas internas: tarjeta brand-950 de 16px, compacta, sin imagen ni corte. Eyebrow + h1 que entra por
+// líneas (en una línea desde lg) + texto, con espacios cortos entre ellos. Usar con <Header variant="overlay" />.
+// La primera sección después del hero lleva la mitad del espacio superior habitual (.page-hero + .section-space en
+// global.css).
+import Eyebrow from '@/components/atoms/Eyebrow.astro';
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  title: string;
+  text?: string;
+  /** Títulos largos (p. ej. un post): se reparten en varias líneas también en escritorio */
+  wrap?: boolean;
+}
+
+const { id = 'page-title', eyebrow, title, text, wrap = false } = Astro.props;
+---
+
+<section class="page-hero p-3 sm:p-4" aria-labelledby={id}>
+  <!-- pt: deja sitio al header superpuesto -->
+  <!-- pb = --gutter: abajo el mismo margen que a los lados (container-site), como en el hero de la home -->
+  <div class="rounded-2xl bg-brand-950 pt-32 pb-(--gutter) text-white md:pt-36">
+    <div class="container-site">
+      {eyebrow && <Eyebrow tone="dark">{eyebrow}</Eyebrow>}
+      <h1 id={id} class:list={['font-display text-[clamp(2rem,4vw,3rem)] leading-[1.05] font-semibold text-balance', wrap ? 'max-w-[24ch]' : 'lg:text-nowrap', eyebrow && 'mt-3']} data-scene="split-lines">
+        {title}
+      </h1>
+      {
+        text && (
+          <p class="mt-3 max-w-[72ch] text-lg leading-relaxed text-pretty text-white/75" data-reveal data-delay="0.2">
+            {text}
+          </p>
+        )
+      }
+      <slot />
+    </div>
+  </div>
+</section>

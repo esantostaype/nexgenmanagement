@@ -1,0 +1,101 @@
+---
+// Solicitud de empleo con componentes de Starwind (Input, Select) y SegmentedControl. Mismos campos que el formulario
+// de nexgenmultifamily.com/careers.html: nombre, contacto, dirección, jornada deseada y currículum. Valida en el
+// navegador; el envío aún no está conectado (src/scripts/forms.ts).
+import FormField from '@/components/molecules/FormField.astro';
+import SegmentedControl from '@/components/molecules/SegmentedControl.astro';
+import ArrowButton from '@/components/molecules/ArrowButton.astro';
+import { Input } from '@/components/starwind/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/starwind/select';
+import { employmentTypes, usStates } from '@/data/forms';
+import { contact } from '@/data/site';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const id = (name: string) => `job-${name}`;
+const label = 'text-xs font-semibold tracking-[0.12em] text-neutral-500 uppercase';
+---
+
+<form class:list={['grid gap-8', className]} novalidate data-job-form data-contact-phone={contact.phone} data-contact-email={contact.email}>
+  <fieldset class="grid gap-5">
+    <legend class={label}>About you</legend>
+    <div class="mt-4 grid gap-5 sm:grid-cols-2">
+      <FormField for={id('first-name')} label="First name">
+        <Input id={id('first-name')} name="first_name" autocomplete="given-name" required class="h-12" />
+      </FormField>
+      <FormField for={id('last-name')} label="Last name">
+        <Input id={id('last-name')} name="last_name" autocomplete="family-name" required class="h-12" />
+      </FormField>
+    </div>
+    <FormField for={id('email')} label="Email">
+      <Input id={id('email')} name="email" type="email" autocomplete="email" required class="h-12" />
+    </FormField>
+    <div class="grid gap-5 sm:grid-cols-2">
+      <FormField for={id('phone')} label="Phone">
+        <Input id={id('phone')} name="phone" type="tel" autocomplete="tel" required class="h-12" />
+      </FormField>
+      <FormField for={id('mobile')} label="Mobile" optional>
+        <Input id={id('mobile')} name="mobile" type="tel" autocomplete="tel" class="h-12" />
+      </FormField>
+    </div>
+  </fieldset>
+
+  <fieldset class="grid gap-5">
+    <legend class={label}>Address</legend>
+    <FormField for={id('address')} label="Address" class="mt-4">
+      <Input id={id('address')} name="address" autocomplete="address-line1" class="h-12" />
+    </FormField>
+    <FormField for={id('address2')} label="Address 2" optional>
+      <Input id={id('address2')} name="address2" autocomplete="address-line2" class="h-12" />
+    </FormField>
+    <div class="grid gap-5 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,0.8fr)]">
+      <FormField for={id('city')} label="City">
+        <Input id={id('city')} name="city" autocomplete="address-level2" class="h-12" />
+      </FormField>
+      <FormField for={id('state')} label="State">
+        <Select name="state" defaultValue="Tennessee">
+          <SelectTrigger id={id('state')} class="h-12 w-full">
+            <SelectValue placeholder="Choose one" />
+          </SelectTrigger>
+          <SelectContent class="max-h-72">
+            {usStates.map((s) => <SelectItem value={s}>{s}</SelectItem>)}
+          </SelectContent>
+        </Select>
+      </FormField>
+      <FormField for={id('zip')} label="ZIP">
+        <Input id={id('zip')} name="zip" inputmode="numeric" autocomplete="postal-code" class="h-12" />
+      </FormField>
+    </div>
+  </fieldset>
+
+  <fieldset class="grid gap-5">
+    <legend class={label}>The job</legend>
+    <div class="mt-4 grid gap-2">
+      <p class="text-sm font-medium text-brand-950">Employment desired</p>
+      <SegmentedControl name="employment" legend="Employment desired" options={employmentTypes} class="w-fit max-w-full" />
+    </div>
+    <FormField for={id('resume')} label="Resume" hint="PDF or Word document.">
+      <Input id={id('resume')} name="resume" type="file" accept=".pdf,.doc,.docx" class="h-12 py-0 file:h-full" />
+    </FormField>
+  </fieldset>
+
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <p class="min-h-5 text-sm text-neutral-600 data-[tone=error]:text-red-600" role="status" aria-live="polite" data-form-status></p>
+    <ArrowButton type="submit" variant="dark" class="shrink-0">Send application</ArrowButton>
+  </div>
+</form>
+
+<script>
+  import { onEveryPage } from '@/scripts/lifecycle';
+  import { bindPendingForm } from '@/scripts/forms';
+
+  onEveryPage(() => {
+    const cleanups = [...document.querySelectorAll<HTMLFormElement>('[data-job-form]')].map((form) =>
+      bindPendingForm(form, { required: 'Add your name, email and phone so we can reach you.' }),
+    );
+    return () => cleanups.forEach((c) => c());
+  });
+</script>

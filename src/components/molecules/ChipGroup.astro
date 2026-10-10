@@ -1,0 +1,31 @@
+---
+// Grupo de pastillas con título pequeño (infografía): "What we evaluate" → Financial performance · Market dynamics…
+// tone: brand (pastilla brand-50 con check) · neutral (sobre tarjetas blancas, gris neutro).
+import { Badge } from '@/components/starwind/badge';
+import Check from '@tabler/icons/outline/check.svg';
+
+interface Props {
+  title: string;
+  items: string[];
+  tone?: 'brand' | 'neutral';
+  class?: string;
+}
+
+const { title, items, tone = 'brand', class: className } = Astro.props;
+---
+
+<div class={className}>
+  <p class="text-xs font-semibold tracking-[0.12em] text-neutral-500 uppercase">{title}</p>
+  <ul class="mt-3 flex flex-wrap gap-2" data-reveal-stagger data-stagger="0.04">
+    {
+      items.map((item) => (
+        <li>
+          <Badge variant={tone === 'brand' ? 'brand-soft' : 'light'} size="md" class:list={['gap-1.5 py-1.5 pr-3.5 pl-2.5 font-medium', tone === 'neutral' && 'bg-neutral-100']}>
+            <Check class="size-3.5 text-brand-600" stroke-width="2.5" aria-hidden="true" />
+            {item}
+          </Badge>
+        </li>
+      ))
+    }
+  </ul>
+</div>

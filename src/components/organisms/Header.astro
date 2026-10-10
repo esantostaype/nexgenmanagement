@@ -1,6 +1,7 @@
 ---
 // Header fijo: barra (logo, menú, teléfono, CTA y botón del menú móvil) + menú móvil a pantalla completa.
 // home.ts (bindHeader) pone [data-scrolled] al bajar y [data-menu-open] con el menú móvil abierto.
+import { PROPOSAL_DIALOG } from '@/data/forms';
 import HeaderBar from '@/components/organisms/HeaderBar.astro';
 import MobileMenu from '@/components/organisms/MobileMenu.astro';
 import PhoneButton from '@/components/molecules/PhoneButton.astro';
@@ -22,13 +23,18 @@ const { variant = 'overlay' } = Astro.props;
 <header
   data-site-header
   data-variant={variant}
-  class="group/header fixed inset-x-0 top-0 z-40 px-3 pt-[calc(0.5rem+min(var(--gutter),2rem))] transition-[padding] duration-500 data-scrolled:px-3 data-scrolled:pt-3"
+  class="group/header fixed inset-x-0 top-0 z-40 px-3 sm:px-4 pt-[calc(0.5rem+min(var(--gutter),2rem))] transition-[padding] duration-500 data-scrolled:sm:px-4 data-scrolled:px-3 data-scrolled:pt-3"
 >
   <HeaderBar variant={variant} items={mainNav}>
     <PhoneButton slot="actions" phone={contact.phone} href={contact.phoneHref} />
-    <HeaderCta slot="actions" href="/contact" label="Get a proposal" />
+    <HeaderCta slot="actions" opens={PROPOSAL_DIALOG} label="Get a proposal" />
     <MenuToggle slot="actions" controls="mobile-menu" class="ml-2" />
   </HeaderBar>
 
   <MobileMenu items={mainNav} />
 </header>
+
+<script>
+  import { initHeader } from '@/scripts/header';
+  initHeader();
+</script>

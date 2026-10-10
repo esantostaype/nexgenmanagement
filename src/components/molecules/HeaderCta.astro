@@ -4,15 +4,17 @@
 import ArrowButton from '@/components/molecules/ArrowButton.astro';
 
 interface Props {
-  href: string;
+  /** id del Dialog que abre (o, si no, la URL de `href`) */
+  opens?: string;
+  href?: string;
   label: string;
 }
 
-const { href, label } = Astro.props;
+const { opens, href, label } = Astro.props;
 ---
 
 <div class="hidden overflow-hidden sm:block" style="width:0" data-header-cta aria-hidden="true">
   <div class="pl-2">
-    <ArrowButton href={href} size="md" tabindex="-1" data-header-cta-link>{label}</ArrowButton>
+    <ArrowButton opens={opens} href={href} size="md" tabindex="-1" data-header-cta-link>{label}</ArrowButton>
   </div>
 </div>

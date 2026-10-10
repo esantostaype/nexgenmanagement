@@ -1,0 +1,34 @@
+---
+// Solicitud de empleo: cabecera fija a la izquierda con el contacto directo y, a la derecha, el formulario en una
+// tarjeta blanca (JobApplicationForm).
+import Section from '@/components/atoms/Section.astro';
+import Card from '@/components/atoms/Card.astro';
+import IconText from '@/components/atoms/IconText.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import JobApplicationForm from '@/components/organisms/JobApplicationForm.astro';
+import Mail from '@tabler/icons/outline/mail.svg';
+import Phone from '@tabler/icons/outline/phone.svg';
+import Clock from '@tabler/icons/outline/clock.svg';
+import { contact } from '@/data/site';
+
+const link = 'w-fit text-neutral-600 transition-colors hover:text-brand-700';
+---
+
+<Section id="apply" labelledby="apply-title" innerClass="grid gap-10 lg:grid-cols-12 lg:gap-16">
+  <div class="lg:col-span-5">
+    <div class="lg:sticky lg:top-32">
+      <SectionHeading id="apply-title" eyebrow="Join our team" title="Job application.">
+        <p>Tell us about you and attach your resume. We review every application and reach out when there is a fit.</p>
+      </SectionHeading>
+      <address class="action-gap grid gap-3 not-italic" data-reveal-stagger>
+        <a href={`mailto:${contact.email}`} class={link}><IconText icon={Mail} iconClass="text-brand-500">{contact.email}</IconText></a>
+        <a href={contact.phoneHref} class={link}><IconText icon={Phone} iconClass="text-brand-500" class="tabular-nums">{contact.phone}</IconText></a>
+        <span class="text-neutral-600"><IconText icon={Clock} iconClass="text-brand-500">{contact.hours}</IconText></span>
+      </address>
+    </div>
+  </div>
+
+  <Card class="lg:col-span-7" data-reveal>
+    <JobApplicationForm />
+  </Card>
+</Section>

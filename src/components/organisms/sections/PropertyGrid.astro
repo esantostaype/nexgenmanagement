@@ -13,7 +13,7 @@ const sorted = [...communities].sort((a, b) => a.name.localeCompare(b.name));
 ---
 
 <Section label="All properties">
-  <ul class="grid-gap grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-property-list>
+  <ul class="grid-gap grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4" data-property-list>
     {
       sorted.map((c) => (
         <li data-name={c.name.toLowerCase()} data-state={c.state} data-city={c.city} data-reveal>
@@ -31,10 +31,10 @@ const sorted = [...communities].sort((a, b) => a.name.localeCompare(b.name));
             class="transition-shadow duration-500 hover:shadow-[0_24px_48px_-28px_rgb(7_53_69/0.5)]"
             data-focus-pin={c.name}
           >
-            <Badge slot="media" variant="light" size="sm" class="absolute top-3 left-3 py-1">
+            <Badge slot="media" variant="light" size="sm" class="absolute top-1 sm:top-3 left-1 sm:left-3 py-1">
               {stateNames[c.state]}
             </Badge>
-            <IconText slot="sub" icon={MapPin} class="mt-0.5 text-sm text-neutral-500">
+            <IconText slot="sub" icon={MapPin} truncate class="mt-0.5 text-xs text-neutral-500 sm:text-sm">
               {c.city}, {c.state}
             </IconText>
             {c.url ? (

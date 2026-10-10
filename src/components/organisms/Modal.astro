@@ -1,0 +1,87 @@
+---
+// Modal genérico del sitio sobre el Dialog de Starwind, con la animación común: entra 50px de abajo hacia arriba sin
+// escalar, fundido lineal, cubic-bezier(0.2, 0, 0, 1) al entrar y la inversa al salir, 150ms en todo (también el fondo).
+// Se abre con cualquier botón que lleve data-sw-dialog-trigger + data-sw-dialog-target-id={id} (p. ej. ArrowButton opens).
+//   size: md (672px, formularios) · lg (960px, fichas con foto)
+//   pad:  md (20 / 28 / 32 px) · sm (8px, para una foto dentro con radio 8px = 16 − 8)
+import { Dialog, DialogContent } from '@/components/starwind/dialog';
+
+interface Props {
+  id: string;
+  size?: 'md' | 'lg';
+  pad?: 'md' | 'sm';
+  class?: string;
+}
+
+const { id, size = 'md', pad = 'md', class: className } = Astro.props;
+---
+
+<Dialog id={id}>
+  <!-- En móvil ocupa casi toda la pantalla (12px de margen alrededor) y hace scroll por dentro -->
+  <DialogContent
+    class:list={[
+      'site-modal max-h-[calc(100dvh-1.5rem)] w-[calc(100%-1.5rem)] overflow-y-auto rounded-2xl border-0 bg-white shadow-[0_32px_64px_-24px_rgb(7_53_69/0.45)] max-sm:top-3',
+      size === 'lg' ? 'max-w-240' : 'max-w-2xl',
+      // p-* explícito (no card-pad): tailwind-merge reemplaza así el p-8 por defecto de Starwind
+      pad === 'sm' ? 'p-2' : 'p-5 sm:p-7 md:p-8',
+      className,
+    ]}
+  >
+    <slot />
+  </DialogContent>
+</Dialog>
+
+<style>
+  /* Animación propia en lugar de la combinada de tw-animate: el fundido es lineal y solo el desplazamiento usa curva */
+  :global(.site-modal.site-modal[data-state='open']) {
+    animation:
+      modal-fade-in 0.15s linear both,
+      modal-rise 0.15s cubic-bezier(0.2, 0, 0, 1) both;
+  }
+  /* Salida: la curva invertida de la entrada (acelera al final). Con la misma curva frenaría al principio y el
+     modal se quedaría quieto y medio visible los últimos ~50ms antes de desaparecer. */
+  :global(.site-modal.site-modal[data-state='closed']) {
+    animation:
+      modal-fade-out 0.15s linear forwards,
+      modal-drop 0.15s cubic-bezier(1, 0, 0.8, 1) forwards;
+  }
+  /* Botón de cerrar: círculo blanco, legible también sobre fotos o fondos oscuros */
+  :global(.site-modal [data-slot='dialog-close']) {
+    z-index: 10;
+    border-radius: 9999px;
+    background: white;
+  }
+  /* Fondo oscuro: fundido lineal también */
+  :global([data-slot='dialog-backdrop']) {
+    animation-duration: 0.15s;
+    animation-timing-function: linear;
+  }
+  @keyframes modal-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes modal-fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes modal-rise {
+    from {
+      transform: translateY(50px);
+    }
+  }
+  @keyframes modal-drop {
+    to {
+      transform: translateY(50px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.site-modal.site-modal[data-state]) {
+      animation-name: modal-fade-in;
+    }
+    :global(.site-modal.site-modal[data-state='closed']) {
+      animation-name: modal-fade-out;
+    }
+  }
+</style>

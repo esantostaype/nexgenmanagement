@@ -11,6 +11,8 @@ import ArrowCircle from '@/components/atoms/ArrowCircle.astro';
 interface Props extends HTMLAttributes<'a'> {
   href?: string;
   variant?: 'dot' | 'underline';
+  /** dark: círculo brand-950 (sobre fondos claros) · light: círculo cian (sobre fondos oscuros) */
+  tone?: 'dark' | 'light';
   size?: 'sm' | 'md';
   /** Si la tarjeta que lo contiene ya tiene `group` (hover en toda la tarjeta), no lo añade aquí */
   inGroup?: boolean;
@@ -18,7 +20,7 @@ interface Props extends HTMLAttributes<'a'> {
   class?: string;
 }
 
-const { href, variant = 'dot', size = 'md', inGroup = false, external = false, class: className, ...rest } = Astro.props;
+const { href, variant = 'dot', tone = 'dark', size = 'md', inGroup = false, external = false, class: className, ...rest } = Astro.props;
 const Tag = href ? 'a' : 'span';
 const turn = 'rotate-45 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-0';
 ---
@@ -45,7 +47,7 @@ const turn = 'rotate-45 transition-transform duration-500 ease-[cubic-bezier(0.3
     ) : (
       <>
         <slot />
-        <ArrowCircle tone="dark-white" size={size === 'sm' ? 'sm' : 'md'} />
+        <ArrowCircle tone={tone === 'light' ? 'brand' : 'dark-white'} size={size === 'sm' ? 'sm' : 'md'} />
       </>
     )
   }

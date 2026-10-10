@@ -1,0 +1,34 @@
+---
+// Equipo: cabecera a la izquierda y la rejilla de tarjetas claras con la persona sobresaliendo (ProfileCard popout). Quien tiene bio abre su ficha en un
+// modal (TeamMemberDialog); los modales van aquí porque solo existen en esta página.
+import Section from '@/components/atoms/Section.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import ProfileCard from '@/components/molecules/ProfileCard.astro';
+import TeamMemberDialog from '@/components/organisms/TeamMemberDialog.astro';
+import { bioDialogId, teamMembers } from '@/data/team';
+
+const withBio = teamMembers.filter((m) => m.bio) as Parameters<typeof TeamMemberDialog>[0]['member'][];
+---
+
+<Section id="team" labelledby="team-title" innerClass="grid gap-10 lg:grid-cols-12 lg:gap-16">
+  <div class="lg:col-span-3">
+    <div class="lg:sticky lg:top-32">
+      <SectionHeading id="team-title" eyebrow="Introducing Nex-Gen" title="Meet our expert minds.">
+        <p>The people behind every property, report and resident call. Open a card to read their story.</p>
+      </SectionHeading>
+    </div>
+  </div>
+
+  <!-- Filas separadas para las cabezas que sobresalen; las de la primera fila invaden el espacio superior de la sección -->
+  <ul class="grid grid-cols-2 gap-x-4 gap-y-16 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-20 lg:col-span-9" data-reveal-stagger>
+    {
+      teamMembers.map((m) => (
+        <li>
+          <ProfileCard popout compact name={m.name} role={m.role} photo={m.photo} photoAlt={`${m.name}, ${m.role}`} opens={m.bio ? bioDialogId(m.slug) : undefined} />
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+{withBio.map((m) => <TeamMemberDialog member={m} />)}

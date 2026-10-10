@@ -1,0 +1,26 @@
+---
+// Campo de formulario: etiqueta (Label de Starwind) + el control en el slot. `optional` añade "(optional)".
+// `hint` muestra un texto de ayuda debajo. Los atributos data-* pasan al contenedor (p. ej. data-owner-only).
+import { Label } from '@/components/starwind/label';
+
+interface Props {
+  /** id del control que etiqueta */
+  for: string;
+  label: string;
+  optional?: boolean;
+  hint?: string;
+  class?: string;
+  [key: `data-${string}`]: string | boolean | undefined;
+}
+
+const { for: htmlFor, label, optional = false, hint, class: className, ...rest } = Astro.props;
+---
+
+<div class:list={['grid gap-2', className]} {...rest}>
+  <Label for={htmlFor}>
+    {label}
+    {optional && <span class="ml-1 font-normal text-neutral-400">(optional)</span>}
+  </Label>
+  <slot />
+  {hint && <p class="text-xs text-neutral-500">{hint}</p>}
+</div>

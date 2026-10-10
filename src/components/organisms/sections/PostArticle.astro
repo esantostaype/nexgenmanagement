@@ -1,0 +1,102 @@
+---
+// Cuerpo de un post: portada y texto (Prose) a la izquierda; a la derecha, una columna fija con fecha, lectura,
+// fuente, descargas y la vuelta al blog. Debajo, los tres posts más recientes.
+import { render } from 'astro:content';
+import Section from '@/components/atoms/Section.astro';
+import Card from '@/components/atoms/Card.astro';
+import IconText from '@/components/atoms/IconText.astro';
+import Prose from '@/components/atoms/Prose.astro';
+import ArrowCircle from '@/components/atoms/ArrowCircle.astro';
+import MediaCard from '@/components/molecules/MediaCard.astro';
+import ArrowLink from '@/components/molecules/ArrowLink.astro';
+import PostMeta from '@/components/molecules/PostMeta.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import { Badge } from '@/components/starwind/badge';
+import Calendar from '@tabler/icons/outline/calendar.svg';
+import Clock from '@tabler/icons/outline/clock.svg';
+import Tag from '@tabler/icons/outline/tag.svg';
+import News from '@tabler/icons/outline/news.svg';
+import Download from '@tabler/icons/outline/file-download.svg';
+import { getPosts, postDate, postUrl, readingTime, type Post } from '@/lib/blog';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const more = (await getPosts()).filter((p) => p.id !== post.id).slice(0, 3);
+const label = 'text-xs font-semibold tracking-[0.12em] text-neutral-500 uppercase';
+---
+
+<Section labelledby="page-title" innerClass="grid gap-10 lg:grid-cols-12 lg:gap-16">
+  <article class="lg:col-span-8">
+    <MediaCard variant="image" image={post.data.image} imageAlt={post.data.imageAlt} sizes="(min-width: 1024px) 860px, 100vw" class="aspect-video" data-reveal="fade" />
+    <Prose class="mt-10 max-w-[68ch] lg:mt-12" data-reveal>
+      <Content />
+    </Prose>
+
+    {
+      post.data.downloads && (
+        <ul class="mt-8 grid gap-3 sm:grid-cols-2" data-reveal-stagger>
+          {post.data.downloads.map((d) => (
+            <li>
+              <Card href={d.href} target="_blank" rel="noopener" pad="none" class="group flex items-center justify-between gap-4 p-4 transition-shadow duration-500 hover:shadow-[0_24px_48px_-28px_rgb(7_53_69/0.5)]">
+                <IconText icon={Download} iconClass="text-brand-500" class="font-medium text-brand-950">
+                  {d.label} (PDF)
+                </IconText>
+                <ArrowCircle size="sm" />
+              </Card>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    {post.data.source && <p class="mt-10 border-t border-neutral-200 pt-6 text-sm text-neutral-500">Summary of an article originally published by {post.data.source.name}.</p>}
+  </article>
+
+  <aside class="lg:col-span-4">
+    <Card class="grid gap-5 lg:sticky lg:top-32" data-reveal>
+      <p class={label}>About this post</p>
+      <ul class="grid gap-3 text-neutral-600">
+        <li><IconText icon={Calendar} iconClass="text-brand-500">{postDate(post)}</IconText></li>
+        <li><IconText icon={Clock} iconClass="text-brand-500">{readingTime(post)} min read</IconText></li>
+        <li><IconText icon={Tag} iconClass="text-brand-500">{post.data.category}</IconText></li>
+        <li><IconText icon={News} iconClass="text-brand-500">{post.data.source ? `Via ${post.data.source.name}` : 'By Nex-Gen Management'}</IconText></li>
+      </ul>
+      <ArrowLink href="/blog" class="border-t border-neutral-100 pt-5">All articles</ArrowLink>
+    </Card>
+  </aside>
+</Section>
+
+<Section labelledby="more-title">
+  <SectionHeading id="more-title" eyebrow="Keep reading" title="More from the blog." layout="split">
+    <ArrowLink slot="actions" href="/blog" variant="underline">All articles</ArrowLink>
+  </SectionHeading>
+  <ul class="grid-gap action-gap grid sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
+    {
+      more.map((p) => (
+        <li>
+          <MediaCard
+            as="article"
+            href={postUrl(p)}
+            image={p.data.image}
+            imageAlt={p.data.imageAlt}
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            ratio="aspect-16/10"
+            title={p.data.title}
+            titleAs="h3"
+            class="transition-shadow duration-500 hover:shadow-[0_24px_48px_-28px_rgb(7_53_69/0.5)]"
+          >
+            <Badge slot="media" variant="light" size="sm" class="absolute top-3 left-3 py-1">
+              {p.data.category}
+            </Badge>
+            <PostMeta slot="meta" date={postDate(p)} category={`${readingTime(p)} min read`} class="mb-3" />
+            <ArrowCircle slot="end" />
+          </MediaCard>
+        </li>
+      ))
+    }
+  </ul>
+</Section>

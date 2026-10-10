@@ -1,0 +1,49 @@
+---
+// Una etapa del ciclo de la inversión (Acquire, Plan, Report, Protect). Asimétrica como las secciones de la home:
+// columna fija (sticky) con número, etiqueta, título, texto y el índice de sus servicios, y al otro lado las fichas.
+// `reverse` pone la columna fija a la derecha (las etapas alternan de lado).
+import Section from '@/components/atoms/Section.astro';
+import SectionHeading from '@/components/molecules/SectionHeading.astro';
+import ServiceDetail from '@/components/organisms/ServiceDetail.astro';
+import { getService, type serviceStages } from '@/data/services';
+
+interface Props {
+  stage: (typeof serviceStages)[number];
+  number: string;
+  reverse?: boolean;
+  /** Primera etapa: medio espacio superior (inicio del contenido de la página) */
+  first?: boolean;
+}
+
+const { stage, number, reverse = false, first = false } = Astro.props;
+const items = stage.slugs.map(getService);
+---
+
+<Section id={stage.id} labelledby={`${stage.id}-title`} space={first ? 'start' : 'full'} class="scroll-mt-22" innerClass="grid gap-10 lg:grid-cols-12 lg:gap-16">
+  <div class:list={['lg:col-span-4', reverse && 'lg:order-2']}>
+    <div class="lg:sticky lg:top-44">
+      <span class="font-display block text-[clamp(4rem,8vw,6.5rem)] leading-none font-semibold tracking-tighter text-brand-950/10 tabular-nums" aria-hidden="true" data-reveal="fade">
+        {number}
+      </span>
+      <SectionHeading id={`${stage.id}-title`} eyebrow={`Stage ${Number(number)} · ${stage.label}`} title={stage.title} class="mt-2">
+        <p>{stage.text}</p>
+      </SectionHeading>
+      <!-- Índice de la etapa: salta a cada ficha -->
+      <ul class="action-gap grid gap-1 border-l border-brand-950/10" data-reveal-stagger="from-left">
+        {
+          items.map((s) => (
+            <li>
+              <a href={`#${s.slug}`} class="-ml-px block border-l-2 border-transparent py-1.5 pl-4 text-neutral-600 transition-colors hover:border-brand-500 hover:text-brand-950">
+                {s.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class:list={['grid-gap grid lg:col-span-8', reverse && 'lg:order-1']}>
+    {items.map((s) => <ServiceDetail service={s} />)}
+  </div>
+</Section>

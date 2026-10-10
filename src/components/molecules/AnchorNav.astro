@@ -1,0 +1,107 @@
+---
+// Navegación por anclas, fija bajo el header: marca la sección visible (scrollspy) con un indicador que se desliza.
+// Cada item enlaza a un id de la página; el script observa esas secciones con IntersectionObserver.
+// Si no cabe (móvil), no hay scroll manual: la lista se desplaza sola para que el activo y sus vecinos se vean completos.
+interface Props {
+  items: { id: string; label: string; number?: string }[];
+  label: string;
+  class?: string;
+}
+
+const { items, label, class: className } = Astro.props;
+---
+
+<nav aria-label={label} class:list={['sticky top-22 z-30 sm:top-24 flex justify-center', className]} data-anchor-nav>
+  <ul class="relative flex max-w-full min-w-0 gap-1 overflow-hidden rounded-full bg-white p-1.5 shadow-[0_16px_40px_-24px_rgb(7_53_69/0.45)]">
+    <span class="absolute top-1.5 bottom-1.5 left-0 w-0 rounded-full bg-brand-950 transition-[transform,width] duration-500 ease-[cubic-bezier(0.34,1.4,0.64,1)]" aria-hidden="true" data-anchor-indicator></span>
+    {
+      items.map((item) => (
+        <li class="relative z-10">
+          <a
+            href={`#${item.id}`}
+            class="flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap text-neutral-600 transition-colors duration-300 hover:text-brand-950 aria-current:text-white"
+            data-anchor-link={item.id}
+          >
+            {item.number && <span class="text-xs tabular-nums opacity-60">{item.number}</span>}
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<script>
+  import { onEveryPage } from '@/scripts/lifecycle';
+
+  onEveryPage(() => {
+    const nav = document.querySelector<HTMLElement>('[data-anchor-nav]');
+    if (!nav) return;
+    const links = [...nav.querySelectorAll<HTMLAnchorElement>('[data-anchor-link]')];
+    const indicator = nav.querySelector<HTMLElement>('[data-anchor-indicator]');
+    const sections = links.map((l) => document.getElementById(l.dataset.anchorLink!)).filter(Boolean) as HTMLElement[];
+
+    const setActive = (id: string | null) => {
+      links.forEach((l) => l.setAttribute('aria-current', String(l.dataset.anchorLink === id)));
+      const link = links.find((l) => l.dataset.anchorLink === id);
+      if (!indicator) return;
+      if (!link) {
+        indicator.style.width = '0px';
+        return;
+      }
+      const li = link.parentElement!;
+      indicator.style.width = `${li.offsetWidth}px`;
+      indicator.style.transform = `translateX(${li.offsetLeft}px)`;
+      revealAround(li);
+    };
+
+    // Desplaza la lista para que el item activo y sus vecinos (anterior y siguiente) queden enteros a la vista
+    const list = nav.querySelector<HTMLElement>('ul')!;
+    const revealAround = (li: HTMLElement) => {
+      if (list.scrollWidth <= list.clientWidth) return;
+      const prev = (li.previousElementSibling as HTMLElement | null) ?? li;
+      const next = (li.nextElementSibling as HTMLElement | null) ?? li;
+      const pad = 6;
+      const start = prev.offsetLeft - pad;
+      const end = next.offsetLeft + next.offsetWidth + pad;
+      let left = list.scrollLeft;
+      if (end > left + list.clientWidth) left = end - list.clientWidth;
+      if (start < left) left = start;
+      scrollListTo(left);
+    };
+
+    // Tween propio (500ms, ease-out) en lugar de scrollTo smooth: va al ritmo del indicador y no depende del navegador
+    let frame = 0;
+    const scrollListTo = (target: number) => {
+      cancelAnimationFrame(frame);
+      const from = list.scrollLeft;
+      if (Math.abs(target - from) < 1) return;
+      const t0 = performance.now();
+      const step = (now: number) => {
+        const p = Math.min((now - t0) / 500, 1);
+        list.scrollLeft = from + (target - from) * (1 - (1 - p) ** 3);
+        if (p < 1) frame = requestAnimationFrame(step);
+      };
+      frame = requestAnimationFrame(step);
+    };
+
+    // Sección activa: la que cruza la franja central de la pantalla
+    const visible = new Map<string, boolean>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => visible.set(e.target.id, e.isIntersecting));
+        const current = sections.find((s) => visible.get(s.id));
+        setActive(current?.id ?? null);
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((s) => observer.observe(s));
+    const onResize = () => setActive(links.find((l) => l.getAttribute('aria-current') === 'true')?.dataset.anchorLink ?? null);
+    window.addEventListener('resize', onResize);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+      window.removeEventListener('resize', onResize);
+    };
+  });
+</script>

@@ -1,6 +1,7 @@
 ---
 // Tarjeta base del sitio: esquinas de 16px y relleno común (card-pad: 24/28/32 px).
-// tone: white (sobre el fondo gris) · neutral (sobre paneles blancos) · brand (degradado de marca) · dark.
+// tone: white (sobre el fondo gris) · neutral (sobre paneles blancos) · brand (degradado de marca) · dark ·
+// glass (blanco al 6%, sobre paneles brand-950).
 // pad: md (card-pad) · sm (12px, tarjetas con foto a sangre) · none.
 // Con `href` se renderiza como enlace; si no, con la etiqueta de `as`.
 import type { HTMLAttributes } from 'astro/types';
@@ -10,7 +11,7 @@ interface Props extends HTMLAttributes<'div'> {
   href?: string;
   target?: string;
   rel?: string;
-  tone?: 'white' | 'neutral' | 'brand' | 'dark' | 'none';
+  tone?: 'white' | 'neutral' | 'brand' | 'dark' | 'glass' | 'none';
   pad?: 'md' | 'sm' | 'none';
   class?: string;
 }
@@ -23,6 +24,7 @@ const tones = {
   neutral: 'bg-neutral-100',
   brand: 'bg-linear-45 from-brand-600 to-brand-500 text-white',
   dark: 'bg-brand-950 text-white',
+  glass: 'bg-white/6 text-white',
   none: '',
 }[tone];
 

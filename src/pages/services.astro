@@ -1,0 +1,34 @@
+---
+import BaseLayout from '@/components/templates/BaseLayout.astro';
+import Header from '@/components/organisms/Header.astro';
+import Footer from '@/components/organisms/Footer.astro';
+import PageHero from '@/components/organisms/sections/PageHero.astro';
+import ServiceStages from '@/components/organisms/sections/ServiceStages.astro';
+import ReportingRhythm from '@/components/organisms/sections/ReportingRhythm.astro';
+import Testimonials from '@/components/organisms/sections/Testimonials.astro';
+import { serviceCadence } from '@/data/services';
+---
+
+<BaseLayout
+  title="Services | Nex-Gen Management"
+  description="Nine property management services across the life of a multifamily asset: due diligence, acquisition, budgets, weekly and monthly reporting, inspections and audits."
+  lang="en"
+>
+  <Header variant="overlay" />
+  <main>
+    <PageHero
+      eyebrow="Our services"
+      title="Your investment, protected and maximized."
+      text="Nine services that follow the life of a multifamily asset, from the first look to yearly inspections."
+    />
+    <ServiceStages />
+    <ReportingRhythm steps={serviceCadence} />
+    <Testimonials />
+  </main>
+  <Footer />
+
+  <script>
+    import { initHome } from '@/scripts/home';
+    initHome();
+  </script>
+</BaseLayout>
