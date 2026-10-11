@@ -1,8 +1,9 @@
 // @ts-check
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig, envField, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import keystatic from '@keystatic/astro';
+import vercelAdapter from '@astrojs/vercel';
 
 // URL pública del sitio: la usan el canonical y las imágenes para compartir (og:image necesita URL absoluta).
 // Orden: SITE_URL (defínela en el hosting) → URL del despliegue en Vercel o Netlify → dominio final.
@@ -27,6 +28,19 @@ export default defineConfig({
   site,
 
   integrations: isDev ? [react(), keystatic()] : [],
+
+  // Las páginas siguen siendo estáticas; el adaptador solo despliega como función las Astro Actions de los
+  // formularios (src/actions), que envían los correos con Resend.
+  adapter: vercelAdapter(),
+
+  // Variables de entorno (en .env en local y en Vercel → Settings → Environment Variables). Ver .env.example.
+  env: {
+    schema: {
+      RESEND_API_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
+      MAIL_TO: envField.string({ context: 'server', access: 'secret', default: 'esantostaype@gmail.com' }),
+      MAIL_FROM: envField.string({ context: 'server', access: 'secret', default: 'Nex-Gen Management <onboarding@resend.dev>' }),
+    },
+  },
 
   // Astro descarga la fuente, la sirve desde el propio sitio y genera un fallback
   // con métricas ajustadas para evitar el salto de fuente al cargar (FOUT/CLS).

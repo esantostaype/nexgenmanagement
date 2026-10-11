@@ -1,0 +1,24 @@
+---
+// Mensaje de estado de un formulario (enviando, error general, enviado). Lo escribe src/scripts/forms.ts.
+// tone: dark (sobre fondos claros) · light (sobre fondos oscuros, p. ej. el footer).
+interface Props {
+  tone?: 'dark' | 'light';
+  class?: string;
+}
+
+const { tone = 'dark', class: className } = Astro.props;
+---
+
+<p
+  class:list={[
+    'min-h-5 text-sm',
+    tone === 'dark'
+      ? 'text-neutral-600 data-[tone=error]:text-red-600 data-[tone=success]:font-medium data-[tone=success]:text-emerald-700'
+      : 'text-brand-100/70 data-[tone=error]:text-red-300 data-[tone=success]:text-brand-300',
+    className,
+  ]}
+  role="status"
+  aria-live="polite"
+  data-form-status
+>
+</p>

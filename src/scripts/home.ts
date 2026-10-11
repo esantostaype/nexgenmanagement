@@ -1,6 +1,7 @@
 import { animate, inView, stagger } from 'motion';
 import { gsap, ScrollTrigger } from './animations/gsap';
 import { onEveryPage } from './lifecycle';
+import { disappear, toggle } from './animations/presence';
 
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -292,7 +293,7 @@ function bindDirectory() {
     // Filtrar por estado muestra todas sus filas; "All" vuelve a la lista corta
     const filtering = state !== 'all';
     root.toggleAttribute('data-expanded', filtering || root.hasAttribute('data-user-expanded'));
-    if (more) more.hidden = filtering || root.hasAttribute('data-user-expanded');
+    toggle(more, !(filtering || root.hasAttribute('data-user-expanded')));
 
     const visible: HTMLTableRowElement[] = [];
     rows.forEach((row) => {
@@ -324,7 +325,7 @@ function bindDirectory() {
   const onMore = () => {
     root.setAttribute('data-user-expanded', '');
     root.setAttribute('data-expanded', '');
-    if (more) more.hidden = true;
+    disappear(more);
   };
   more?.addEventListener('click', onMore);
 

@@ -166,7 +166,16 @@ npm run fix:classes    # las corrige (usa el canonicalizador oficial de Tailwind
 - Se importan desde `@/components/starwind/<nombre>`, por ejemplo `import { Button } from '@/components/starwind/button'`.
 - Variantes de Button y Badge: `primary` (marca), `default`, `secondary`, `outline`, `ghost`, `info`, `success`, `warning`, `error`, y las de la marca Nex-Gen: Button `brand`, `dark`, `light`, `contrast` (con `shape="pill"` y tamaños `pill-md`/`pill-lg`); Badge `brand`, `brand-soft`, `light`, `dark`.
 - Los componentes interactivos (select, dialog…) traen su propio script vanilla. No hace falta React.
-- Formularios: usa HTML nativo con `<form>` y Astro Actions (requiere adaptador) o `fetch` desde un `<script>`. Mientras no haya backend, `bindPendingForm` (`src/scripts/forms.ts`) valida los `required` y avisa con el teléfono y el email.
+- Formularios: ver «Formularios y correos».
+
+### Formularios y correos (obligatorio)
+
+- **Validación campo por campo con Zod, la misma en el navegador y en el servidor.** Los esquemas viven en `src/lib/forms/schemas.ts` (una clave por `name` de campo, con su mensaje). `src/scripts/forms.ts` (iniciado en `app.ts` con `bindForms()`) valida cada campo al salir de él (blur), lo revalida mientras se corrige y, al enviar, valida todos y lleva el foco al primero con error. Los campos dentro de un `[hidden]` no se validan.
+- **Marcado**: `<form data-form="<nombre>" novalidate data-contact-phone data-contact-email>`, cada control dentro de `molecules/FormField.astro` (pinta el error en `[data-field-error]`, marca `[data-invalid]` → borde rojo en `global.css`, y pone `aria-invalid` + `aria-describedby`), `atoms/Honeypot.astro` (campo trampa anti-bots `website`) y `atoms/FormStatus.astro` (enviando / error general / enviado).
+- **Envío con Astro Actions** (`src/actions/index.ts`, una action por formulario con el mismo nombre que `data-form` y el mismo esquema como `input`): el servidor vuelve a validar y sus errores por campo se muestran en el mismo sitio. Requiere adaptador (`@astrojs/vercel`); las páginas siguen siendo estáticas.
+- **Correos con Resend**: cada envío manda la notificación al equipo (`MAIL_TO`, con `replyTo` del visitante y todos los datos en tabla) y una **autorrespuesta** al visitante con la plantilla de marca (`src/lib/email/layout.ts` + `templates.ts`: tablas, estilos en línea, 600px, imágenes PNG con URL absoluta desde `public/email`). Si falla la autorrespuesta, el mensaje al equipo ya salió.
+- Variables (`astro:env`, ver `.env.example`): `RESEND_API_KEY`, `MAIL_TO`, `MAIL_FROM`. Con `onboarding@resend.dev` Resend solo entrega al correo de tu cuenta: para la autorrespuesta a cualquier persona hay que verificar el dominio del sitio en Resend y usar una dirección suya en `MAIL_FROM`. Una API key por proyecto.
+- Formulario nuevo: esquema en `schemas.ts` + `formSchemas`, action en `src/actions`, mensaje de éxito en `forms.ts`, textos de los correos en `templates.ts`, y `data-form` en el `<form>`.
 
 ### Iconos (Tabler)
 
@@ -206,6 +215,7 @@ El catálogo está en https://tabler.io/icons (variantes `outline/` y `filled/`)
 
 ### Convenciones de animación (obligatorias)
 
+- **Nada aparece ni desaparece de golpe, nunca.** Todo lo que se muestra u oculta por JS (mensajes de error y de estado, campos condicionales, tarjetas flotantes, resultados de un filtro, estados vacíos, botones que se esconden) usa `src/scripts/animations/presence.ts` con Motion: `appear`/`disappear`/`toggle` (con `{ height: true }` si está en el flujo, para que lo de abajo no salte), `swapText` para cambiar un texto y `filterList` para listas filtradas. Prohibido `el.hidden = …` o `classList.toggle('hidden')` a pelo. Los espacios (gap/margen) de algo que aparece van dentro del bloque animado. Lo que entra con scroll usa `data-reveal`; modales, acordeones y desplegables ya traen su animación.
 - **Todo elemento visible tiene reveal.** Ningún bloque aparece estático: textos, tarjetas, imágenes, listas y footer usan `data-reveal` (o `data-reveal-stagger` en el padre para listas y grupos).
 - **Títulos grandes con la entrada del hero.** Todo `h1`/`h2` (y los titulares de tarjeta destacados) es grande, con `font-display` y un `clamp()` generoso (mínimo de `clamp(2rem,4vw,3.4rem)` en títulos de sección), y lleva `data-scene="split-lines"`: entra por líneas cuando aparece en pantalla. No combines `data-scene="split-lines"` y `data-reveal` en el mismo elemento. La máscara de cada línea (`.split-line-mask` en `global.css`) amplía su recorte para no cortar descendentes (g, y, p) con interlineados ajustados; no la quites.
 - **Botones y enlaces con flecha entran de izquierda a derecha**: `data-reveal="from-left"`, o `data-reveal-stagger="from-left"` en el contenedor si hay varios.

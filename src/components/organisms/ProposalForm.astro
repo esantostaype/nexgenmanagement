@@ -1,7 +1,10 @@
 ---
 // Formulario de propuesta con componentes de Starwind (Select, Input, Textarea). Los campos de propietario solo se
-// muestran si se elige "Property owner or investor". Valida en el navegador; el envío aún no está conectado.
+// muestran si se elige "Property owner or investor". Validación campo por campo y envío con la action `proposal`
+// (src/scripts/forms.ts, src/actions).
 import FormField from '@/components/molecules/FormField.astro';
+import FormStatus from '@/components/atoms/FormStatus.astro';
+import Honeypot from '@/components/atoms/Honeypot.astro';
 import ArrowButton from '@/components/molecules/ArrowButton.astro';
 import { Input } from '@/components/starwind/input';
 import { Textarea } from '@/components/starwind/textarea';
@@ -19,7 +22,8 @@ const { idPrefix = 'proposal', class: className } = Astro.props;
 const id = (name: string) => `${idPrefix}-${name}`;
 ---
 
-<form class:list={['grid gap-5', className]} novalidate data-proposal-form data-contact-phone={contact.phone} data-contact-email={contact.email}>
+<form class:list={['grid gap-5', className]} novalidate data-form="proposal" data-proposal-form data-contact-phone={contact.phone} data-contact-email={contact.email}>
+  <Honeypot />
   <FormField for={id('audience')} label="I am a…">
     <Select name="audience" defaultValue="owner">
       <SelectTrigger id={id('audience')} class="h-12 w-full">
@@ -54,14 +58,14 @@ const id = (name: string) => `${idPrefix}-${name}`;
   </FormField>
 
   <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <p class="min-h-5 text-sm text-neutral-600 data-[tone=error]:text-red-600" role="status" aria-live="polite" data-form-status></p>
+    <FormStatus />
     <ArrowButton type="submit" variant="dark" class="shrink-0">Send request</ArrowButton>
   </div>
 </form>
 
 <script>
   import { onEveryPage } from '@/scripts/lifecycle';
-  import { bindPendingForm } from '@/scripts/forms';
+  import { toggle } from '@/scripts/animations/presence';
 
   onEveryPage(() => {
     const cleanups = [...document.querySelectorAll<HTMLFormElement>('[data-proposal-form]')].map((form) => {
@@ -70,15 +74,11 @@ const id = (name: string) => `${idPrefix}-${name}`;
       // Campos de propietario: solo con "Property owner or investor"
       const syncAudience = () => {
         const audience = new FormData(form).get('audience') ?? 'owner';
-        ownerOnly.forEach((el) => (el.hidden = audience !== 'owner'));
+        ownerOnly.forEach((el) => toggle(el, audience === 'owner', { height: true }));
       };
       syncAudience();
       form.addEventListener('starwind:value-change', syncAudience);
-      const unbind = bindPendingForm(form, { required: 'Add your name so we know who to reply to.' });
-      return () => {
-        form.removeEventListener('starwind:value-change', syncAudience);
-        unbind();
-      };
+      return () => form.removeEventListener('starwind:value-change', syncAudience);
     });
     return () => cleanups.forEach((c) => c());
   });

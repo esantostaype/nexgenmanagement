@@ -4,13 +4,14 @@ import { initReveals } from './animations/reveal';
 import { initOverlayScrollbars } from './animations/scrollbars';
 import { initDialogScrollLock } from './animations/dialog-scroll-lock';
 import { initScrollScenes } from './scenes';
+import { bindForms } from './forms';
 import { onEveryPage } from './lifecycle';
 
-// Lenis, reveals, escenas de GSAP y barras de scroll: se inician en cada página y se limpian
+// Lenis, reveals, escenas de GSAP, barras de scroll y formularios ([data-form], src/scripts/forms.ts): se inician en cada página y se limpian
 // antes de cada navegación de <ClientRouter /> (view transitions).
 onEveryPage(() => {
   initSmoothScroll();
-  const cleanups = [initAnchorLinks(), initReveals(), initScrollScenes(), initOverlayScrollbars(), initDialogScrollLock()];
+  const cleanups = [initAnchorLinks(), initReveals(), initScrollScenes(), initOverlayScrollbars(), initDialogScrollLock(), bindForms()];
 
   // Recalcula posiciones cuando terminan de cargar imágenes y fuentes
   if (document.readyState === 'complete') ScrollTrigger.refresh();

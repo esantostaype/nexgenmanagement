@@ -1,6 +1,9 @@
 ---
-// Campo de formulario: etiqueta (Label de Starwind) + el control en el slot. `optional` añade "(optional)".
-// `hint` muestra un texto de ayuda debajo. Los atributos data-* pasan al contenedor (p. ej. data-owner-only).
+// Campo de formulario: etiqueta (Label de Starwind) + el control en el slot + el mensaje de error del campo.
+// `optional` añade "(optional)" y `hint` un texto de ayuda. La validación (src/scripts/forms.ts) busca el contenedor
+// [data-form-field], escribe el error en [data-field-error] y marca el campo con [data-invalid] (borde rojo en
+// global.css). content-start: si el campo vecino de la fila muestra un error, este no se estira (las cajas siguen
+// alineadas arriba). Los atributos data-* pasan al contenedor (p. ej. data-owner-only).
 import { Label } from '@/components/starwind/label';
 
 interface Props {
@@ -16,11 +19,13 @@ interface Props {
 const { for: htmlFor, label, optional = false, hint, class: className, ...rest } = Astro.props;
 ---
 
-<div class:list={['grid gap-2', className]} {...rest}>
-  <Label for={htmlFor}>
+<div class:list={['grid content-start', className]} data-form-field {...rest}>
+  <Label for={htmlFor} class="mb-2">
     {label}
     {optional && <span class="ml-1 font-normal text-neutral-400">(optional)</span>}
   </Label>
   <slot />
-  {hint && <p class="text-xs text-neutral-500">{hint}</p>}
+  {hint && <p class="mt-2 text-xs text-neutral-500" id={`${htmlFor}-hint`}>{hint}</p>}
+  <!-- El bloque crece desde 0 con Motion; el espacio va dentro (pt) para que tampoco aparezca de golpe -->
+  <div class="hidden" data-field-error><p class="pt-2 text-xs font-medium text-red-600" id={`${htmlFor}-error`} data-field-error-text></p></div>
 </div>

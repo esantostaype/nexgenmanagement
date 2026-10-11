@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import { appear, disappear, filterList, toggle } from './animations/presence';
 import { onEveryPage } from './lifecycle';
 
 interface MapCommunity {
@@ -113,7 +114,7 @@ function mountMap(): VoidFunction | void {
     if (!open || !cardEl) return;
     open.marker.getElement()?.classList.remove('is-active');
     open = null;
-    cardEl.hidden = true;
+    disappear(cardEl);
     cardEl.classList.add('pointer-events-none');
   };
   const openCard = (m: (typeof markers)[number]) => {
@@ -124,9 +125,9 @@ function mountMap(): VoidFunction | void {
     // La tarjeta es un MediaCard renderizado en la página dentro de <template data-map-card="<nombre>">
     const tpl = document.querySelector<HTMLTemplateElement>(`template[data-map-card="${CSS.escape(m.c.name)}"]`);
     cardEl.replaceChildren(tpl ? tpl.content.cloneNode(true) : document.createTextNode(m.c.name));
-    cardEl.hidden = false;
     cardEl.classList.remove('pointer-events-none');
     placeCard();
+    appear(cardEl, { y: 10 });
     keepCardVisible();
   };
   markers.forEach((m) => m.marker.on('click', () => openCard(m)));
@@ -160,7 +161,7 @@ function mountMap(): VoidFunction | void {
 
   // Filtros: estado, ciudad y nombre; sincroniza mapa y listado
   const form = document.querySelector<HTMLFormElement>('[data-map-filter]');
-  const list = document.querySelectorAll<HTMLLIElement>('[data-property-list] > li');
+  const list = [...document.querySelectorAll<HTMLLIElement>('[data-property-list] > li')];
   const count = document.querySelector('[data-map-count]');
   const empty = document.querySelector<HTMLElement>('[data-empty]');
 
@@ -178,14 +179,11 @@ function mountMap(): VoidFunction | void {
     const visible = markers.filter((m) => match(m.c));
     visible.forEach((m) => layer.addLayer(m.marker));
 
-    let shown = 0;
-    list.forEach((li) => {
-      const ok = match({ name: li.dataset.name ?? '', state: li.dataset.state ?? '', city: li.dataset.city ?? '' });
-      li.hidden = !ok;
-      if (ok) shown++;
-    });
+    const isMatch = (li: HTMLElement) => match({ name: li.dataset.name ?? '', state: li.dataset.state ?? '', city: li.dataset.city ?? '' });
+    const shown = list.filter(isMatch).length;
+    filterList(list, isMatch);
     if (count) count.textContent = String(visible.length);
-    if (empty) empty.hidden = shown > 0;
+    toggle(empty, shown === 0);
 
     if (fit && visible.length) map.flyToBounds(layer.getBounds(), { ...fitOptions(), maxZoom: 13, duration: 0.8 });
   };

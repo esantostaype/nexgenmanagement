@@ -431,3 +431,11 @@ dialog::backdrop {
   ~ .section-space:not(.page-hero ~ .section-space ~ .section-space):not(.page-hero ~ :not(template, script, .section-space) ~ .section-space) {
   @apply section-space-start;
 }
+
+/* Campo con error (src/scripts/forms.ts marca el FormField con [data-invalid]) */
+[data-form-field][data-invalid] :is(input:not([type='hidden']), textarea, [data-sw-select-trigger], button[role='combobox']) {
+  border-color: var(--color-red-500);
+}
+[data-form-field][data-invalid] :is(input:not([type='hidden']), textarea, [data-sw-select-trigger], button[role='combobox']):focus-visible {
+  --tw-ring-color: color-mix(in oklab, var(--color-red-500) 30%, transparent);
+}

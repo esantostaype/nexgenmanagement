@@ -32,7 +32,7 @@ const mapData = await Promise.all(
 ---
 
 <!-- Desde 1280px: tarjeta con corte (como el hero de la home). Por debajo: tarjeta rectangular redondeada y el título
-     debajo. El corte va fuera de la tarjeta (sobre ella con z-750) para poder pasar a bloque normal. -->
+     debajo. El corte va fuera de la tarjeta (sobre ella con z-10: la tarjeta es isolate, así que basta, y queda por debajo del header fijo) para poder pasar a bloque normal. -->
 <section class="page-hero p-3 sm:p-4 xl:h-[min(70svh,640px)] xl:min-h-140" aria-labelledby="properties-title">
   <div class="relative xl:h-full">
   <div class="relative isolate h-[min(70svh,560px)] min-h-110 transform-gpu overflow-hidden rounded-2xl bg-neutral-200 xl:h-full xl:rounded-bl-none">
@@ -68,7 +68,7 @@ const mapData = await Promise.all(
   </div>
 
   <!-- Corte con el título: por encima de las tarjetas flotantes de las propiedades (z 700) -->
-  <Notch class="z-750" stackBelow>
+  <Notch class="z-10" stackBelow>
     <h1 id="properties-title" class="font-display text-[clamp(1.5rem,4vw,2.5rem)] leading-[1.02] font-semibold text-brand-950" data-scene="split-lines">{title}</h1>
     <p class="mt-2 max-w-[48ch] text-neutral-600" data-reveal data-delay="0.15">{text}</p>
   </Notch>
