@@ -12,8 +12,7 @@ interface Props {
 const { phone, href, class: className } = Astro.props;
 ---
 
-<Button href={href} variant="contrast" shape="pill" class:list={['hidden h-12 gap-2.5 px-5 text-[0.95rem] md:inline-flex', className]} aria-label={`Call ${phone}`}>
+<Button href={href} variant="contrast" shape="pill" class:list={['size-12 md:size-auto md:h-12 gap-2.5 text-[0.95rem] inline-flex', className]} aria-label={`Call ${phone}`}>
   <Phone class="size-4.5" stroke-width="1.75" />
-  <span class="hidden tabular-nums xl:inline">{phone}</span>
-  <span class="xl:hidden">Call us</span>
+  <span class="hidden tabular-nums md:inline">{phone}</span>
 </Button>

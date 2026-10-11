@@ -38,12 +38,12 @@ const { variant, items } = Astro.props;
      al hacer scroll, solo aparece el fondo. El relleno coloca el logo donde empieza el contenido del hero:
      inicio del contenido (margen del hero + gutter, o centrado a 1320px) menos el inicio de la barra. */
   .header-bar {
-    max-width: calc(1320px + 1rem);
+    max-width: calc(1320px);
     margin-inline: auto;
     /* --hero-inset: margen de la tarjeta del hero (p-3 sm:p-4). La barra deja 12px a los lados (px-3 del header) */
     --hero-inset: 0.75rem;
     padding-inline: calc(
-      var(--hero-inset) + max(var(--gutter), (100vw - 2 * var(--hero-inset) - 1320px) / 2) - (100vw - min(100vw - 1.5rem, 1320px + 1rem)) / 2
+      var(--hero-inset) + max(var(--gutter), (100vw - 2 * var(--hero-inset) - 1320px) / 2) - (100vw - min(100vw - 1.5rem, 1320px)) / 2
     );
   }
   @media (width >= 40rem) {

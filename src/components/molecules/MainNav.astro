@@ -11,7 +11,7 @@ interface Props {
 const { items, class: className } = Astro.props;
 ---
 
-<nav aria-label="Main" class:list={['hidden lg:block', className]}>
+<nav aria-label="Main" class:list={['hidden xl:block', className]}>
   <ul class="flex items-center gap-1">
     {items.map((item) => <NavItem item={item} />)}
   </ul>
